@@ -52,17 +52,27 @@
 | **Laravel Permission** | 6.x | Roles y permisos |
 | **Laravel Telescope** | 5.x | Debugging y monitoreo |
 | **PHPUnit** | 11.x | Framework de testing |
+| **Laragon** | 6.x | Entorno de desarrollo integrado |
 
 ---
 
 ## 📦 **INSTALACIÓN**
 
 ### **Prerrequisitos:**
+- **Laragon** 6.x (recomendado) - Entorno de desarrollo integrado
 - PHP 8.4+
 - Composer 2.x
 - PostgreSQL (o acceso a Neon)
 - Git
 
+### **Opción 1: Con Laragon (Recomendado):**
+1. **Descargar e instalar** [Laragon](https://laragon.org/download/)
+2. **Iniciar Laragon** y asegurarte que esté ejecutándose
+3. **Colocar el proyecto** en la carpeta `C:\laragon\www\oh_Sansi_backend`
+4. **Laragon detectará** automáticamente el proyecto Laravel
+5. **Acceder** a `http://oh_Sansi_backend.test` (Laragon crea URLs automáticamente)
+
+### **Opción 2: Instalación manual:**
 ### **Pasos de instalación:**
 
 ```bash
@@ -94,12 +104,23 @@ php artisan db:seed
 
 ### **Archivo .env principal:**
 
+#### **Para Laragon:**
+```env
+APP_NAME=OhSansiBackend
+APP_ENV=local
+APP_KEY=base64:tu_clave_aqui
+APP_DEBUG=true
+APP_URL=http://oh_Sansi_backend.test
+```
+
+#### **Para desarrollo manual:**
 ```env
 APP_NAME=OhSansiBackend
 APP_ENV=local
 APP_KEY=base64:tu_clave_aqui
 APP_DEBUG=true
 APP_URL=http://localhost:8000
+```
 
 # Base de datos PostgreSQL
 DB_CONNECTION=pgsql
@@ -132,6 +153,20 @@ QUEUE_CONNECTION=sync
 ## 🚀 **COMANDOS BÁSICOS**
 
 ### **Ejecutar el proyecto:**
+
+#### **Con Laragon (Recomendado):**
+```bash
+# Laragon maneja automáticamente el servidor
+# Solo necesitas:
+# 1. Iniciar Laragon
+# 2. Colocar proyecto en C:\laragon\www\
+# 3. Acceder a http://oh_Sansi_backend.test
+
+# Para comandos artisan, usar terminal integrada de Laragon
+php artisan serve
+```
+
+#### **Sin Laragon (Manual):**
 ```bash
 # Servidor de desarrollo (recomendado para APIs)
 php -S localhost:8000 -t . vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php
@@ -258,9 +293,6 @@ use Tests\TestCase;
 
 class ApiTest extends TestCase
 {
-    /**
-     * Test that the API test endpoint returns a successful response.
-     */
     public function test_api_test_endpoint_returns_success(): void
     {
         $response = $this->get('/api/test');
@@ -411,6 +443,22 @@ oh_Sansi_backend/
 ## 🎯 **EJEMPLOS DE USO**
 
 ### **1. Ejecutar la API:**
+
+#### **Con Laragon:**
+```bash
+# 1. Iniciar Laragon
+# 2. Proyecto automáticamente disponible en:
+#    http://oh_Sansi_backend.test
+
+# Probar endpoints
+curl http://oh_Sansi_backend.test/api/test
+curl http://oh_Sansi_backend.test/api/users
+
+# O usar Postman/Insomnia con la URL:
+# http://oh_Sansi_backend.test/api/*
+```
+
+#### **Sin Laragon (Manual):**
 ```bash
 # Terminal 1: Ejecutar servidor
 php -S localhost:8000 -t . vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php
@@ -485,6 +533,51 @@ php artisan migrate --force
 
 ---
 
+## 🖥️ **ENTORNO DE DESARROLLO - LARAGON**
+
+### **¿Qué es Laragon?**
+Laragon es un entorno de desarrollo web completo que incluye:
+- **Apache/Nginx** - Servidor web
+- **PHP** - Intérprete de PHP
+- **MySQL/PostgreSQL** - Base de datos
+- **Redis** - Cache en memoria
+- **Node.js** - Runtime de JavaScript
+- **Git** - Control de versiones
+- **Terminal integrada** - Para comandos
+
+### **Ventajas de usar Laragon:**
+- **🚀 Configuración automática** - No más problemas de configuración
+- **🌐 URLs automáticas** - `http://proyecto.test` automáticamente
+- **🔧 Herramientas integradas** - Todo en un solo lugar
+- **📁 Gestión de proyectos** - Fácil organización
+- **⚡ Performance** - Optimizado para desarrollo local
+
+### **Configuración recomendada para Laragon:**
+1. **Instalar Laragon** desde [laragon.org](https://laragon.org/download/)
+2. **Configurar PHP** para usar la versión 8.4+
+3. **Habilitar PostgreSQL** en las opciones de Laragon
+4. **Colocar proyecto** en `C:\laragon\www\oh_Sansi_backend`
+5. **Acceder** a `http://oh_Sansi_backend.test`
+
+### **Comandos útiles en Laragon:**
+```bash
+# Terminal integrada de Laragon
+# Navegar al proyecto
+cd C:\laragon\www\oh_Sansi_backend
+
+# Comandos Laravel
+php artisan serve
+php artisan test
+php artisan migrate
+
+# Comandos Composer
+composer install
+composer update
+composer require paquete
+```
+
+---
+
 ## 🤝 **CONTRIBUCIÓN**
 
 ### **Cómo contribuir:**
@@ -531,6 +624,6 @@ Este proyecto está bajo la licencia **MIT**. Ver el archivo `LICENSE` para más
 ---
 
 <div align="center">
-  <p><strong>Hecho con ❤️ usando Laravel</strong></p>
+  <p><strong>Hecho con carinito usando Laravel</strong></p>
   <p><em>OhSansi Backend API - 2025</em></p>
 </div> 
