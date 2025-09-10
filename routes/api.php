@@ -25,3 +25,10 @@ Route::get('/test', function () {
 Route::get('/', function () {
     return response()->json(['message' => 'API funcionando correctamente']);
 });
+
+
+use App\Http\Controllers\ProductController;
+
+Route::get('/products', [ProductController::class, 'index']);
+Route::post('/products', [ProductController::class, 'store']);
+
