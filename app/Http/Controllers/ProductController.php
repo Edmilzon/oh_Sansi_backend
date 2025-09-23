@@ -18,20 +18,20 @@ class ProductController extends Controller {
         $products = $this->productService->getProductList();
         return response()->json($products);
     }
-
+    
     public function store(Request $request){
         $validateData = $request->validate([
-            'name' => 'required|string',
-            'description' => 'required|string',
-            'price' => 'required|numeric',
-            'stock' => 'required|integer',
-            'category' => 'required|string',
-            'image_url' => 'required|string'
+            'name'        => 'required|string',
+            'description' => 'nullable|string',
+            'price'       => 'required|numeric',
+            'stock'       => 'required|integer',
+            'category'    => 'nullable|string',
+            'image_url'   => 'required|string',
+            'is_active'   => 'boolean'
         ]);
         
         $product = $this->productService->createNewProduct($validateData);
         return response()->json([
-            'message' => 'Product created successfully',
             'product' => $product
         ], 201);
     }
