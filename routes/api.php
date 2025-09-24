@@ -28,7 +28,11 @@ Route::get('/', function () {
 
 
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AreaController;
 
 Route::get('/products', [ProductController::class, 'index']);
 Route::post('/products', [ProductController::class, 'store']);
+
+Route::get('/area', [AreaController::class, 'index']);
+Route::post('/area', [AreaController::class, 'store']);
 

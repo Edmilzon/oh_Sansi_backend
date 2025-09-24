@@ -26,7 +26,8 @@ return new class extends Migration
             $table->string('password_hash');
             $table->enum('rol', ['privilegiado', 'competidor', 'evaluador', 'responsable_area']);
             $table->unsignedBigInteger('id_persona');
-            $table->unsignedBigInteger('id_codigo')->nullable();
+            $table->unsignedBigInteger('id_codigo_evaluador')->nullable();
+            $table->unsignedBigInteger('id_codigo_encargado')->nullable();
             $table->timestamps();
 
             $table->foreign('id_persona')->references('id_persona')->on('persona')->onDelete('cascade');
@@ -85,8 +86,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_nivel');
             $table->timestamps();
 
-            $table->foreign('id_area')->references('id_area')->on('areas')->onDelete('cascade');
-            $table->foreign('id_nivel')->references('id_nivel')->on('niveles')->onDelete('cascade');
+            $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
+            $table->foreign('id_nivel')->references('id_nivel')->on('nivel')->onDelete('cascade');
         });
 
         Schema::create('parametro', function (Blueprint $table) {
@@ -99,7 +100,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_competencia');
             $table->timestamps();
 
-            $table->foreign('id_competencia')->references('id_competencia')->on('competencias')->onDelete('cascade');
+            $table->foreign('id_competencia')->references('id_competencia')->on('competencia')->onDelete('cascade');
         });
 
         Schema::create('inscripcion', function (Blueprint $table) {
@@ -110,8 +111,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_competidor');
             $table->timestamps();
 
-            $table->foreign('id_competencia')->references('id_competencia')->on('competencias')->onDelete('cascade');
-            $table->foreign('id_competidor')->references('id_competidor')->on('competidores')->onDelete('cascade');
+            $table->foreign('id_competencia')->references('id_competencia')->on('competencia')->onDelete('cascade');
+            $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('cascade');
         });
 
         Schema::create('fase', function (Blueprint $table) {
@@ -128,7 +129,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_persona');
             $table->timestamps();
 
-            $table->foreign('id_persona')->references('id_persona')->on('personas')->onDelete('cascade');
+            $table->foreign('id_persona')->references('id_persona')->on('persona')->onDelete('cascade');
         });
 
         Schema::create('evaluador_area', function (Blueprint $table) {
@@ -137,8 +138,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_area');
             $table->timestamps();
 
-            $table->foreign('id_evaluador')->references('id_evaluador')->on('evaluadores')->onDelete('cascade');
-            $table->foreign('id_area')->references('id_area')->on('areas')->onDelete('cascade');
+            $table->foreign('id_evaluador')->references('id_evaluador')->on('evaluador')->onDelete('cascade');
+            $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
         });
 
         Schema::create('evaluacion', function (Blueprint $table) {
@@ -154,7 +155,7 @@ return new class extends Migration
 
             $table->foreign('id_fase')->references('id_fase')->on('fase')->onDelete('cascade');
             $table->foreign('id_evaluador')->references('id_evaluador')->on('evaluador')->onDelete('cascade');
-            $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('cascade');
+              $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('cascade');
         });
 
         Schema::create('historial_evaluacion', function (Blueprint $table) {
@@ -177,8 +178,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_evaluacion')->nullable();
             $table->timestamps();
 
-            $table->foreign('id_competidor')->references('id_competidor')->on('competidores')->onDelete('cascade');
-            $table->foreign('id_evaluacion')->references('id_evaluacion')->on('evaluaciones')->onDelete('set null');
+            $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('cascade');
+            $table->foreign('id_evaluacion')->references('id_evaluacion')->on('evaluacion')->onDelete('set null');
         });
 
         Schema::create('responsable_area', function (Blueprint $table) {
@@ -189,8 +190,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_area');
             $table->timestamps();
 
-            $table->foreign('id_persona')->references('id_persona')->on('personas')->onDelete('cascade');
-            $table->foreign('id_area')->references('id_area')->on('areas')->onDelete('cascade');
+            $table->foreign('id_persona')->references('id_persona')->on('persona')->onDelete('cascade');
+            $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
         });
 
         Schema::create('aval', function (Blueprint $table) {
@@ -202,8 +203,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_responsable_area');
             $table->timestamps();
 
-            $table->foreign('id_competencia')->references('id_competencia')->on('competencias')->onDelete('cascade');
-            $table->foreign('id_fase')->references('id_fase')->on('fases')->onDelete('cascade');
+            $table->foreign('id_competencia')->references('id_competencia')->on('competencia')->onDelete('cascade');
+            $table->foreign('id_fase')->references('id_fase')->on('fase')->onDelete('cascade');
             $table->foreign('id_responsable_area')->references('id_responsable_area')->on('responsable_area')->onDelete('cascade');
         });
 
@@ -221,11 +222,11 @@ return new class extends Migration
             $table->unsignedBigInteger('id_competidor');
             $table->timestamps();
 
-            $table->foreign('id_grupo')->references('id_grupo')->on('grupos')->onDelete('cascade');
-            $table->foreign('id_competidor')->references('id_competidor')->on('competidores')->onDelete('cascade');
+            $table->foreign('id_grupo')->references('id_grupo')->on('grupo')->onDelete('cascade');
+            $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('cascade');
         });
 
-        Schema::create('medaller', function (Blueprint $table) {
+        Schema::create('medallero', function (Blueprint $table) {
             $table->id('id_medallero');
             $table->integer('puesto');
             $table->enum('medalla', ['oro', 'plata', 'bronce', 'mencion'])->nullable();
@@ -233,8 +234,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_competencia');
             $table->timestamps();
 
-            $table->foreign('id_competidor')->references('id_competidor')->on('competidores')->onDelete('cascade');
-            $table->foreign('id_competencia')->references('id_competencia')->on('competencias')->onDelete('cascade');
+            $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('cascade');
+            $table->foreign('id_competencia')->references('id_competencia')->on('competencia')->onDelete('cascade');
         });
 
         Schema::create('codigo_evaluador', function (Blueprint $table) {
@@ -243,11 +244,11 @@ return new class extends Migration
             $table->string('descripcion')->nullable();
             $table->boolean('activo')->default(true);
             $table->unsignedBigInteger('id_area');
-            $table->unsignedBigInteger('id_nivel');
+            $table->unsignedBigInteger('id_nivel')->nullable();
             $table->timestamps();
 
-            $table->foreign('id_area')->references('id_area')->on('areas')->onDelete('cascade');
-            $table->foreign('id_nivel')->references('id_nivel')->on('niveles')->onDelete('set null');
+            $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
+            $table->foreign('id_nivel')->references('id_nivel')->on('nivel')->onDelete('set null');
         });
 
         Schema::create('codigo_encargado', function (Blueprint $table) {
@@ -257,11 +258,12 @@ return new class extends Migration
             $table->unsignedBigInteger('id_area');
             $table->timestamps();
 
-            $table->foreign('id_area')->references('id_area')->on('areas')->onDelete('cascade');
+            $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
         });
 
-        Schema::table('usuarios', function (Blueprint $table) {
-            $table->foreign('id_codigo')->references('id_codigo')->on('codigos_acceso')->onDelete('set null');
+        Schema::table('usuario',  function (Blueprint $table) {
+            $table->foreign('id_codigo_evaluador')->references('id_codigo_evaluador')->on('codigo_evaluador')->onDelete('set null');
+            $table->foreign('id_codigo_encargado')->references('id_codigo_encargado')->on('codigo_encargado')->onDelete('set null');
         });
     }
 
@@ -270,23 +272,26 @@ return new class extends Migration
         Schema::dropIfExists('usuario');
         Schema::dropIfExists('persona');
         Schema::dropIfExists('institucion');
-        Schema::dropIfExists('competidores');
-        Schema::dropIfExists('areas');
-        Schema::dropIfExists('niveles');
-        Schema::dropIfExists('competencias');
-        Schema::dropIfExists('parametros');
-        Schema::dropIfExists('inscripciones');
-        Schema::dropIfExists('fases');
-        Schema::dropIfExists('evaluadores');
+        Schema::dropIfExists('competidor');
+        Schema::dropIfExists('area');
+        Schema::dropIfExists('nivel');
+        Schema::dropIfExists('competencia');
+        Schema::dropIfExists('parametro');
+        Schema::dropIfExists('inscripcion');
+        Schema::dropIfExists('fase');
+        Schema::dropIfExists('evaluador');
         Schema::dropIfExists('evaluador_area');
-        Schema::dropIfExists('evaluaciones');
-        Schema::dropIfExists('historial_evaluaciones');
-        Schema::dropIfExists('descalificaciones');
-        Schema::dropIfExists('responsables_area');
-        Schema::dropIfExists('avales');
-        Schema::dropIfExists('grupos');
+        Schema::dropIfExists('evaluacion');
+        Schema::dropIfExists('historial_evaluacion');
+        Schema::dropIfExists('desclasificacion');
+        Schema::dropIfExists('responsable_area');
+        Schema::dropIfExists('aval');
+        Schema::dropIfExists('grupo');
         Schema::dropIfExists('grupo_competidor');
-        Schema::dropIfExists('medalleros');
-        Schema::dropIfExists('codigos_acceso');
+        Schema::dropIfExists('medallero');
+        Schema::dropIfExists('codigo_evaluador');
+        Schema::dropIfExists('codigo_encargado');
+        Schema::dropIfExists('codigo_acceso');
     }
 };
+
