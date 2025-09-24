@@ -19,13 +19,13 @@ class NivelController extends Controller {
     }
 
     public function store (Request $request) {
-        $validateData = $request->validate([
+        $validatedData = $request->validate([
             'nombre' => 'required|string',
             'descripcion' => 'nullable|string',
             'orden' => 'required|integer'
         ]);
 
-        $nivel = $this->nivelService->createNewNivel($validateData);
+        $nivel = $this->nivelService->createNewNivel($validatedData);
         return response()->json([
             'nivel' => $nivel
         ],201);
