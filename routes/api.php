@@ -29,10 +29,16 @@ Route::get('/', function () {
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\ResponsableController;
 
 Route::get('/products', [ProductController::class, 'index']);
 Route::post('/products', [ProductController::class, 'store']);
 
+//area mostrar y insertar
 Route::get('/area', [AreaController::class, 'index']);
 Route::post('/area', [AreaController::class, 'store']);
+
+//responsable de area mostrar y insertar 
+Route::get('/responsableArea', [ResponsableController::class, 'index']);
+Route::post('/responsableArea/{id_area}', [ResponsableController::class, 'store']);
 
