@@ -32,6 +32,7 @@ Backend desarrollado en **PHP** usando el framework **Laravel** para la gestión
 
 ```bash
 composer install
+cp .env.example .env
 php artisan key:generate
 ```
 
@@ -41,7 +42,16 @@ Configura tu base de datos en el archivo `.env`.
 
 ```bash
 php artisan serve
-php migrate sere
+php artisan migrate
+php artisan migrate:fresh
+```
+
+## Reniciar el servidor 
+
+```bash
+php artisan config:clear
+php artisan cache:clear
+composer dump-autoload
 ```
 
 ## Endpoints principales
@@ -54,6 +64,8 @@ php migrate sere
 - PHP
 - Laravel
 - MySQL o la base de datos que uses
+
+
 
 ## Autor
 

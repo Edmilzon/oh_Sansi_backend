@@ -32,3 +32,9 @@ use App\Http\Controllers\ProductController;
 Route::get('/products', [ProductController::class, 'index']);
 Route::post('/products', [ProductController::class, 'store']);
 
+// Rutas para la gestión de niveles y áreas
+
+use App\Http\Controllers\NivelController;
+
+Route::get('/niveles', [NivelController::class, 'index']);
+Route::post('/niveles', [NivelController::class, 'store']);
