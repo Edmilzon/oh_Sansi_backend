@@ -80,6 +80,11 @@ Configura tu base de datos en el archivo `.env`.
 php artisan serve
 php artisan migrate
 php artisan migrate:fresh
+
+migra la semilla (cambiar la clase por la q quieres cargar)
+
+php artisan db:seed --class=CodigoEvaluadorSeeder
+
 ```
 
 ## Reniciar el servidor 
@@ -101,6 +106,9 @@ composer dump-autoload
 - Laravel
 - MySQL o la base de datos que uses
 
+
+php artisan route:clear
+php artisan migrate:fresh --seed
 
 
 ## Autor
