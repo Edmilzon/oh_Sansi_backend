@@ -11,6 +11,8 @@ class Usuario extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    public const ROL_EVALUADOR = 'evaluador';
+    public const ROL_ADMIN = 'admin'; 
     protected $table = 'usuario';
     protected $primaryKey = 'id_usuario';
 
@@ -24,16 +26,12 @@ class Usuario extends Authenticatable
     ];
 
     protected $hidden = [
-        'password_hash',
+        'password', 
     ];
 
-    /**
-     * Mutator para hashear la contraseña automáticamente al asignarla.
-     * El nombre del método debe ser set<Campo>Attribute.
-     */
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password_hash'] = Hash::make($value);
+        $this->attributes['password'] = Hash::make($value);
     }
 
     public function persona()

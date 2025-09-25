@@ -62,7 +62,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_nivel')->nullable();
             $table->timestamps();
 
-            $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
+            $table->foreign('id_area')->references('id_area')->on('area')->onDelete('set null');
             $table->foreign('id_nivel')->references('id_nivel')->on('nivel')->onDelete('set null');
         });
 
@@ -79,7 +79,7 @@ return new class extends Migration
         Schema::create('usuario', function (Blueprint $table) {
             $table->id('id_usuario');
             $table->string('nombre');
-            $table->string('password_hash');
+            $table->string('password');
             $table->enum('rol', ['privilegiado', 'competidor', 'evaluador', 'responsable_area']);
             $table->unsignedBigInteger('id_persona');
             $table->unsignedBigInteger('id_codigo_evaluador')->nullable();

@@ -17,6 +17,10 @@ class Evaluador extends Model
         'id_persona',
     ];
 
+    protected $casts = [
+        'activo' => 'boolean',
+    ];
+
     public function persona() {
         return $this->belongsTo(Persona::class, 'id_persona', 'id_persona');
     }

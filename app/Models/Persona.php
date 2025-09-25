@@ -22,6 +22,10 @@ class Persona extends Model
         'email',
     ];
 
+    protected $casts = [
+        'fecha_nac' => 'date',
+    ];
+
     public function usuario()
     {
         return $this->hasOne(Usuario::class, 'id_persona', 'id_persona');
