@@ -11,6 +11,9 @@ class Usuario extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    // Definir constantes para los roles
+    public const ROL_EVALUADOR = 'evaluador';
+    public const ROL_ADMIN = 'admin'; // Ejemplo de otro rol
     protected $table = 'usuario';
     protected $primaryKey = 'id_usuario';
 
@@ -24,7 +27,7 @@ class Usuario extends Authenticatable
     ];
 
     protected $hidden = [
-        'password_hash',
+        'password', // Ocultar el campo 'password' de las respuestas JSON
     ];
 
     /**
@@ -33,7 +36,8 @@ class Usuario extends Authenticatable
      */
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password_hash'] = Hash::make($value);
+        // Hashear el valor y asignarlo al campo 'password' de la base de datos.
+        $this->attributes['password'] = Hash::make($value);
     }
 
     public function persona()

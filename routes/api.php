@@ -35,7 +35,11 @@ Route::apiResource('products', ProductController::class)->only(['index', 'store'
 // Rutas para la gestión de niveles
 Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);
 
-// Rutas para la gestión de niveles y áreas
-
 // Rutas para la gestión de evaluadores
-Route::apiResource('evaluadores', EvaluadorController::class)->only(['store']);
+Route::prefix('v1')->group(function () { // Ejemplo de versionado de API
+    Route::apiResource('evaluadores', EvaluadorController::class)->only(['store']);
+    // Otras rutas de la versión 1
+});
+
+// Si no quieres versionar, puedes dejarlo como estaba o agrupar por middleware si aplica
+// Route::apiResource('evaluadores', EvaluadorController::class)->only(['store']);

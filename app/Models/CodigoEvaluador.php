@@ -16,4 +16,8 @@ class CodigoEvaluador extends Model
         'codigo',
         'activo',
     ];
+
+    protected $casts = [
+        'activo' => 'boolean',
+    ];
 }

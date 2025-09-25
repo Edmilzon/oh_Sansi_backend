@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreEvaluadorRequest; // Asumiendo que crearás este archivo
 use App\Services\EvaluadorService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -15,26 +16,13 @@ class EvaluadorController extends Controller
         $this->evaluadorService = $evaluadorService;
     }
 
-    public function store(Request $request)
+    // Cambiar Request $request por el Form Request Object
+    public function store(StoreEvaluadorRequest $request)
     {
-        $validatedData = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'apellido' => 'required|string|max:255',
-            'ci' => 'required|string|unique:persona,ci',
-            'fecha_nac' => 'required|date',
-            'genero' => 'nullable|in:M,F',
-            'telefono' => 'nullable|string|unique:persona,telefono',
-            'email' => 'required|email|unique:persona,email',
+        // La validación se realiza automáticamente por StoreEvaluadorRequest
+        $validatedData = $request->validated();
 
-            // Datos de Usuario
-            'username' => 'required|string|unique:usuario,nombre',
-            'password' => 'required|string|min:8|confirmed',
-
-            // Código de acceso
-            'codigo_evaluador' => 'required|string|exists:codigo_evaluador,codigo,activo,1',
-        ]);
-
-        $evaluador = $this->evaluadorService->createNewEvaluador($validatedData);
+        $evaluador = $this->evaluadorService->createNewEvaluador($validatedData); // Pasa los datos validados
 
         return response()->json(['evaluador' => $evaluador], 201);
     }
