@@ -8,8 +8,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Tablas sin dependencias externas (o con dependencias que se crean después)
-        // Se crean primero
 
         Schema::create('persona', function (Blueprint $table) {
             $table->id('id_persona');
@@ -78,7 +76,6 @@ return new class extends Migration
             $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
         });
 
-        // Ahora creamos la tabla 'usuario' que depende de 'persona', 'codigo_evaluador' y 'codigo_encargado'
         Schema::create('usuario', function (Blueprint $table) {
             $table->id('id_usuario');
             $table->string('nombre');
