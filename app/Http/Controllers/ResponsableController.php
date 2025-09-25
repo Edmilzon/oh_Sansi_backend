@@ -21,12 +21,24 @@ class ResponsableController extends Controller {
     }
     
     // POST
-    public function store(Request $request, $id_area){
-    $data = $request->only(['id_persona', 'fecha_asignacion', 'activo']);
-    $data['id_area'] = $id_area;
+   public function store(Request $request, $id_area)
+{
+    // Separar datos de persona y responsable
+    $personaData = $request->input('persona');
+    $responsableData = $request->only(['fecha_asignacion', 'activo']);
+    $responsableData['id_area'] = $id_area;
 
-    $responsable = $this->responsableService->createNewResponsable($data);
+    // Crear persona
+    $persona = \App\Models\Persona::create($personaData);
+
+    // Crear responsable asociado
+    $responsableData['id_persona'] = $persona->id_persona;
+    $responsable = $this->responsableService->createNewResponsable($responsableData);
+
+    // Cargar relación persona para devolverla en la respuesta
+    $responsable->load('persona');
 
     return response()->json($responsable, 201);
 }
+
 }

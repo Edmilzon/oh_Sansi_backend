@@ -3,6 +3,8 @@
 use App\Http\Controllers\EvaluadorController;
 use App\Http\Controllers\NivelController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AreaController;
+use App\Http\Controllers\ResponsableController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +40,14 @@ Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);
 // Rutas para la gestión de evaluadores
 Route::prefix('v1')->group(function () {
     Route::apiResource('evaluadores', EvaluadorController::class)->only(['store']);
-    
+
 });
+
+//area mostrar y insertar
+Route::get('/area', [AreaController::class, 'index']);
+Route::post('/area', [AreaController::class, 'store']);
+
+//responsable de area mostrar y insertar 
+Route::get('/responsableArea', [ResponsableController::class, 'index']);
+Route::post('/responsableArea/{id_area}', [ResponsableController::class, 'store']);
 
