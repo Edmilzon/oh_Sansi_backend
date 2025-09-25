@@ -32,12 +32,9 @@ Route::get('/', function () {
 // Rutas para la gestión de productos
 Route::apiResource('products', ProductController::class)->only(['index', 'store']);
 
-use App\Http\Controllers\ProductController;
 // Rutas para la gestión de niveles
 Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);
 
-Route::get('/products', [ProductController::class, 'index']);
-Route::post('/products', [ProductController::class, 'store']);
 // Rutas para la gestión de niveles y áreas
 
 // Rutas para la gestión de evaluadores
