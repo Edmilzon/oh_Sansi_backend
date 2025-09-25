@@ -16,7 +16,7 @@ class Usuario extends Authenticatable
 
     protected $fillable = [
         'nombre',
-        'password', // Permitir asignación masiva para 'password'
+        'password',
         'rol',
         'id_persona',
         'id_codigo_evaluador',
