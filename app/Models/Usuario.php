@@ -11,15 +11,14 @@ class Usuario extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    // Definir constantes para los roles
     public const ROL_EVALUADOR = 'evaluador';
-    public const ROL_ADMIN = 'admin'; // Ejemplo de otro rol
+    public const ROL_ADMIN = 'admin'; 
     protected $table = 'usuario';
     protected $primaryKey = 'id_usuario';
 
     protected $fillable = [
         'nombre',
-        'password', // Permitir asignación masiva para 'password'
+        'password',
         'rol',
         'id_persona',
         'id_codigo_evaluador',
@@ -27,16 +26,11 @@ class Usuario extends Authenticatable
     ];
 
     protected $hidden = [
-        'password', // Ocultar el campo 'password' de las respuestas JSON
+        'password', 
     ];
 
-    /**
-     * Mutator para hashear la contraseña automáticamente al asignarla.
-     * El nombre del método debe ser set<Campo>Attribute.
-     */
     public function setPasswordAttribute($value)
     {
-        // Hashear el valor y asignarlo al campo 'password' de la base de datos.
         $this->attributes['password'] = Hash::make($value);
     }
 
