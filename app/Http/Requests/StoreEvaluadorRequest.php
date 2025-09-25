@@ -6,13 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreEvaluadorRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        // Cambia a true si todos los usuarios autenticados pueden crear un evaluador,
-        // o implementa lógica de autorización más compleja si es necesario.
         return true; 
     }
 
@@ -56,7 +51,7 @@ class StoreEvaluadorRequest extends FormRequest
             'password.min' => 'La contraseña debe tener al menos :min caracteres.',
             'password.confirmed' => 'La confirmación de contraseña no coincide.',
             'codigo_evaluador.exists' => 'El código de evaluador proporcionado no es válido o no está activo.',
-            // Puedes añadir más mensajes personalizados aquí
+            //añadir más mensajes personalizados
         ];
     }
 }
