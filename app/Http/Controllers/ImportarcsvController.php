@@ -2,15 +2,15 @@
 
 namespace app\Http\Controllers;
 
-use app\Models\Persona;
-use app\Models\Institucion;
-use app\Models\Competidor;
+use App\Models\Persona;
+use App\Models\Institucion;
+use App\Models\Competidor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use League\Csv\Reader;
 
-class ImportacionSimpleController extends Controller
+class ImportarcsvController extends Controller
 {
     public function importar(Request $request): JsonResponse
     {
@@ -28,7 +28,7 @@ class ImportacionSimpleController extends Controller
 
             // Leer CSV
             $csv = Reader::createFromPath($rutaArchivo, 'r');
-            $csv->setHeaderOffset(0); // Primera fila como encabezados
+            $csv->setHeaderOffset(0);
             
             $registros = $csv->getRecords();
             $resultados = [];
