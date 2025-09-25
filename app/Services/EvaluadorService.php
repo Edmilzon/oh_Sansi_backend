@@ -25,7 +25,6 @@ class EvaluadorService
         }
 
         return DB::transaction(function () use ($data, $codigoEvaluador) {
-            // 2.1. Crear la Persona
             $persona = $this->evaluadorRepository->createPersona([
                 'nombre' => $data['nombre'],
                 'apellido' => $data['apellido'],
@@ -36,7 +35,6 @@ class EvaluadorService
                 'email' => $data['email'],
             ]);
 
-            // 2.2. Crear el Usuario
             $usuario = $this->evaluadorRepository->createUsuario([
                 'nombre' => $data['username'],
                 'password' => $data['password'], 
