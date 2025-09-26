@@ -70,7 +70,7 @@ return new class extends Migration
             $table->id('id_codigo_encargado');
             $table->string('codigo')->unique();
             $table->string('descripcion')->nullable();
-            $table->unsignedBigInteger('id_area');
+            $table->unsignedBigInteger('id_area')->nullable();
             $table->timestamps();
 
             $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
