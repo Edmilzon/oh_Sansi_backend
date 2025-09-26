@@ -51,7 +51,6 @@ class StoreEvaluadorRequest extends FormRequest
             'password.min' => 'La contraseña debe tener al menos :min caracteres.',
             'password.confirmed' => 'La confirmación de contraseña no coincide.',
             'codigo_evaluador.exists' => 'El código de evaluador proporcionado no es válido o no está activo.',
-            //añadir más mensajes personalizados
         ];
     }
 }
