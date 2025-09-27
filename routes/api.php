@@ -49,5 +49,5 @@ Route::post('/area', [AreaController::class, 'store']);
 
 //responsable de area mostrar y insertar 
 Route::get('/responsableArea', [ResponsableController::class, 'index']);
-Route::post('/responsableArea/{id_area}', [ResponsableController::class, 'store']);
+Route::post('/responsableArea', [ResponsableController::class, 'store']);
 

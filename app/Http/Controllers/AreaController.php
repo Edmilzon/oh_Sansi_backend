@@ -18,27 +18,17 @@ class AreaController extends Controller {
     return response()->json($areas); 
 }
     
-   
-    public function store(Request $request){
-    $validateData = $request->validate([
-        'nombre'      => 'required|string',
-        'descripcion' => 'nullable|string',
-    ]);
-    $area = $this->areaService->createNewArea($validateData);
 
-    // Generar código
-    $year = now()->format('Y'); // año actual
-    $namePart = strtoupper(substr($area->nombre, 0, 3)); // primeras 3 letras en mayúsculas
-    $codigo = $year . '-' . $namePart;
+     public function store(Request $request){
+        $validateData = $request->validate([
+            'nombre'      => 'required|string',
+            'descripcion' => 'nullable|string',
+        ]);
 
-    $area->codigoEncargado()->create([
-        'codigo' => $codigo,
-        'descripcion' => 'Código encargado para ' . $area->nombre
-    ]);
+        $area = $this->areaService->createNewArea($validateData);
 
-    return response()->json([
-        'area' => $area,
-        'codigo_encargado' => $area->codigoEncargado
-    ], 201);
-}
+        return response()->json([
+            'area' => $area
+        ], 201);
+    }
 }
