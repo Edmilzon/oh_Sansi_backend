@@ -3,9 +3,18 @@
 namespace App\Repositories;
 
 use App\Models\Competidor;
+use App\Models\Persona;
 
 class CompetidorRepository{
 
+    public function existsByCi($ci) {
+        return Persona::where('ci', $ci)->exists();
+    }
+
+    public function findWithRelations($id) {
+        return Competidor::with(['persona', 'institucion'])->find($id);
+    }
+    
     public function createPersona(array $data): Persona
     {
         return Persona::create($data);

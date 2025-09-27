@@ -53,4 +53,5 @@ Route::get('/responsableArea', [ResponsableController::class, 'index']);
 Route::post('/responsableArea/{id_area}', [ResponsableController::class, 'store']);
 
 //Importar csv
-Route::post('/importar',[ImportarcsvController::class,'import']);
+Route::post('/competidores/importar',[ImportarcsvController::class,'importar']);
+Route::get('/competidores', [CompetidorController::class, 'index']);

@@ -19,4 +19,7 @@ class Institucion extends Model
         'direccion',
         'telefono',
     ];
+    public function competidores() {
+        return $this->hasMany(Competidor::class, 'id_institucion', 'id_institucion');
+    }
 }

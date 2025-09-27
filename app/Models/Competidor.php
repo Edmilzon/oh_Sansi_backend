@@ -36,4 +36,8 @@ class Competidor extends Model
     public function nivel() {
         return $this->belongsTo(Nivel::class, 'id_nivel', 'id_nivel');
     }
+
+    public function grupocompetidor() {
+        return $this->hasMany(GrupoCompetidor::class, 'id_competidor', 'id_competidor');
+    }
 }

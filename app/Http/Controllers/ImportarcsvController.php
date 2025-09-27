@@ -1,123 +1,145 @@
 <?php
 
-namespace app\Http\Controllers;
+namespace App\Http\Controllers;
 
+use App\Http\Requests\ImportarRequest;
+use App\Repositories\CompetidorRepository;
+use App\Services\CompetidorService;
 use App\Models\Institucion;
-use App\Models\Competidor;
-use App\Models\Persona;
-use App\Models\Area;
-use App\Models\Nivel;
+use App\Models\Grupo;
+use App\Models\GrupoCompetidor;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use League\Csv\Reader;
+use Illuminate\Validation\ValidationException;
 
-class ImportarcsvController extends Controller
+class CompetidorController extends Controller
 {
-    public function importar(Request $request): JsonResponse
+    protected $competidorService;
+    protected $competidorRepository;
+
+    public function __construct(
+        CompetidorService $competidorService, 
+        CompetidorRepository $competidorRepository
+    ) {
+        $this->competidorService = $competidorService;
+        $this->competidorRepository = $competidorRepository;
+    }
+
+    public function importar(ImportarRequest $request): JsonResponse
     {
         try {
-            //Validación del archivo
-            if (!$request->hasFile('archivo_csv')) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No se envió ningún archivo'
-                ], 400);
-            }
+            DB::beginTransaction();
 
-            $archivo = $request->file('archivo_csv');
-            $rutaArchivo = $archivo->getPathname();
+            // 1. Buscar o crear Institución
+            $institucion = Institucion::firstOrCreate(
+                ['nombre' => $request->input('institucion.nombre')],
+                [
+                    'tipo' => $request->input('institucion.tipo'),
+                    'departamento' => $request->input('institucion.departamento'),
+                    'direccion' => $request->input('institucion.direccion'),
+                    'telefono' => $request->input('institucion.telefono'),
+                ]
+            );
 
-            $csv = Reader::createFromPath($rutaArchivo, 'r');
-            $csv->setHeaderOffset(0);
-            
-            $registros = $csv->getRecords();
-            $resultados = [];
-            $contador = 0;
+             // 2. NUEVO: Buscar o crear Área por nombre
+            $area = \App\Models\Area::firstOrCreate(
+                ['nombre' => $request->input('area_nombre')],
+                ['descripcion' => 'Área creada automáticamente desde importación']
+            );
 
-            foreach ($registros as $fila) {
-                $contador++;
+            // 3. NUEVO: Buscar o crear Nivel por nombre  
+            $nivel = \App\Models\Nivel::firstOrCreate(
+                ['nombre' => $request->input('nivel_nombre')],
+                ['descripcion' => 'Nivel creado automáticamente desde importación']
+            );
+
+            // 4. Preparar datos para el Service
+            $competidorData = [
+                // Datos de Persona
+                'nombre' => $request->input('persona.nombre'),
+                'apellido' => $request->input('persona.apellido'),
+                'ci' => $request->input('persona.ci'),
+                'fecha_nac' => $request->input('persona.fecha_nac'),
+                'genero' => $request->input('persona.genero'),
+                'telefono' => $request->input('persona.telefono'),
+                'email' => $request->input('persona.email'),
+
+                // Datos de Competidor
+                'grado_escolar' => $request->input('competidor.grado_escolar'),
+                'departamento' => $request->input('competidor.departamento'),
+                'contacto_tutor' => $request->input('competidor.contacto_tutor'),
+                'contacto_emergencia' => $request->input('competidor.contacto_emergencia'),
                 
-                //Insertar BD
-                $resultadoFila = $this->insertarFila($fila, $contador);
-                $resultados[] = $resultadoFila;
+                // IDs relacionales
+                'id_institucion' => $institucion->id_institucion,
+                'id_area' => $area->id_area,
+                'id_nivel' => $nivel->id_nivel,
+            ];
+
+            // 3. Crear competidor usando el Service
+            $persona = $this->competidorService->createNewCompetidor($competidorData);
+
+            // 4. Manejar grupo si se proporciona
+            if ($request->filled('grupo.nombre')) {
+                $grupo = Grupo::firstOrCreate(
+                    ['nombre' => $request->input('grupo.nombre')],
+                    [
+                        'descripcion' => $request->input('grupo.descripcion'),
+                        'max_integrantes' => $request->input('max_integrantes'),
+                    ]
+                );
+
+                GrupoCompetidor::create([
+                    'id_grupo' => $grupo->id_grupo,
+                    'id_competidor' => $persona->competidor->id_competidor,
+                ]);
             }
+
+            DB::commit();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Importación completada',
-                'total_filas' => $contador,
-                'resultados' => $resultados
-            ]);
+                'message' => 'Competidor importado exitosamente',
+                'data' => $persona
+            ], 201);
 
-        } catch (\Exception $e) {
+        } catch (ValidationException $e) {
+            DB::rollBack();
             return response()->json([
                 'success' => false,
-                'message' => 'Error en el servidor',
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al importar competidor',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
 
-    private function insertarFila(array $fila, int $numeroFila): array
+    /**
+     * Obtener todos los competidores
+     */
+    public function index(): JsonResponse
     {
         try {
-            //Buscar institución
-            $institucion = Institucion::firstOrCreate(
-                ['nombre' => $fila['Colegio'] ?? 'Sin registrar'],
-                [
-                    'departamento' => $fila['Departamento'] ?? 'Sin registrar',
-                    'tipo' => 'Unidad Educativa'
-                ]
-            );
+            $competidores = $this->competidorRepository->getAllCompetidores();
 
-            //Crear persona
-            $nombreCompleto = $fila['Nombre'] ;
-            $partesNombre = explode(' ', $nombreCompleto, 2);
-            
-            $persona = Persona::create([
-                'nombre' => $partesNombre[0],
-                'apellido' => $partesNombre[1] ?? 'Sin apellido',
-                'ci' => $fila['Documento de Identidad'] ?? 'Sin registrar',
-                'genero' => $this->normalizarGenero($fila['Género'] ?? 'Desconocido'),
-                'telefono' => $fila['Celular'] ?? 'Sin celular',
-                'email' => $fila['E-mail'] ?? 'no email'
+            return response()->json([
+                'success' => true,
+                'data' => $competidores
             ]);
-
-            //Crear competidor
-            $competidor = Competidor::create([
-                'grado_escolar' => $fila['Nivel'] ?? 'Nivel no registrado',
-                'departamento' => $fila['Departamento'] ?? 'Sin registrar',
-                'contacto_tutor' => $fila['Nombre Profesor'] ?? 'Sin tutor',
-                'id_persona' => $persona->id_persona,
-                'id_institucion' => $institucion->id_institucion
-            ]);
-
-            return [
-                'fila' => $numeroFila,
-                'estado' => 'éxito',
-                'persona_id' => $persona->id_persona,
-                'competidor_id' => $competidor->id_competidor,
-                'institucion_id' => $institucion->id_institucion
-            ];
 
         } catch (\Exception $e) {
-            return [
-                'fila' => $numeroFila,
-                'estado' => 'error',
-                'error' => $e->getMessage(),
-                'datos' => $fila
-            ];
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener competidores',
+                'error' => $e->getMessage()
+            ], 500);
         }
-    }
-
-    private function normalizarGenero(string $genero): string
-    {
-        $genero = strtoupper(trim($genero));
-        
-        if ($genero === 'MASCULINO' || $genero === 'M') return 'M';
-        if ($genero === 'FEMENINO' || $genero === 'F') return 'F';
-        
-        return 'Desconocido';
     }
 }
