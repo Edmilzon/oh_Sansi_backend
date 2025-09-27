@@ -30,7 +30,7 @@ class ResponsableController extends Controller {
         $codigo = CodigoEncargado::where('codigo', $request->input('codigo_encargado'))->first();
         if (!$codigo) {
             return response()->json([
-                'error' => 'El código encargado no existe.'
+                'error' => 'El area ya cuenta con un encargado ya tiene responsable.'
             ], 422);
         }
 
