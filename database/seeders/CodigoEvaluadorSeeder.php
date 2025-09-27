@@ -16,8 +16,8 @@ class CodigoEvaluadorSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $codigos = [
-            ['codigo' => '1234', 'descripcion' => 'Código evaluador Matemáticas Nivel Básico', 'activo' => true],
-            ['codigo' => '5678', 'descripcion' => 'Código evaluador Matemáticas Nivel Intermedio', 'activo' => true],
+            ['codigo' => 'E123MAT', 'descripcion' => 'Código evaluador Matemáticas Nivel Básico', 'activo' => true],
+            ['codigo' => 'E123MAT', 'descripcion' => 'Código evaluador Matemáticas Nivel Intermedio', 'activo' => true],
             ['codigo' => '9101', 'descripcion' => 'Código evaluador Matemáticas Nivel Avanzado', 'activo' => true],
             //  añadir más aquí
         ];
