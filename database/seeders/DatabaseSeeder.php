@@ -10,8 +10,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            AreaSeeder::class,
+            NivelSeeder::class,
             CodigoEvaluadorSeeder::class,
-            // añadir otras clases Seeder
         ]);
     }
 }
