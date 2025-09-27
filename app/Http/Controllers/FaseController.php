@@ -12,7 +12,7 @@ use Illuminate\Validation\ValidationException;
 class FaseController extends Controller
 {
     protected $faseService;
-
+    
     public function __construct(FaseService $faseService)
     {
         $this->faseService = $faseService;

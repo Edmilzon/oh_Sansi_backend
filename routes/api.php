@@ -55,7 +55,7 @@ Route::post('/responsableArea', [ResponsableController::class, 'store']);
 
 //Importar csv
 Route::post('/competidores/importar',[ImportarcsvController::class,'importar']);
-Route::get('/competidores', [CompetidorController::class, 'index']);
+Route::get('/competidores', [ImportarcsvController::class, 'index']);
 
 //Parametros de clasificación - Fase
 Route::post('/fases', [FaseController::class, 'store']);

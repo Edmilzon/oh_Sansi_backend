@@ -12,10 +12,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
-class CompetidorController extends Controller
+class ImportarcsvController extends Controller
 {
     protected $competidorService;
-    protected $competidorRepository;
+
 
     public function __construct(
         CompetidorService $competidorService, 
