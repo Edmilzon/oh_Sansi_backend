@@ -9,13 +9,14 @@ use App\Models\Institucion;
 use App\Models\Grupo;
 use App\Models\GrupoCompetidor;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class ImportarcsvController extends Controller
 {
     protected $competidorService;
-
+    protected $competidorRepository;
 
     public function __construct(
         CompetidorService $competidorService, 
@@ -41,18 +42,6 @@ class ImportarcsvController extends Controller
                 ]
             );
 
-             // 2. NUEVO: Buscar o crear Área por nombre
-            $area = \App\Models\Area::firstOrCreate(
-                ['nombre' => $request->input('area_nombre')],
-                ['descripcion' => 'Área creada automáticamente desde importación']
-            );
-
-            // 3. NUEVO: Buscar o crear Nivel por nombre  
-            $nivel = \App\Models\Nivel::firstOrCreate(
-                ['nombre' => $request->input('nivel_nombre')],
-                ['descripcion' => 'Nivel creado automáticamente desde importación']
-            );
-
             // 4. Preparar datos para el Service
             $competidorData = [
                 // Datos de Persona
@@ -72,8 +61,6 @@ class ImportarcsvController extends Controller
                 
                 // IDs relacionales
                 'id_institucion' => $institucion->id_institucion,
-                'id_area' => $area->id_area,
-                'id_nivel' => $nivel->id_nivel,
             ];
 
             // 3. Crear competidor usando el Service

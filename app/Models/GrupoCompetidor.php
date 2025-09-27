@@ -9,7 +9,7 @@ class GrupoCompetidor extends Model
 {
     use HasFactory;
 
-    protected $table = 'grupocompetidor';
+    protected $table = 'grupo_competidor';
     protected $primaryKey = 'id_grupo_competidor';
 
     protected $fillable = [

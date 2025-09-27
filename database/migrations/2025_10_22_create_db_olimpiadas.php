@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('apellido');
             $table->string('ci')->unique();
-            $table->date('fecha_nac');
+            $table->date('fecha_nac')->nullable();
             $table->enum('genero', ['M', 'F'])->nullable();
             $table->string('telefono')->nullable()->unique();
             $table->string('email')->unique();
