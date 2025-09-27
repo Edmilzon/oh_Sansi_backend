@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\ResponsableController;
 use App\Http\Controllers\ImportarcsvController;
+use App\Http\Controllers\FaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -55,3 +56,9 @@ Route::post('/responsableArea', [ResponsableController::class, 'store']);
 //Importar csv
 Route::post('/competidores/importar',[ImportarcsvController::class,'importar']);
 Route::get('/competidores', [CompetidorController::class, 'index']);
+
+//Parametros de clasificación - Fase
+Route::post('/fases', [FaseController::class, 'store']);
+Route::get('/fases', [FaseController::class, 'index']);
+Route::get('/fases/{idFase}', [FaseController::class, 'show']);
+    
