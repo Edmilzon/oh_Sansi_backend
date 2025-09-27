@@ -14,21 +14,31 @@ class AreaController extends Controller {
         $this-> areaService = $areaService;
     }
     public function index(){
-    $areas = $this->areaService->getAreaList(); // o getAreaList
-    return response()->json($areas); // debe ser json, no view()
+    $areas = $this->areaService->getAreaList(); 
+    return response()->json($areas); 
 }
     
-    
+   
     public function store(Request $request){
-        $validateData = $request->validate([
-            'nombre'      => 'required|string',
-            'descripcion' => 'nullable|string',
-        ]);
+    $validateData = $request->validate([
+        'nombre'      => 'required|string',
+        'descripcion' => 'nullable|string',
+    ]);
+    $area = $this->areaService->createNewArea($validateData);
 
-        $area = $this->areaService->createNewArea($validateData);
+    // Generar código
+    $year = now()->format('Y'); // año actual
+    $namePart = strtoupper(substr($area->nombre, 0, 3)); // primeras 3 letras en mayúsculas
+    $codigo = $year . '-' . $namePart;
 
-        return response()->json([
-            'area' => $area
-        ], 201);
-    }
+    $area->codigoEncargado()->create([
+        'codigo' => $codigo,
+        'descripcion' => 'Código encargado para ' . $area->nombre
+    ]);
+
+    return response()->json([
+        'area' => $area,
+        'codigo_encargado' => $area->codigoEncargado
+    ], 201);
+}
 }

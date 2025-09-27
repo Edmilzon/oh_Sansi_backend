@@ -70,7 +70,7 @@ return new class extends Migration
             $table->id('id_codigo_encargado');
             $table->string('codigo')->unique();
             $table->string('descripcion')->nullable();
-            $table->unsignedBigInteger('id_area');
+            $table->unsignedBigInteger('id_area')->nullable();
             $table->timestamps();
 
             $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
@@ -99,8 +99,12 @@ return new class extends Migration
             $table->string('contacto_emergencia')->nullable();
             $table->unsignedBigInteger('id_persona');
             $table->unsignedBigInteger('id_institucion');
+            $table->unsignedBigInteger('id_area')->nullable();
+            $table->unsignedBigInteger('id_nivel')->nullable();
             $table->timestamps();
 
+            $table->foreign('id_area')->references('id_area')->on('area')->onDelete('set null');
+            $table->foreign('id_nivel')->references('id_nivel')->on('nivel')->onDelete('set null');
             $table->foreign('id_persona')->references('id_persona')->on('persona')->onDelete('cascade');
             $table->foreign('id_institucion')->references('id_institucion')->on('institucion')->onDelete('cascade');
         });
@@ -146,6 +150,8 @@ return new class extends Migration
 
         Schema::create('fase', function (Blueprint $table) {
             $table->id('id_fase');
+            $table->string('Nota_minima_clasificacion');
+            $table->string('cantidad maxima de clasificados');
             $table->string('nombre');
             $table->integer('orden');
             $table->string('descripcion')->nullable();

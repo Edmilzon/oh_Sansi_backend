@@ -81,10 +81,6 @@ php artisan serve
 php artisan migrate
 php artisan migrate:fresh
 
-migra la semilla (cambiar la clase por la q quieres cargar)
-
-php artisan db:seed --class=CodigoEvaluadorSeeder
-
 ```
 
 ## Reniciar el servidor 
@@ -108,6 +104,7 @@ composer dump-autoload
 
 
 php artisan route:clear
+
 php artisan migrate:fresh --seed
 
 
