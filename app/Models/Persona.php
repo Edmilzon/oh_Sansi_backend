@@ -35,4 +35,9 @@ class Persona extends Model
     {
         return $this->hasOne(Evaluador::class, 'id_persona', 'id_persona');
     }
+
+    public function competidor()
+    {
+        return $this->hasOne(Competidor::class, 'id_persona', 'id_persona');
+    }
 }

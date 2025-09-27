@@ -5,6 +5,7 @@ use App\Http\Controllers\NivelController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\ResponsableController;
+use App\Http\Controllers\ImportarcsvController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -51,3 +52,5 @@ Route::post('/area', [AreaController::class, 'store']);
 Route::get('/responsableArea', [ResponsableController::class, 'index']);
 Route::post('/responsableArea/{id_area}', [ResponsableController::class, 'store']);
 
+//Importar csv
+Route::post('/importar',[ImportarcsvController::class,'import']);
