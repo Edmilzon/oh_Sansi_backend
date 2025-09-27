@@ -55,7 +55,7 @@ Sigue estos pasos para poner en marcha el proyecto en tu máquina local.
     ```
     Si necesitas reiniciar la base de datos y volver a crear todo desde cero:
     ```bash
-    php artisan migrate:fresh
+    php artisan migrate:fresh --seed
     ```
 
 7.  **Poblar la base de datos con datos iniciales (Seeders)**:

@@ -16,5 +16,10 @@ class Responsable extends Model {
     public function persona() {
         return $this->belongsTo(Persona::class, 'id_persona', 'id_persona');
     }
+
+    public function area()
+{
+    return $this->belongsTo(Area::class, 'id_area', 'id_area');
+}
 }
 
