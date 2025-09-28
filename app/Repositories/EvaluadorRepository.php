@@ -28,4 +28,9 @@ class EvaluadorRepository
     {
         return Evaluador::create($data);
     }
+
+    public function loginEvaluador(string $email, string $password): ?Evaluador
+    {
+        return Evaluador::where('email', $email)->where('password', $password)->first();
+    }
 }

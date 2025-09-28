@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Evaluador;
 use App\Models\Persona;
 use App\Repositories\EvaluadorRepository;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,12 @@ class EvaluadorService
     public function __construct(EvaluadorRepository $evaluadorRepository)
     {
         $this->evaluadorRepository = $evaluadorRepository;
+    }
+
+    public function loginEvaluador(string $data): Evaluador
+    {
+        $evaluador = $this->evaluadorRepository->loginEvaluador($data['email'], $data['password']);
+        return $evaluador;
     }
 
     public function createNewEvaluador(array $data): Persona

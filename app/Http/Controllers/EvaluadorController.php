@@ -24,4 +24,9 @@ class EvaluadorController extends Controller
 
         return response()->json(['evaluador' => $evaluador], 201);
     }
+
+    public function login ()
+    {
+        
+    }
 }
