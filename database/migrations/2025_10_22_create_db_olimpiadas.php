@@ -93,8 +93,8 @@ return new class extends Migration
 
         Schema::create('competidor', function (Blueprint $table) {
             $table->id('id_competidor');
-            $table->string('grado_escolar');
-            $table->string('departamento');
+            $table->string('grado_escolar')->nullable();
+            $table->string('departamento')->nullable();
             $table->string('contacto_tutor')->nullable();
             $table->string('contacto_emergencia')->nullable();
             $table->unsignedBigInteger('id_persona');
