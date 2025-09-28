@@ -42,6 +42,7 @@ Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);
 // Rutas para la gestión de evaluadores
 Route::prefix('v1')->group(function () {
     Route::apiResource('evaluadores', EvaluadorController::class)->only(['store']);
+    Route::post('evaluadores/login', [EvaluadorController::class, 'login']);
 
 });
 

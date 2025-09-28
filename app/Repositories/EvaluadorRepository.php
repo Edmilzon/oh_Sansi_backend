@@ -31,6 +31,18 @@ class EvaluadorRepository
 
     public function loginEvaluador(string $email, string $password): ?Evaluador
     {
-        return Evaluador::where('email', $email)->where('password', $password)->first();
+        // Find the usuario by username (nombre) and verify the hashed password.
+        $usuario = \App\Models\Usuario::where('nombre', $email)->first();
+
+        if (! $usuario) {
+            return null;
+        }
+
+        if (! \Illuminate\Support\Facades\Hash::check($password, $usuario->password)) {
+            return null;
+        }
+
+        // Return the Evaluador related to this usuario's persona, if any
+        return Evaluador::where('id_persona', $usuario->id_persona)->first();
     }
 }

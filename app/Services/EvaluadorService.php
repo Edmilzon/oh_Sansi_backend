@@ -19,8 +19,8 @@ class EvaluadorService
 
     public function loginEvaluador(string $data): Evaluador
     {
-        $evaluador = $this->evaluadorRepository->loginEvaluador($data['email'], $data['password']);
-        return $evaluador;
+        // $data is expected to be an array with 'username' and 'password'
+        return $this->evaluadorRepository->loginEvaluador($data['username'], $data['password']);
     }
 
     public function createNewEvaluador(array $data): Persona

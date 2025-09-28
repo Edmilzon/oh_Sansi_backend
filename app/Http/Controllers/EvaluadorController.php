@@ -25,8 +25,19 @@ class EvaluadorController extends Controller
         return response()->json(['evaluador' => $evaluador], 201);
     }
 
-    public function login ()
+    public function login(Request $request)
     {
-        $evaluador = $this->evaluadorService->loginEvaluador()
+        $credentials = $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        $evaluador = $this->evaluadorService->loginEvaluador($credentials);
+
+        if (! $evaluador) {
+            return response()->json(['message' => 'Credenciales inválidas'], 401);
+        }
+
+        return response()->json(['evaluador' => $evaluador], 200);
     }
 }
