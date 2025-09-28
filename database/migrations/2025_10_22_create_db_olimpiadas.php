@@ -276,12 +276,8 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('usuario');
-        Schema::dropIfExists('persona');
-        Schema::dropIfExists('institucion');
-        Schema::dropIfExists('competidor');
-        Schema::dropIfExists('area');
-        Schema::dropIfExists('nivel');
+        Schema::dropIfExists('usuario');        
+        Schema::dropIfExists('competidor');        
         Schema::dropIfExists('competencia');
         Schema::dropIfExists('parametro');
         Schema::dropIfExists('inscripcion');
@@ -299,5 +295,10 @@ return new class extends Migration
         Schema::dropIfExists('codigo_evaluador');
         Schema::dropIfExists('codigo_encargado');
         Schema::dropIfExists('codigo_acceso');
+
+        Schema::dropIfExists('persona');
+        Schema::dropIfExists('institucion');
+        Schema::dropIfExists('area');
+        Schema::dropIfExists('nivel');
     }
 };

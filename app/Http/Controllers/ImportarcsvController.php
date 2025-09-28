@@ -42,7 +42,7 @@ class ImportarcsvController extends Controller
                 ]
             );
 
-            // 4. Preparar datos para el Service
+            // 2. Preparar datos para el Service
             $competidorData = [
                 // Datos de Persona
                 'nombre' => $request->input('persona.nombre'),
@@ -63,7 +63,7 @@ class ImportarcsvController extends Controller
                 'id_institucion' => $institucion->id_institucion,
             ];
 
-            // 3. Crear competidor usando el Service
+            // 3. Crear competidor
             $persona = $this->competidorService->createNewCompetidor($competidorData);
 
             // 4. Manejar grupo si se proporciona
