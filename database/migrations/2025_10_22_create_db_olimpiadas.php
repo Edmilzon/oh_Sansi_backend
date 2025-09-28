@@ -42,7 +42,7 @@ return new class extends Migration
             $table->id('id_institucion');
             $table->string('nombre');
             $table->string('tipo')->nullable();
-            $table->string('departamento');
+            $table->string('departamento') ->nullable();
             $table->string('direccion')->nullable();
             $table->string('telefono')->nullable()->unique(); // buscar mas info al respecto
             $table->unsignedBigInteger('id_persona')->nullable();
