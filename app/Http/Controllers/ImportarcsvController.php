@@ -8,6 +8,8 @@ use App\Services\CompetidorService;
 use App\Models\Institucion;
 use App\Models\Grupo;
 use App\Models\GrupoCompetidor;
+use App\Models\Area;
+use App\Models\Nivel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
@@ -31,35 +33,46 @@ class ImportarcsvController extends Controller
         try {
             DB::beginTransaction();
 
-            // 1. Buscar o crear Institución
-            $institucion = Institucion::firstOrCreate(
-                ['nombre' => $request->input('institucion.nombre')],
-                [
-                    'tipo' => $request->input('institucion.tipo'),
-                    'departamento' => $request->input('institucion.departamento'),
-                    'direccion' => $request->input('institucion.direccion'),
-                    'telefono' => $request->input('institucion.telefono'),
-                ]
-            );
-
-            //2. Grupo si se proporciona
-            $grupo = null;
-            if ($request->filled('grupo.nombre')) {
-                $grupo = Grupo::firstOrCreate(
-                    ['nombre' => $request->input('grupo.nombre')],
-                    [
-                        'descripcion' => $request->input('grupo.descripcion'),
-                        'max_integrantes' => $request->input('max_integrantes'),
-                    ]
-                );
-            }
-
-            // 2. Preparar datos para el Service
-
             $competidoresCreados = [];
 
             foreach ($request->input('competidores') as $competidorData) {
-                // Preparar datos para el Service
+                
+                // 1. Buscar o crear Institución
+                $institucion = Institucion::firstOrCreate(
+                    ['nombre' => $competidorData['institucion']['nombre']],
+                    [
+                        'tipo' => $competidorData['institucion']['tipo'] ?? null,
+                        'departamento' => $competidorData['institucion']['departamento'] ?? null,
+                        'direccion' => $competidorData['institucion']['direccion'] ?? null,
+                        'telefono' => $competidorData['institucion']['telefono'] ?? null,
+                    ]
+                );
+
+                // 2. Buscar o crear Grupo
+                $grupo = null;
+                if (isset($competidorData['grupo']['nombre']) && !empty($competidorData['grupo']['nombre'])) {
+                    $grupo = Grupo::firstOrCreate(
+                        ['nombre' => $competidorData['grupo']['nombre']],
+                        [
+                            'descripcion' => $competidorData['grupo']['descripcion'] ?? null,
+                            'max_integrantes' => $competidorData['grupo']['max_integrantes'] ?? null,
+                        ]
+                    );
+                }
+
+                // 3. Buscar o crear Área
+                $area = Area::firstOrCreate(
+                    ['nombre' => $competidorData['area']['nombre']],
+                    ['descripcion' => $competidorData['area']['descripcion'] ?? null]
+                );
+
+                // 4. Buscar o crear Nivel
+                $nivel = Nivel::firstOrCreate(
+                    ['nombre' => $competidorData['nivel']['nombre']],
+                    ['descripcion' => $competidorData['nivel']['descripcion'] ?? null]
+                );
+
+                // 5. Preparar datos para el Service
                 $data = [
                     // Datos de Persona
                     'nombre' => $competidorData['persona']['nombre'],
@@ -78,12 +91,14 @@ class ImportarcsvController extends Controller
                     
                     // IDs relacionales
                     'id_institucion' => $institucion->id_institucion,
+                    'id_area' => $area->id_area,
+                    'id_nivel' => $nivel->id_nivel,
                 ];
 
-                // Crear competidor
+                // 6. Crear competidor
                 $persona = $this->competidorService->createNewCompetidor($data);
 
-                // Asignar al grupo si existe
+                // 7. Asignar al grupo si existe
                 if ($grupo) {
                     GrupoCompetidor::create([
                         'id_grupo' => $grupo->id_grupo,

@@ -31,20 +31,20 @@ class ImportarRequest extends FormRequest
             'competidores.*.competidor.contacto_emergencia' => 'nullable|string|max:255',
 
             // Datos de Institución
-            'institucion.nombre' => 'required|string|max:255',
-            'institucion.tipo' => 'nullable|string|max:100',
-            'institucion.departamento' => 'nullable|string|max:100',
-            'institucion.direccion' => 'nullable|string|max:500',
-            'institucion.telefono' => 'nullable|string|unique:institucion,telefono',
+            'competidores.*.institucion.nombre' => 'required|string|max:255',
+            'competidores.*.institucion.tipo' => 'nullable|string|max:100',
+            'competidores.*.institucion.departamento' => 'nullable|string|max:100',
+            'competidores.*.institucion.direccion' => 'nullable|string|max:500',
+            'competidores.*.institucion.telefono' => 'nullable|string|unique:institucion,telefono',
 
             // Datos de Grupo
-            'grupo.nombre' => 'nullable|string|max:255',
-            'grupo.descripcion' => 'nullable|string|max:500',
-            'max_integrantes' => 'nullable|integer|min:1',
+            'competidores.*.grupo.nombre' => 'nullable|string|max:255',
+            'competidores.*.grupo.descripcion' => 'nullable|string|max:500',
+            'competidores.*.max_integrantes' => 'nullable|integer|min:1',
 
             // Datos Relacionales (pueden ser compartidos o individuales)
-            'area.nombre' => 'required|string|max:255',
-            'nivel.nombre' => 'required|string|max:255',
+            'competidores.*.area.nombre' => 'required|string|max:255',
+            'competidores.*.nivel.nombre' => 'required|string|max:255',
         ];
     }
 
@@ -54,7 +54,7 @@ class ImportarRequest extends FormRequest
             'competidores.*.persona.ci.unique' => 'El número de CI ya está registrado.',
             'competidores.*.persona.telefono.unique' => 'El número de teléfono ya está registrado.',
             'competidores.*.persona.email.unique' => 'El correo electrónico ya está registrado.',
-            'institucion.telefono.unique' => 'El número de teléfono ya está registrado.',
+            'competidores.*institucion.telefono.unique' => 'El número de teléfono ya está registrado.',
         ];
     }
 }
