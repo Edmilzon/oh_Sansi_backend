@@ -28,7 +28,7 @@ class EvaluadorController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'username' => 'required|string',
+            'email' => 'required|string',
             'password' => 'required|string',
         ]);
 
@@ -38,6 +38,16 @@ class EvaluadorController extends Controller
             return response()->json(['message' => 'Credenciales inválidas'], 401);
         }
 
-        return response()->json(['evaluador' => $evaluador], 200);
+        $usuario = \App\Models\Usuario::where('id_persona', $evaluador->id_persona)->first();
+        $codigoEvaluador = null;
+        if ($usuario && $usuario->id_codigo_evaluador) {
+            $codigoEvaluador = \App\Models\CodigoEvaluador::find($usuario->id_codigo_evaluador);
+        }
+
+        return response()->json([
+            'evaluador' => $evaluador,
+            'usuario' => $usuario,
+            'codigo_evaluador' => $codigoEvaluador
+        ], 200);
     }
 }

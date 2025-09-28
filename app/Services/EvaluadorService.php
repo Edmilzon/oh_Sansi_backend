@@ -17,10 +17,10 @@ class EvaluadorService
         $this->evaluadorRepository = $evaluadorRepository;
     }
 
-    public function loginEvaluador(string $data): Evaluador
+    public function loginEvaluador(array $data): Evaluador
     {
         // $data is expected to be an array with 'username' and 'password'
-        return $this->evaluadorRepository->loginEvaluador($data['username'], $data['password']);
+        return $this->evaluadorRepository->loginEvaluador($data['email'], $data['password']);
     }
 
     public function createNewEvaluador(array $data): Persona
@@ -36,14 +36,11 @@ class EvaluadorService
                 'nombre' => $data['nombre'],
                 'apellido' => $data['apellido'],
                 'ci' => $data['ci'],
-                'fecha_nac' => $data['fecha_nac'],
-                'genero' => $data['genero'],
-                'telefono' => $data['telefono'],
                 'email' => $data['email'],
             ]);
 
             $usuario = $this->evaluadorRepository->createUsuario([
-                'nombre' => $data['username'],
+                'nombre' => $data['nombre'],
                 'password' => $data['password'], 
                 'rol' => \App\Models\Usuario::ROL_EVALUADOR,
                 'id_persona' => $persona->id_persona,
