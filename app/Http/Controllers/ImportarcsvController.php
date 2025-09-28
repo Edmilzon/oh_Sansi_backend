@@ -42,31 +42,8 @@ class ImportarcsvController extends Controller
                 ]
             );
 
-            // 2. Preparar datos para el Service
-            $competidorData = [
-                // Datos de Persona
-                'nombre' => $request->input('persona.nombre'),
-                'apellido' => $request->input('persona.apellido'),
-                'ci' => $request->input('persona.ci'),
-                'fecha_nac' => $request->input('persona.fecha_nac'),
-                'genero' => $request->input('persona.genero'),
-                'telefono' => $request->input('persona.telefono'),
-                'email' => $request->input('persona.email'),
-
-                // Datos de Competidor
-                'grado_escolar' => $request->input('competidor.grado_escolar'),
-                'departamento' => $request->input('competidor.departamento'),
-                'contacto_tutor' => $request->input('competidor.contacto_tutor'),
-                'contacto_emergencia' => $request->input('competidor.contacto_emergencia'),
-                
-                // IDs relacionales
-                'id_institucion' => $institucion->id_institucion,
-            ];
-
-            // 3. Crear competidor
-            $persona = $this->competidorService->createNewCompetidor($competidorData);
-
-            // 4. Manejar grupo si se proporciona
+            //2. Grupo si se proporciona
+            $grupo = null;
             if ($request->filled('grupo.nombre')) {
                 $grupo = Grupo::firstOrCreate(
                     ['nombre' => $request->input('grupo.nombre')],
@@ -75,19 +52,57 @@ class ImportarcsvController extends Controller
                         'max_integrantes' => $request->input('max_integrantes'),
                     ]
                 );
+            }
 
-                GrupoCompetidor::create([
-                    'id_grupo' => $grupo->id_grupo,
-                    'id_competidor' => $persona->competidor->id_competidor,
-                ]);
+            // 2. Preparar datos para el Service
+
+            $competidoresCreados = [];
+
+            foreach ($request->input('competidores') as $competidorData) {
+                // Preparar datos para el Service
+                $data = [
+                    // Datos de Persona
+                    'nombre' => $competidorData['persona']['nombre'],
+                    'apellido' => $competidorData['persona']['apellido'],
+                    'ci' => $competidorData['persona']['ci'],
+                    'fecha_nac' => $competidorData['persona']['fecha_nac'] ?? null,
+                    'genero' => $competidorData['persona']['genero'] ?? null,
+                    'telefono' => $competidorData['persona']['telefono'] ?? null,
+                    'email' => $competidorData['persona']['email'],
+
+                    // Datos de Competidor
+                    'grado_escolar' => $competidorData['competidor']['grado_escolar'] ?? null,
+                    'departamento' => $competidorData['competidor']['departamento'] ?? null,
+                    'contacto_tutor' => $competidorData['competidor']['contacto_tutor'] ?? null,
+                    'contacto_emergencia' => $competidorData['competidor']['contacto_emergencia'] ?? null,
+                    
+                    // IDs relacionales
+                    'id_institucion' => $institucion->id_institucion,
+                ];
+
+                // Crear competidor
+                $persona = $this->competidorService->createNewCompetidor($data);
+
+                // Asignar al grupo si existe
+                if ($grupo) {
+                    GrupoCompetidor::create([
+                        'id_grupo' => $grupo->id_grupo,
+                        'id_competidor' => $persona->competidor->id_competidor,
+                    ]);
+                }
+
+                $competidoresCreados[] = $persona;
             }
 
             DB::commit();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Competidor importado exitosamente',
-                'data' => $persona
+                'message' => 'Competidores importados exitosamente',
+                'data' => [
+                    'total_importados' => count($competidoresCreados),
+                    'competidores' => $competidoresCreados
+                ]
             ], 201);
 
         } catch (ValidationException $e) {
@@ -102,7 +117,7 @@ class ImportarcsvController extends Controller
             DB::rollBack();
             return response()->json([
                 'success' => false,
-                'message' => 'Error al importar competidor',
+                'message' => 'Error al importar competidores',
                 'error' => $e->getMessage()
             ], 500);
         }
