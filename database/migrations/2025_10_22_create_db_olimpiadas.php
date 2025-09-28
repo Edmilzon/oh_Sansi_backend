@@ -150,10 +150,10 @@ return new class extends Migration
 
         Schema::create('fase', function (Blueprint $table) {
             $table->id('id_fase');
-            $table->string('Nota_minima_clasificacion');
-            $table->string('cantidad maxima de clasificados');
+            $table->string('nota_minima_clasificacion')->nullable();
+            $table->string('cantidad_maxima_de_clasificados')->nullable();
             $table->string('nombre');
-            $table->integer('orden');
+            $table->integer('orden')->nullable();
             $table->string('descripcion')->nullable();
             $table->timestamps();
         });

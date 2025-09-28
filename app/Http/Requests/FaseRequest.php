@@ -6,10 +6,10 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class FaseRequest extends FormRequest
 {
-    public function authorize(): bool
+    /*public function authorize(): bool
     {
         return auth()->check() && auth()->user()->rol === 'responsable_area';
-    }
+    }*/
 
     public function rules(): array
     {

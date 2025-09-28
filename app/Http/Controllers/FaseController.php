@@ -13,7 +13,7 @@ use Illuminate\Validation\ValidationException;
 class FaseController extends Controller
 {
     protected $faseService;
-    
+
     public function __construct(FaseService $faseService)
     {
         $this->faseService = $faseService;
@@ -21,12 +21,12 @@ class FaseController extends Controller
 
     public function store(FaseRequest $request): JsonResponse
     {
-        if (!auth()->check() || auth()->user()->rol !== 'responsable_area') {
+        /*if (!auth()->check() || auth()->user()->rol !== 'responsable_area') {
             return response()->json([
                 'success' => false,
                 'message' => 'Acceso denegado. Solo responsables de área.'
             ], 403);
-        }
+        }*/
 
         try {
             DB::beginTransaction();
