@@ -6,6 +6,7 @@ use App\Models\CodigoEvaluador;
 use App\Models\Evaluador;
 use App\Models\Persona;
 use App\Models\Usuario;
+use Illuminate\Support\Facades\Hash;
 
 class EvaluadorRepository
 {

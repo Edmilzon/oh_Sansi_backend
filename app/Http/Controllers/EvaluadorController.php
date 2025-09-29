@@ -44,10 +44,13 @@ class EvaluadorController extends Controller
             $codigoEvaluador = \App\Models\CodigoEvaluador::find($usuario->id_codigo_evaluador);
         }
 
+        $token = $usuario->createToken('auth_token')->plainTextToken;
+
         return response()->json([
             'evaluador' => $evaluador,
             'usuario' => $usuario,
-            'codigo_evaluador' => $codigoEvaluador
+            'codigo_evaluador' => $codigoEvaluador,
+            'token' => $token
         ], 200);
     }
 }
