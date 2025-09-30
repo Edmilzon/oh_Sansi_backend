@@ -34,7 +34,10 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('descripcion')->nullable();
             $table->integer('orden')->nullable();// recordar que hace
+            $table->unsignedBigInteger('id_area')->nullable();
             $table->timestamps();
+
+            $table->foreign('id_area')->references('id_area')->on('area')->onDelete('set null');
         });
 
 

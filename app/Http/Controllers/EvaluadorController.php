@@ -19,9 +19,7 @@ class EvaluadorController extends Controller
     public function store(StoreEvaluadorRequest $request)
     {
         $validatedData = $request->validated();
-
         $evaluador = $this->evaluadorService->createNewEvaluador($validatedData);
-
         return response()->json(['evaluador' => $evaluador], 201);
     }
 
