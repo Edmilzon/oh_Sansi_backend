@@ -34,19 +34,28 @@ class ResponsableController extends Controller {
         }
 
         // 2. Verificar si ya hay un responsable para esa área
-        $areaId = $codigo->id_area;
+      
+
+        // 3. Validar campos únicos de la persona
+         $areaId = $codigo->id_area;
+        
+          $existeResponsables = Responsable::where('id_area', $areaId)->first();
+        $personaData = $request->input('persona');
+        if (Persona::where('nombre', $personaData['nombre'])->exists()) {
+            if ($existeResponsables) {
+            return response()->json([
+                'error' => 'El responsable ya está registrado en esta área.'
+            ], 422);
+        }
+            return response()->json(['error' => 'Ya es responsable de una area'], 422);
+        }
+
         $existeResponsable = Responsable::where('id_area', $areaId)->first();
 
         if ($existeResponsable) {
             return response()->json([
                 'error' => 'Ya existe un responsable asignado para esta área.'
             ], 422);
-        }
-
-        // 3. Validar campos únicos de la persona
-        $personaData = $request->input('persona');
-        if (Persona::where('nombre', $personaData['nombre'])->exists()) {
-            return response()->json(['error' => 'Ya es responsable de una area'], 422);
         }
         if (Persona::where('ci', $personaData['ci'])->exists()) {
             return response()->json(['error' => 'Ya existe una persona con ese CI.'], 422);
