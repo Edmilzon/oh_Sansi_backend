@@ -40,4 +40,9 @@ class Persona extends Model
     {
         return $this->hasOne(Competidor::class, 'id_persona', 'id_persona');
     }
+
+    public function responsableArea()
+    {
+        return $this->hasOne(Responsable::class, 'id_persona', 'id_persona');
+    }
 }

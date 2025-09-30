@@ -5,6 +5,7 @@ use App\Http\Controllers\NivelController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\ResponsableController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ImportarcsvController;
 use App\Http\Controllers\FaseController;
 use Illuminate\Http\Request;
@@ -42,8 +43,7 @@ Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);
 // Rutas para la gestión de evaluadores
 Route::prefix('v1')->group(function () {
     Route::apiResource('evaluadores', EvaluadorController::class)->only(['store']);
-    Route::post('evaluadores/login', [EvaluadorController::class, 'login']);
-
+    Route::post('login', [AuthController::class, 'login']);
 });
 
 //area mostrar y insertar

@@ -13,7 +13,7 @@ class Usuario extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens;
 
     public const ROL_EVALUADOR = 'evaluador';
-    public const ROL_ADMIN = 'admin'; 
+    public const ROL_ADMIN = 'privilegiado'; 
     protected $table = 'usuario';
     protected $primaryKey = 'id_usuario';
 
@@ -38,5 +38,15 @@ class Usuario extends Authenticatable
     public function persona()
     {
         return $this->belongsTo(Persona::class, 'id_persona', 'id_persona');
+    }
+
+    public function responsableArea()
+    {
+        return $this->hasOne(Responsable::class, 'id_persona', 'id_persona');
+    }
+
+    public function codigoEvaluador()
+    {
+        return $this->belongsTo(CodigoEvaluador::class, 'id_codigo_evaluador', 'id_codigo_evaluador');
     }
 }

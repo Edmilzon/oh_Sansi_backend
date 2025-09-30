@@ -13,7 +13,8 @@ class DatabaseSeeder extends Seeder
             AreaSeeder::class,
             NivelSeeder::class,
             CodigoEvaluadorSeeder::class,
-            CodigoEncargadoSeeder::class, 
+            CodigoEncargadoSeeder::class,
+            RegisterAdmin::class,
         ]);
     }
 }

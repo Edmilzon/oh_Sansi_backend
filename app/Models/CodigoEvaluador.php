@@ -15,9 +15,21 @@ class CodigoEvaluador extends Model
     protected $fillable = [
         'codigo',
         'activo',
+        'id_area',
+        'id_nivel',
     ];
 
     protected $casts = [
         'activo' => 'boolean',
     ];
+    
+    public function area()
+    {
+        return $this->belongsTo(Area::class, 'id_area', 'id_area');
+    }
+
+    public function nivel()
+    {
+        return $this->belongsTo(Nivel::class, 'id_nivel', 'id_nivel');
+    }
 }

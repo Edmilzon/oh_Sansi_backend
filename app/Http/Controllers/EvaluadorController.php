@@ -41,33 +41,4 @@ class EvaluadorController extends Controller
             'nivel' => $nivel ? $nivel->nombre : null,
         ], 201);
     }
-
-    public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => 'required|string',
-            'password' => 'required|string',
-        ]);
-
-        $evaluador = $this->evaluadorService->loginEvaluador($credentials);
-
-        if (! $evaluador) {
-            return response()->json(['message' => 'Credenciales inválidas'], 401);
-        }
-
-        $usuario = \App\Models\Usuario::where('id_persona', $evaluador->id_persona)->first();
-        $codigoEvaluador = null;
-        if ($usuario && $usuario->id_codigo_evaluador) {
-            $codigoEvaluador = \App\Models\CodigoEvaluador::find($usuario->id_codigo_evaluador);
-        }
-
-        $token = $usuario->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'evaluador' => $evaluador,
-            'usuario' => $usuario,
-            'codigo_evaluador' => $codigoEvaluador,
-            'token' => $token
-        ], 200);
-    }
 }
