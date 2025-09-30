@@ -7,7 +7,7 @@ use App\Models\Nivel;
 class NivelRepository {
 
     public function getAllNivel(){
-        return Nivel::all;
+        return Nivel::all();
     }
 
     public function createNivel(array $data){
