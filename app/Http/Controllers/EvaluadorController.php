@@ -20,7 +20,26 @@ class EvaluadorController extends Controller
     {
         $validatedData = $request->validated();
         $evaluador = $this->evaluadorService->createNewEvaluador($validatedData);
-        return response()->json(['evaluador' => $evaluador], 201);
+
+        // Obtener el usuario y el código de evaluador
+        $usuario = $evaluador->usuario;
+        $codigoEvaluador = null;
+        $area = null;
+        $nivel = null;
+
+        if ($usuario && $usuario->id_codigo_evaluador) {
+            $codigoEvaluador = \App\Models\CodigoEvaluador::find($usuario->id_codigo_evaluador);
+            if ($codigoEvaluador) {
+                $area = \App\Models\Area::find($codigoEvaluador->id_area);
+                $nivel = \App\Models\Nivel::find($codigoEvaluador->id_nivel);
+            }
+        }
+
+        return response()->json([
+            'evaluador' => $evaluador,
+            'area' => $area ? $area->nombre : null,
+            'nivel' => $nivel ? $nivel->nombre : null,
+        ], 201);
     }
 
     public function login(Request $request)
