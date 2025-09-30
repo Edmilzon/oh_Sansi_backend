@@ -63,16 +63,34 @@ class StoreEvaluadorRequest extends FormRequest
         // Si el error es por email ya registrado, buscamos área y nivel
         if (isset($errors['email'])) {
             $email = $this->input('email');
-            $persona = Persona::where('email', $email)->first();
+            $persona = \App\Models\Persona::where('email', $email)->first();
             if ($persona) {
-                $usuario = Usuario::where('id_persona', $persona->id_persona)->first();
+                $usuario = \App\Models\Usuario::where('id_persona', $persona->id_persona)->first();
                 if ($usuario && $usuario->id_codigo_evaluador) {
-                    $codigoEvaluador = CodigoEvaluador::find($usuario->id_codigo_evaluador);
+                    $codigoEvaluador = \App\Models\CodigoEvaluador::find($usuario->id_codigo_evaluador);
                     if ($codigoEvaluador) {
-                        $area = Area::find($codigoEvaluador->id_area);
-                        $nivel = Nivel::find($codigoEvaluador->id_nivel);
-                        $extra['area'] = $area ? $area->nombre : null;
-                        $extra['nivel'] = $nivel ? $nivel->nombre : null;
+                        $area = \App\Models\Area::find($codigoEvaluador->id_area);
+                        $nivel = \App\Models\Nivel::find($codigoEvaluador->id_nivel);
+                        $extra['area_email'] = $area ? $area->nombre : null;
+                        $extra['nivel_email'] = $nivel ? $nivel->nombre : null;
+                    }
+                }
+            }
+        }
+
+        // Si el error es por ci ya registrado, buscamos área y nivel
+        if (isset($errors['ci'])) {
+            $ci = $this->input('ci');
+            $persona = \App\Models\Persona::where('ci', $ci)->first();
+            if ($persona) {
+                $usuario = \App\Models\Usuario::where('id_persona', $persona->id_persona)->first();
+                if ($usuario && $usuario->id_codigo_evaluador) {
+                    $codigoEvaluador = \App\Models\CodigoEvaluador::find($usuario->id_codigo_evaluador);
+                    if ($codigoEvaluador) {
+                        $area = \App\Models\Area::find($codigoEvaluador->id_area);
+                        $nivel = \App\Models\Nivel::find($codigoEvaluador->id_nivel);
+                        $extra['area_ci'] = $area ? $area->nombre : null;
+                        $extra['nivel_ci'] = $nivel ? $nivel->nombre : null;
                     }
                 }
             }
@@ -80,8 +98,10 @@ class StoreEvaluadorRequest extends FormRequest
 
         throw new HttpResponseException(response()->json([
             'errors' => $errors,
-            'area' => $extra['area'] ?? null,
-            'nivel' => $extra['nivel'] ?? null,
+            'area_email' => $extra['area_email'] ?? null,
+            'nivel_email' => $extra['nivel_email'] ?? null,
+            'area_ci' => $extra['area_ci'] ?? null,
+            'nivel_ci' => $extra['nivel_ci'] ?? null,
         ], 422));
     }
 }
