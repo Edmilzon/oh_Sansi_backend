@@ -23,22 +23,19 @@ class ResponsableController extends Controller {
         $responsables = $this->responsableService->getResponsableList(); 
         return response()->json($responsables); 
     }
-    
-   public function store(Request $request){
+ public function store(Request $request){
     return DB::transaction(function() use ($request) {
         // 1. Verificar que exista el código encargado
         $codigo = CodigoEncargado::where('codigo', $request->input('codigo_encargado'))->first();
         if (!$codigo) {
             return response()->json([
-                'error' => 'El area ya cuenta con un encargado ya tiene responsable.'
+                'error' => 'Codigo Incorrecto.'
             ], 422);
         }
 
-        // 2. Verificar si ya hay un responsable activo para esa área
+        // 2. Verificar si ya hay un responsable para esa área
         $areaId = $codigo->id_area;
-        $existeResponsable = Responsable::where('id_area', $areaId)
-            ->where('activo', true)
-            ->first();
+        $existeResponsable = Responsable::where('id_area', $areaId)->first();
 
         if ($existeResponsable) {
             return response()->json([
@@ -48,7 +45,9 @@ class ResponsableController extends Controller {
 
         // 3. Validar campos únicos de la persona
         $personaData = $request->input('persona');
-
+        if (Persona::where('nombre', $personaData['nombre'])->exists()) {
+            return response()->json(['error' => 'Ya es responsable de una area'], 422);
+        }
         if (Persona::where('ci', $personaData['ci'])->exists()) {
             return response()->json(['error' => 'Ya existe una persona con ese CI.'], 422);
         }
