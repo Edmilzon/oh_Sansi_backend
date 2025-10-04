@@ -21,9 +21,8 @@ class NivelController extends Controller {
     public function store (Request $request) {
         $validatedData = $request->validate([
             'nombre' => 'required|string',
-            'id_area' => 'required|integer|exists:area,id_area',
-            'descripcion' => 'nullable|string',
-            'orden' => 'nullable|integer'
+              'descripcion' => 'nullable|string',
+              'orden' => 'nullable|integer'
         ]);
 
         $nivel = $this->nivelService->createNewNivel($validatedData);

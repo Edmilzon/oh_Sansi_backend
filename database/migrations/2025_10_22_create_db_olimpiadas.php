@@ -34,12 +34,20 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('descripcion')->nullable();
             $table->integer('orden')->nullable();// recordar que hace
-            $table->unsignedBigInteger('id_area')->nullable();
             $table->timestamps();
 
-            $table->foreign('id_area')->references('id_area')->on('area')->onDelete('set null');
         });
-
+        
+         Schema::create('area_nivel', function (Blueprint $table) {
+            $table->id('id_area_nivel');
+            $table->unsignedBigInteger('id_area');
+            $table->unsignedBigInteger('id_nivel');
+             $table->boolean('activo')->default(false);
+            $table->timestamps();
+            
+            $table->foreign('id_area')->references('id_area')->on('area')->onDelete('set null');
+             $table->foreign('id_nivel')->references('id_nivel')->on('nivel')->onDelete('set null');
+        });
 
         Schema::create('institucion', function (Blueprint $table) {
             $table->id('id_institucion');
