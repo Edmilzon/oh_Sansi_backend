@@ -48,13 +48,5 @@ class ImportarRequest extends FormRequest
         ];
     }
 
-    public function messages(): array
-    {
-        return [
-            'competidores.*.persona.ci.unique' => 'El número de CI ya está registrado.',
-            'competidores.*.persona.telefono.unique' => 'El número de teléfono ya está registrado.',
-            'competidores.*.persona.email.unique' => 'El correo electrónico ya está registrado.',
-            'competidores.*institucion.telefono.unique' => 'El número de teléfono ya está registrado.',
-        ];
-    }
+
 }
