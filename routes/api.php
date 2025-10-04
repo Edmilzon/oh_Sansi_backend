@@ -64,5 +64,5 @@ Route::get('/fases', [FaseController::class, 'index']);
 Route::get('/fases/{idFase}', [FaseController::class, 'show']);
 
 //Rutas asociacion area - nivel
-Route::apiResource('niveles',NivelController::class)->only(['index']);
+Route::apiResource('nivel',NivelController::class)->only(['index']);
     
