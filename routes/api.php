@@ -8,6 +8,7 @@ use App\Http\Controllers\ResponsableController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ImportarcsvController;
 use App\Http\Controllers\FaseController;
+use App\Http\Controllers\AreaNivelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -62,6 +63,9 @@ Route::get('/competidores', [ImportarcsvController::class, 'index']);
 Route::post('/fases', [FaseController::class, 'store']);
 Route::get('/fases', [FaseController::class, 'index']);
 Route::get('/fases/{idFase}', [FaseController::class, 'show']);
+
+//Asignar Area Nivel
+Route::post('/asignarArea' ,[FaseController::class, 'store']);
 
 //Rutas asociacion area - nivel
 Route::apiResource('nivel',NivelController::class)->only(['index']);

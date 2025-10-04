@@ -16,14 +16,10 @@ class NivelSeeder extends Seeder
         DB::table('nivel')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        // Ejemplo: Asignar área Matemáticas
-        $areaMatematicas = DB::table('area')->where('nombre', 'Matemáticas')->first();
-        $idAreaMatematicas = $areaMatematicas ? $areaMatematicas->id_area : null;
-
         $niveles = [
-            ['nombre' => 'Inicial', 'descripcion' => 'Nivel inicial', 'orden' => 1, 'id_area' => $idAreaMatematicas],
-            ['nombre' => 'Intermedio', 'descripcion' => 'Nivel intermedio', 'orden' => 2, 'id_area' => $idAreaMatematicas],
-            ['nombre' => 'Avanzado', 'descripcion' => 'Nivel avanzado', 'orden' => 3, 'id_area' => $idAreaMatematicas],
+            ['nombre' => 'Tercero secundaria ', 'descripcion' => 'Nivel inicial', 'orden' => 1],
+            ['nombre' => 'Cuarto secundaria', 'descripcion' => 'Nivel intermedio', 'orden' => 2],
+            ['nombre' => 'Quinto secundaria', 'descripcion' => 'Nivel avanzado', 'orden' => 3],
         ];
 
         DB::table('nivel')->insert($niveles);
