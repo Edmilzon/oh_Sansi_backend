@@ -35,13 +35,12 @@ return new class extends Migration
             $table->string('descripcion')->nullable();
             $table->integer('orden')->nullable();// recordar que hace
             $table->timestamps();
-
         });
         
          Schema::create('area_nivel', function (Blueprint $table) {
             $table->id('id_area_nivel');
-            $table->unsignedBigInteger('id_area');
-            $table->unsignedBigInteger('id_nivel');
+            $table->unsignedBigInteger('id_area')->nullable();
+            $table->unsignedBigInteger('id_nivel')->nullable();
              $table->boolean('activo')->default(false);
             $table->timestamps();
             

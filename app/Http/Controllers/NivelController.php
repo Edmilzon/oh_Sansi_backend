@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\NivelService;
+use App\Models\Nivel;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
@@ -19,6 +20,7 @@ class NivelController extends Controller {
     }
 
     public function store (Request $request) {
+        
         $validatedData = $request->validate([
             'nombre' => 'required|string',
               'descripcion' => 'nullable|string',
