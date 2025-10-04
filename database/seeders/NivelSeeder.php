@@ -17,9 +17,9 @@ class NivelSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $niveles = [
-            ['nombre' => '', 'descripcion' => 'Nivel inicial', 'orden' => 1],
-            ['nombre' => 'Intermedio', 'descripcion' => 'Nivel intermedio', 'orden' => 2],
-            ['nombre' => 'Avanzado', 'descripcion' => 'Nivel avanzado', 'orden' => 3],
+            ['nombre' => 'Tercero secundaria ', 'descripcion' => 'Nivel inicial', 'orden' => 1],
+            ['nombre' => 'Cuarto secundaria', 'descripcion' => 'Nivel intermedio', 'orden' => 2],
+            ['nombre' => 'Quinto secundaria', 'descripcion' => 'Nivel avanzado', 'orden' => 3],
         ];
 
         DB::table('nivel')->insert($niveles);
