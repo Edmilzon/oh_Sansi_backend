@@ -15,6 +15,10 @@ class Area extends Model {
     public function codigoEncargado() {
         return $this->hasOne(CodigoEncargado::class, 'id_area', 'id_area');
     }
+
+    public function areaNiveles(){
+        return $this->hasMany(AreaNivel::class, 'id_area');
+    }
 }
 
 

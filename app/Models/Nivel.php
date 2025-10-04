@@ -19,4 +19,8 @@ class Nivel extends Model {
         'orden'
         ];
 
+    public function areaNiveles(){
+        return $this->hasMany(AreaNivel::class, 'id_nivel');
+    }
+
 }

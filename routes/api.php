@@ -69,4 +69,5 @@ Route::post('/asignarArea' ,[FaseController::class, 'store']);
 
 //Rutas asociacion area - nivel
 Route::apiResource('nivel',NivelController::class)->only(['index']);
+Route::apiResource('area-niveles', AreaNivelController::class);
     
