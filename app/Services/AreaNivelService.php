@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Services;
-
+use App\Models\AreaNivel;
 use App\Repositories\AreaNivelRepository;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -14,6 +14,10 @@ class AreaNivelService {
 
     public function getAreaNivelList(){
         return $this->areaNivelRepository->getAllAreasNiveles();
+    }
+
+    public function getAreaNivelByArea(int $id_area){
+        return $this->areaNivelRepository->getByArea($id_area);
     }
 
     public function getAreaNivelById(int $id): ?array
@@ -45,6 +49,67 @@ class AreaNivelService {
             'area_nivel' => $areaNivel,
             'message' => 'Relación área-nivel creada exitosamente'
         ];
+    }
+
+   public function createMultipleAreaNivel(array $data): array
+    {
+    $inserted = [];
+    
+    foreach ($data as $relacion) {
+        $existing = AreaNivel::where('id_area', $relacion['id_area'])
+                        ->where('id_nivel', $relacion['id_nivel'])
+                        ->first();
+
+        if (!$existing) {
+            $inserted[] = $this->areaNivelRepository->createAreaNivel([
+                'id_area' => $relacion['id_area'],
+                'id_nivel' => $relacion['id_nivel'],
+                'activo' => $relacion['activo']
+            ]);
+        } else {
+            $inserted[] = $existing;
+        }
+    }
+
+    $message = count($inserted) . ' relaciones área-nivel procesadas';
+    if (count($inserted) < count($data)) {
+        $message .= ' (algunas relaciones ya existían)';
+    }
+
+    return [
+        'area_niveles' => $inserted,
+        'message' => $message
+    ];
+    }
+
+    public function updateAreaNivelByArea(int $id_area, array $niveles): array
+    {
+    $updatedNiveles = [];
+    
+    foreach ($niveles as $nivelData) {
+        $areaNivel = AreaNivel::where('id_area', $id_area)
+                        ->where('id_nivel', $nivelData['id_nivel'])
+                        ->first();
+
+        if ($areaNivel) {
+            // Actualizar existente
+            $areaNivel->update(['activo' => $nivelData['activo']]);
+            $updatedNiveles[] = $areaNivel;
+        } else {
+            // Crear nuevo si no existe
+            $newAreaNivel = $this->areaNivelRepository->createAreaNivel([
+                'id_area' => $id_area,
+                'id_nivel' => $nivelData['id_nivel'],
+                'activo' => $nivelData['activo']
+            ]);
+            $updatedNiveles[] = $newAreaNivel;
+        }
+    }
+
+    return [
+        'area_niveles' => $updatedNiveles,
+        'message' => 'Relaciones área-nivel actualizadas exitosamente'
+    ];
     }
 
      public function updateAreaNivel(int $id, array $data): array

@@ -33,40 +33,41 @@ class AreaNivelController extends Controller {
     }
     
     public function store(Request $request){
-    // Validar que 'area' y 'nivel' estén presentes
-    $validatedData = $request->validate([
-        'area'  => 'required',
-        'nivel' => 'required',
-    ]);
+    try {
+        $validatedData = $request->validate([
+            '*.id_area' => 'required|integer|exists:area,id_area',
+            '*.id_nivel' => 'required|integer|exists:nivel,id_nivel',
+            '*.activo' => 'required|boolean'
+        ]);
 
-    // Convertir ambos a arrays si vienen como valores simples
-    $areas = is_array($validatedData['area']) ? $validatedData['area'] : [$validatedData['area']];
-    $niveles = is_array($validatedData['nivel']) ? $validatedData['nivel'] : [$validatedData['nivel']];
-
-    $inserted = [];
-
-    foreach ($areas as $area) {
-        foreach ($niveles as $nivel) {
-            // Evitar insertar duplicados
-            $existing = \App\Models\AreaNivel::where('id_area', $area)
-                        ->where('id_nivel', $nivel)
-                        ->first();
-            if (!$existing) {
-                $inserted[] = \App\Models\AreaNivel::create([
-                    'id_area' => $area,
-                    'id_nivel' => $nivel,
-                    'activo' => false,
-                ]);
-            }
-        }
+        $result = $this->areaNivelService->createMultipleAreaNivel($validatedData);
+        
+        return response()->json([
+            'success' => true,
+            'data' => $result['area_niveles'],
+            'message' => $result['message']
+        ], 201);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al crear las relaciones área-nivel: ' . $e->getMessage()
+        ], 400);
+    }
     }
 
-    return response()->json([
-        'success' => true,
-        'data' => $inserted,
-        'count' => count($inserted),
-        'message' => count($inserted) . ' relaciones área-nivel insertadas exitosamente.',
-        ], 201);
+    public function getByArea($id_area){
+    try{
+        $areaNiveles = $this->areaNivelService->getAreaNivelByArea($id_area);
+        return response()->json([
+            'success' => true,
+            'data' => $areaNiveles
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al obtener las relaciones área-nivel: ' . $e->getMessage()
+        ], 500);
+    }
     }
 
     public function show($id){
@@ -91,6 +92,28 @@ class AreaNivelController extends Controller {
                 'message' => 'Error al obtener la relación área-nivel: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function updateByArea($id_area, Request $request){
+    try {
+        $validatedData = $request->validate([
+            '*.id_nivel' => 'required|integer|exists:nivel,id_nivel',
+            '*.activo' => 'required|boolean'
+        ]);
+
+        $result = $this->areaNivelService->updateAreaNivelByArea($id_area, $validatedData);
+        
+        return response()->json([
+            'success' => true,
+            'data' => $result['area_niveles'],
+            'message' => $result['message']
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al actualizar las relaciones área-nivel: ' . $e->getMessage()
+        ], 400);
+    }
     }
 
     public function update(UpdateAreaNivelRequest $request, $id){

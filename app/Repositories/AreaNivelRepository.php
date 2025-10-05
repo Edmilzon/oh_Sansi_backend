@@ -10,13 +10,21 @@ class AreaNivelRepository{
         return AreaNivel::with(['area', 'nivel'])->get();
     }
 
+    public function getByArea(int $id_area): Collection
+    {
+    return AreaNivel::with(['area', 'nivel'])
+                    ->where('id_area', $id_area)
+                    ->get();
+    }
+    
     public function getById(int $id): ?AreaNivel
     {
         return AreaNivel::with(['area', 'nivel'])->find($id);
     }
 
-    public function createAreaNivel(array $data) : AreaNivel{
-        return AreaNivel::create($data);
+    public function createAreaNivel(array $data): AreaNivel
+    {
+    return AreaNivel::create($data);
     }
 
      public function update(int $id, array $data): bool
