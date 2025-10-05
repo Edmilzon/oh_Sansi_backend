@@ -28,6 +28,7 @@ class AreaController extends Controller {
             'descripcion' => 'nullable|string',
         ]);
 
+        
         $existeArea = Area::where('nombre', $validateData['nombre'])->first();
         if ($existeArea) {
             return response()->json([

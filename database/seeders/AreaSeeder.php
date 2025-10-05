@@ -18,11 +18,11 @@ class AreaSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
        $areas = [
-    ['nombre' => 'Matemáticas', 'descripcion' => 'Olimpiadas Científicas de Matemáticas', 'activo' => true],
-    ['nombre' => 'Física', 'descripcion' => 'Olimpiadas Científicas de Física', 'activo' => true],
-    ['nombre' => 'Química', 'descripcion' => 'Olimpiadas Científicas de Química', 'activo' => true],
-    ['nombre' => 'Informática', 'descripcion' => 'Olimpiadas Científicas de Informática', 'activo' => true],
-    ['nombre' => 'Biología', 'descripcion' => 'Olimpiadas Científicas de Biología', 'activo' => true],
+    ['nombre' => 'Matematicas', 'descripcion' => 'Olimpiadas Científicas de Matemáticas', 'activo' => true],
+    ['nombre' => 'Fisica', 'descripcion' => 'Olimpiadas Científicas de Física', 'activo' => true],
+    ['nombre' => 'Quimica', 'descripcion' => 'Olimpiadas Científicas de Química', 'activo' => true],
+    ['nombre' => 'Informatica', 'descripcion' => 'Olimpiadas Científicas de Informática', 'activo' => true],
+    ['nombre' => 'Biologia', 'descripcion' => 'Olimpiadas Científicas de Biología', 'activo' => true],
     ['nombre' => 'Historia', 'descripcion' => 'Olimpiadas Científicas de Historia', 'activo' => true],
     ['nombre' => 'Geografía', 'descripcion' => 'Olimpiadas Científicas de Geografía', 'activo' => true],
     ['nombre' => 'Literatura', 'descripcion' => 'Olimpiadas Científicas de Literatura', 'activo' => true],
