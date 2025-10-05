@@ -32,7 +32,7 @@ class NivelController extends Controller {
         $existeNivel = Nivel::where('nombre', $validatedData['nombre'])->first();
         if ($existeNivel) {
             return response()->json([
-                'error' => 'El nivel: '. $validatedData['nombre'].' ya existe.'
+                'error' => 'El nombre del nivel ya se encuentra registrado'
             ], 422);
         }
 
