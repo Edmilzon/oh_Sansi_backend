@@ -17,7 +17,18 @@ class AreaNivelService {
     }
 
     public function getAreaNivelByArea(int $id_area){
-        return $this->areaNivelRepository->getByArea($id_area);
+         $areaNiveles = $this->areaNivelRepository->getByArea($id_area);
+
+         return $areaNiveles->map(function($areaNivel) {
+            return [
+                'id_area_nivel' => $areaNivel->id_area_nivel,
+                'id_area' => $areaNivel->id_area,
+                'id_nivel' => $areaNivel->id_nivel,
+                'activo' => $areaNivel->activo,
+                'created_at' => $areaNivel->created_at,
+                'updated_at' => $areaNivel->updated_at
+            ];
+        });
     }
 
     public function getAreaNivelById(int $id): ?array
