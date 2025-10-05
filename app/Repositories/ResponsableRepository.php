@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Responsable;
+use App\Models\Persona;
+use App\Models\Usuario;
 use Illuminate\Support\Facades\DB;
 
 class ResponsableRepository {
@@ -25,7 +27,18 @@ class ResponsableRepository {
             ->get();
     }
 
-    public function createResponsable(array $data){
+    public function createPersona(array $data): Persona
+    {
+        return Persona::create($data);
+    }
+
+    public function createUsuario(array $data): Usuario
+    {
+        return Usuario::create($data);
+    }
+
+    public function createResponsable(array $data): Responsable
+    {
         return Responsable::create($data);
     }
 }

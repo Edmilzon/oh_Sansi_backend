@@ -1,17 +1,10 @@
 <?php
 
 namespace App\Http\Requests;
-
-use App\Models\Area;
-use App\Models\CodigoEvaluador;
-use App\Models\Nivel;
-use App\Models\Persona;
-use App\Models\Usuario;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreEvaluadorRequest extends FormRequest
+
+class ResponsableRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -30,9 +23,10 @@ class StoreEvaluadorRequest extends FormRequest
             'apellido' => 'required|string|max:255',
             'ci' => 'required|string|unique:persona,ci',
             'email' => 'required|email|unique:persona,email',
+            'password' => 'required|string|min:8',
+            'areas' => 'required|array|min:1',
+            'areas.*' => 'integer|exists:area,id_area',
 
-            // Datos de Usuario
-            'password' => 'required|string|min:8|confirmed',
         ];
     }
 
@@ -47,7 +41,6 @@ class StoreEvaluadorRequest extends FormRequest
             'ci.unique' => 'El número de CI ya está registrado.',
             'email.unique' => 'El correo electrónico ya está registrado.',
             'password.min' => 'La contraseña debe tener al menos :min caracteres.',
-            'codigo_evaluador.exists' => 'El código de evaluador proporcionado no es válido o no está activo.',
         ];
     }
 }
