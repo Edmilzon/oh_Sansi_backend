@@ -37,15 +37,15 @@ return new class extends Migration
             $table->timestamps();
         });
         
-         Schema::create('area_nivel', function (Blueprint $table) {
+        Schema::create('area_nivel', function (Blueprint $table) {
             $table->id('id_area_nivel');
             $table->unsignedBigInteger('id_area')->nullable();
             $table->unsignedBigInteger('id_nivel')->nullable();
-             $table->boolean('activo')->default(false);
+            $table->boolean('activo')->default(false);
             $table->timestamps();
             
             $table->foreign('id_area')->references('id_area')->on('area')->onDelete('set null');
-             $table->foreign('id_nivel')->references('id_nivel')->on('nivel')->onDelete('set null');
+            $table->foreign('id_nivel')->references('id_nivel')->on('nivel')->onDelete('set null');
         });
 
         Schema::create('institucion', function (Blueprint $table) {
@@ -172,19 +172,13 @@ return new class extends Migration
             $table->id('id_evaluador');
             $table->boolean('activo')->default(true);
             $table->unsignedBigInteger('id_persona');
+            $table->unsignedBigInteger('id_area');
+            $table->unsignedBigInteger('id_nivel');
             $table->timestamps();
 
             $table->foreign('id_persona')->references('id_persona')->on('persona')->onDelete('cascade');
-        });
-
-        Schema::create('evaluador_area', function (Blueprint $table) {
-            $table->id('id_evaluador_area');
-            $table->unsignedBigInteger('id_evaluador');
-            $table->unsignedBigInteger('id_area');
-            $table->timestamps();
-
-            $table->foreign('id_evaluador')->references('id_evaluador')->on('evaluador')->onDelete('cascade');
             $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
+            $table->foreign('id_nivel')->references('id_nivel')->on('nivel')->onDelete('cascade');
         });
 
         Schema::create('evaluacion', function (Blueprint $table) {

@@ -37,10 +37,13 @@ class EvaluadorService
                 'id_codigo_encargado' => null, 
             ]);
 
-            $evaluador = $this->evaluadorRepository->createEvaluador([
-                'id_persona' => $persona->id_persona,
-                'activo' => true,
-            ]);
+            foreach($data['areas'] as $id_area){
+                $this->evaluadorRepository->createEvaluador([
+                    'id_persona' => $persona->id_persona,
+                    'id_area' => $id_area,
+                    'activo' => true
+                ]);
+            }
 
             return $persona->load(['usuario', 'evaluador']);
         });
