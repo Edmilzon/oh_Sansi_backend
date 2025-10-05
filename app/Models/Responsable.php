@@ -11,15 +11,20 @@ class Responsable extends Model {
 
     protected $table = 'responsable_area';         
     protected $primaryKey = 'id_responsable_area';  
-    protected $fillable = ['fecha_asignacion','activo','id_persona','id_area'];
+
+    protected $fillable = [
+        'fecha_asignacion',
+        'activo',
+        'id_persona',
+        'id_area'
+    ];
+
+    protected $casts = [
+        'activo' => 'boolean',
+    ];
 
     public function persona() {
         return $this->belongsTo(Persona::class, 'id_persona', 'id_persona');
-    }
-
-    public function area()
-{
-    return $this->belongsTo(Area::class, 'id_area', 'id_area');
-}
+    }  
 }
 

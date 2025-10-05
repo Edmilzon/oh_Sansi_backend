@@ -43,6 +43,6 @@ class Persona extends Model
 
     public function responsableArea()
     {
-        return $this->hasOne(Responsable::class, 'id_persona', 'id_persona');
+        return $this->hasMany(Responsable::class, 'id_persona', 'id_persona');
     }
 }

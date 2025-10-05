@@ -17,21 +17,10 @@ class EvaluadorService
         $this->evaluadorRepository = $evaluadorRepository;
     }
 
-    public function loginEvaluador(array $data): ?\App\Models\Evaluador
-    {
-        // $data is expected to be an array with 'username' and 'password'
-        return $this->evaluadorRepository->loginEvaluador($data['email'], $data['password']);
-    }
-
     public function createNewEvaluador(array $data): Persona
     {
-        $codigoEvaluador = $this->evaluadorRepository->findCodigo($data['codigo_evaluador']);
 
-        if (!$codigoEvaluador) {
-            throw ValidationException::withMessages(['codigo_evaluador' => 'El código de evaluador no se encontró o no está activo.']);
-        }
-
-        return DB::transaction(function () use ($data, $codigoEvaluador) {
+        return DB::transaction(function () use ($data) {
             $persona = $this->evaluadorRepository->createPersona([
                 'nombre' => $data['nombre'],
                 'apellido' => $data['apellido'],
@@ -44,7 +33,7 @@ class EvaluadorService
                 'password' => $data['password'], 
                 'rol' => \App\Models\Usuario::ROL_EVALUADOR,
                 'id_persona' => $persona->id_persona,
-                'id_codigo_evaluador' => $codigoEvaluador->id_codigo_evaluador,
+                'id_codigo_evaluador' => null,
                 'id_codigo_encargado' => null, 
             ]);
 

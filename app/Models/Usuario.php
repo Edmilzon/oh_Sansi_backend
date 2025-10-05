@@ -12,6 +12,7 @@ class Usuario extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;
 
+    public const ROL_RESPONSABLE = 'responsable_area';
     public const ROL_EVALUADOR = 'evaluador';
     public const ROL_ADMIN = 'privilegiado'; 
     protected $table = 'usuario';
