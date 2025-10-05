@@ -36,21 +36,33 @@ class AreaNivelController extends Controller {
     try {
         $validatedData = $request->validate([
             '*.id_area' => 'required|integer|exists:area,id_area',
-            '*.id_nivel' => 'required|integer|exists:nivel,id_nivel',
+            '*.id_nivel' => 'required|integer|exists:nivel,id_nivel', 
             '*.activo' => 'required|boolean'
         ]);
 
+        \Log::info('=== INICIANDO STORE - DATOS VALIDADOS ===', $validatedData);
+        
         $result = $this->areaNivelService->createMultipleAreaNivel($validatedData);
+        
+        \Log::info('=== STORE COMPLETADO ===', $result);
         
         return response()->json([
             'success' => true,
             'data' => $result['area_niveles'],
-            'message' => $result['message']
+            'message' => $result['message'],
+            'count_created' => count($result['area_niveles'])
         ], 201);
+        
     } catch (\Exception $e) {
+        \Log::error('=== ERROR EN STORE ===', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        
         return response()->json([
             'success' => false,
-            'message' => 'Error al crear las relaciones área-nivel: ' . $e->getMessage()
+            'message' => 'Error al crear las relaciones área-nivel: ' . $e->getMessage(),
+            'debug_info' => 'Revisar logs para más detalles'
         ], 400);
     }
     }
