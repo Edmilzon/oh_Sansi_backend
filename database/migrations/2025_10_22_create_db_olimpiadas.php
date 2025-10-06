@@ -162,7 +162,7 @@ return new class extends Migration
             $table->id('id_fase');
             $table->string('nota_minima_clasificacion')->nullable();
             $table->string('cantidad_maxima_de_clasificados')->nullable();
-            $table->string('nombre');
+            $table->string('nombre')->default('Fase 1')->nullable();
             $table->integer('orden')->nullable();
             $table->string('descripcion')->nullable();
             $table->timestamps();
