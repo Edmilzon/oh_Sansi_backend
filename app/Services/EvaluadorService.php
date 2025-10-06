@@ -38,13 +38,16 @@ class EvaluadorService
             ]);
 
             foreach($data['areas'] as $id_area){
-                $this->evaluadorRepository->createEvaluador([
-                    'id_persona' => $persona->id_persona,
-                    'id_area' => $id_area,
-                    'activo' => true
-                ]);
+                foreach($data['niveles'] as $id_nivel){
+                    $this->evaluadorRepository->createEvaluador([
+                        'id_persona' => $persona->id_persona,
+                        'id_area' => $id_area,
+                        'id_nivel' => $id_nivel,
+                        'activo' => true
+                    ]);
+                }
             }
-
+            
             return $persona->load(['usuario', 'evaluador']);
         });
     }
