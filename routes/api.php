@@ -72,5 +72,5 @@ Route::apiResource('nivel',NivelController::class)->only(['index']);
 Route::post('area-niveles', [AreaNivelController::class, 'store']);
 Route::get('area-niveles/{id_area}', [AreaNivelController::class, 'getByArea']);
 Route::put('area-niveles/{id_area}', [AreaNivelController::class, 'updateByArea']);
-Route::get('area-niveles', [AreaNivelController::class, 'index']);
+Route::get('area-niveles/detalle/{id_area}', [AreaNivelController::class, 'getByAreaAll']);
     

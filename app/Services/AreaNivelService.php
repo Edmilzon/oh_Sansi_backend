@@ -45,6 +45,11 @@ class AreaNivelService {
         ];
     }
 
+    public function getAreaNivelByAreaAll(int $id_area): Collection
+    {
+        return $this->areaNivelRepository->getByAreaAll($id_area);
+    }
+
     public function createNewAreaNivel(array $data){
         $existing = AreaNivel::where('id_area', $data['id_area'])
                             ->where('id_nivel', $data['id_nivel'])

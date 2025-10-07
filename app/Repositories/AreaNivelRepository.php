@@ -15,6 +15,16 @@ class AreaNivelRepository{
     return AreaNivel::where('id_area', $id_area)-> get();
     }
     
+    public function getByAreaAll(int $id_area): Collection
+    {
+    return AreaNivel::with([
+        'area:id_area,nombre,descripcion,activo',
+        'nivel:id_nivel,nombre,descripcion,orden'
+    ])
+    ->where('id_area', $id_area)
+    ->get();
+    }
+    
     public function getById(int $id): ?AreaNivel
     {
         return AreaNivel::with(['area', 'nivel'])->find($id);

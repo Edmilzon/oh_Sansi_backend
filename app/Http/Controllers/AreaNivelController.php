@@ -82,6 +82,21 @@ class AreaNivelController extends Controller {
     }
     }
 
+    public function getByAreaAll($id_area){
+        try{
+            $areaNiveles = $this->areaNivelService->getAreaNivelByAreaAll($id_area);
+            return response()->json([
+                'success' => true,
+                'data' => $areaNiveles
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener las relaciones área-nivel a detalle: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function show($id){
         try {
             $result = $this->areaNivelService->getAreaNivelById($id);
