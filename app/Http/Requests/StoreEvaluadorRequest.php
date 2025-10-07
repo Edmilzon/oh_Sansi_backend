@@ -31,10 +31,10 @@ class StoreEvaluadorRequest extends FormRequest
             'ci' => 'required|string|unique:persona,ci',
             'email' => 'required|email|unique:persona,email',
             'password' => 'required|string|min:8',
-            'areas' => 'required|array|min:1',
-            'areas.*' => 'integer|exists:area,id_area',
-            'niveles' => 'required|array|min:1',
-            'niveles.*' => 'integer|exists:nivel,id_nivel',
+            'areas_niveles' => 'required|array|min:1',
+            'areas_niveles.*.area' => 'required|integer|exists:area,id_area',
+            'areas_niveles.*.niveles' => 'required|array|min:1',
+            'areas_niveles.*.niveles.*' => 'required|integer|exists:nivel,id_nivel'
         ];
     }
 

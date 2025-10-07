@@ -37,8 +37,10 @@ class EvaluadorService
                 'id_codigo_encargado' => null, 
             ]);
 
-            foreach($data['areas'] as $id_area){
-                foreach($data['niveles'] as $id_nivel){
+
+            foreach ($data['areas_niveles'] as $areaNivel) {
+                $id_area = $areaNivel['area'];
+                foreach ($areaNivel['niveles'] as $id_nivel) {
                     $this->evaluadorRepository->createEvaluador([
                         'id_persona' => $persona->id_persona,
                         'id_area' => $id_area,
