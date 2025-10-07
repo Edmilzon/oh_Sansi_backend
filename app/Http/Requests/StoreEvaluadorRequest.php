@@ -30,9 +30,11 @@ class StoreEvaluadorRequest extends FormRequest
             'apellido' => 'required|string|max:255',
             'ci' => 'required|string|unique:persona,ci',
             'email' => 'required|email|unique:persona,email',
-
-            // Datos de Usuario
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8',
+            'areas' => 'required|array|min:1',
+            'areas.*' => 'integer|exists:area,id_area',
+            'niveles' => 'required|array|min:1',
+            'niveles.*' => 'integer|exists:nivel,id_nivel',
         ];
     }
 

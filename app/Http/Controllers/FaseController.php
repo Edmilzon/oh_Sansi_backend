@@ -21,12 +21,6 @@ class FaseController extends Controller
 
     public function store(FaseRequest $request): JsonResponse
     {
-        /*if (!auth()->check() || auth()->user()->rol !== 'responsable_area') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Acceso denegado. Solo responsables de área.'
-            ], 403);
-        }*/
 
         try {
             DB::beginTransaction();
@@ -72,31 +66,6 @@ class FaseController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error al obtener fases',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function show($idFase): JsonResponse
-    {
-        try {
-            $fase = $this->faseService->obtenerFase($idFase);
-
-            return response()->json([
-                'success' => true,
-                'data' => $fase
-            ]);
-
-        } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error de validación',
-                'errors' => $e->errors()
-            ], 422);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al obtener fase',
                 'error' => $e->getMessage()
             ], 500);
         }

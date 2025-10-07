@@ -14,10 +14,10 @@ class FaseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'Nota_minima_clasificacion' => 'required|numeric|min:0|max:100',
-            'cantidad_maxima_de_clasificados' => 'required|integer|min:1',
-            'nombre' => 'required|string|max:255',
-            'orden' => 'required|integer|min:1',
+            'Nota_minima_clasificacion' => 'nullable|numeric|min:0|max:100',
+            'cantidad_maxima_de_clasificados' => 'nullable|integer|min:1',
+            'nombre' => 'nullable|string|max:255',
+            'orden' => 'nullable|integer|min:1',
             'descripcion' => 'nullable|string'
         ];
     }

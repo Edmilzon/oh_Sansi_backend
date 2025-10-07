@@ -15,6 +15,8 @@ class Evaluador extends Model
     protected $fillable = [
         'activo',
         'id_persona',
+        'id_area',
+        'id_nivel',
     ];
 
     protected $casts = [
