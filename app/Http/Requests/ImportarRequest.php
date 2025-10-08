@@ -21,7 +21,7 @@ class ImportarRequest extends FormRequest
             'competidores.*.persona.ci' => 'required|string|max:20',
             'competidores.*.persona.fecha_nac' => 'nullable|date',
             'competidores.*.persona.genero' => 'nullable|in:M,F',
-            'competidores.*.persona.telefono' => 'required|string|max:15',
+            'competidores.*.persona.telefono' => 'nullable|string|max:15',
             'competidores.*.persona.email' => 'required|email',
 
             // Datos del Competidor
