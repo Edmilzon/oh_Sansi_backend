@@ -86,6 +86,7 @@ class ImportarcsvController extends Controller
                     // Datos de Competidor
                     'grado_escolar' => $competidorData['competidor']['grado_escolar'] ?? null,
                     'departamento' => $competidorData['competidor']['departamento'] ?? null,
+                    'nombre_tutor' => $competidorData['competidor']['nombre_tutor'] ?? null,
                     'contacto_tutor' => $competidorData['competidor']['contacto_tutor'] ?? null,
                     'contacto_emergencia' => $competidorData['competidor']['contacto_emergencia'] ?? null,
                     

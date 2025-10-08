@@ -105,6 +105,7 @@ return new class extends Migration
             $table->id('id_competidor');
             $table->string('grado_escolar')->nullable();
             $table->string('departamento')->nullable();
+            $table->string('nombre_tutor')->nullable();
             $table->string('contacto_tutor')->nullable();
             $table->string('contacto_emergencia')->nullable();
             $table->unsignedBigInteger('id_persona');

@@ -15,6 +15,7 @@ class Competidor extends Model
     protected $fillable = [
         'grado_escolar',
         'departamento',
+        'nombre_tutor',
         'contacto_tutor',
         'contacto_emergencia',
         'id_persona',
