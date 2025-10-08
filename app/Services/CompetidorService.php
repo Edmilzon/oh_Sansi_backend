@@ -19,23 +19,6 @@ class CompetidorService
     public function createNewCompetidor(array $data): Persona
     {
 
-        /*if (Persona::where('ci', $data['ci'])->exists()) {
-        throw ValidationException::withMessages([
-            'ci' => 'El CI ya existe'
-            ]);
-        }
-
-        if (Persona::where('telefono', $data['telefono'])->exists()) {
-            throw ValidationException::withMessages([
-                'telefono' => 'El teléfono ya existe'
-            ]);
-        }
-        if (Persona::where('email', $data['email'])->exists()) {
-            throw ValidationException::withMessages([
-                'email' => 'El email ya existe'
-            ]);
-        }*/
-
         return DB::transaction(function () use ($data) {
             $persona = $this->competidorRepository->createPersona([
                 'nombre' => $data['nombre'],
