@@ -18,17 +18,17 @@ class ImportarRequest extends FormRequest
             'competidores' => 'required|array|min:1',
             'competidores.*.persona.nombre' => 'required|string|max:255',
             'competidores.*.persona.apellido' => 'required|string|max:255',
-            'competidores.*.persona.ci' => 'required|string|unique:persona,ci',
-            'competidores.*.persona.fecha_nac' => 'required|date',
+            'competidores.*.persona.ci' => 'required|string|max:20',
+            'competidores.*.persona.fecha_nac' => 'nullable|date',
             'competidores.*.persona.genero' => 'nullable|in:M,F',
-            'competidores.*.persona.telefono' => 'nullable|string|unique:persona,telefono',
-            'competidores.*.persona.email' => 'required|email|unique:persona,email',
+            'competidores.*.persona.telefono' => 'required|string|max:15',
+            'competidores.*.persona.email' => 'required|email',
 
             // Datos del Competidor
             'competidores.*.competidor.grado_escolar' => 'nullable|string|max:100',
             'competidores.*.competidor.departamento' => 'nullable|string|max:100',
             'competidores.*.competidor.nombre_tutor' => 'nullable|string|max:255',
-            'competidores.*.competidor.contacto_tutor' => 'nullable|string|max:255',
+            'competidores.*.competidor.contacto_tutor' => 'required|string|max:255',
             'competidores.*.competidor.contacto_emergencia' => 'nullable|string|max:255',
 
             // Datos de Institución
