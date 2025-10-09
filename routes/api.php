@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\ResponsableController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Responsable\CompetidorController as ResponsableCompetidorController;
 use App\Http\Controllers\ImportarcsvController;
 use App\Http\Controllers\FaseController;
 use App\Http\Controllers\AreaNivelController;
@@ -54,6 +55,9 @@ Route::post('/area', [AreaController::class, 'store']);
 //responsable de area mostrar y insertar 
 Route::get('/responsableArea', [ResponsableController::class, 'index']);
 Route::post('/responsableArea', [ResponsableController::class, 'store']);
+
+// Competidores por Responsable de Área
+Route::get('/responsables/{id_persona}/competidores', [ResponsableCompetidorController::class, 'index']);
 
 //Importar csv
 Route::post('/competidores/importar',[ImportarcsvController::class,'importar']);

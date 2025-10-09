@@ -24,4 +24,20 @@ class CompetidorRepository{
      public function getAllCompetidores(){
         return Competidor::all();
     }
+
+    /**
+     * Obtiene todos los competidores que pertenecen a una lista de áreas.
+     *
+     * @param array $areaIds
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getCompetidoresByAreaIds(array $areaIds)
+    {
+        return Competidor::with([
+                'persona', 
+                'institucion', 
+                'area', 
+                'nivel'
+            ])->whereIn('id_area', $areaIds)->get();
+    }
 }
