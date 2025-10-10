@@ -28,7 +28,7 @@ class ImportarRequest extends FormRequest
             'competidores.*.competidor.grado_escolar' => 'nullable|string|max:100',
             'competidores.*.competidor.departamento' => 'nullable|string|max:100',
             'competidores.*.competidor.nombre_tutor' => 'nullable|string|max:255',
-            'competidores.*.competidor.contacto_tutor' => 'required|string|max:255',
+            'competidores.*.competidor.contacto_tutor' => 'nullable|string|max:255',
             'competidores.*.competidor.contacto_emergencia' => 'nullable|string|max:255',
 
             // Datos de Institución
