@@ -4,9 +4,11 @@ Backend desarrollado en **PHP** usando el framework **Laravel** para la gestión
 
 ## 📋 Prerrequisitos
 
-Antes de empezar, asegúrate de tener instalado el siguiente software en tu entorno de desarrollo:
+Antes de empezar, asegúrate de tener instalado el siguiente software y extensiones en tu entorno de desarrollo:
 
 - **PHP**: `^8.2` (según `composer.json`)
+- **Laravel**: `^10.0` (o la versión que estés usando)
+- **Extensiones PHP**: `mbstring`, `xml`, `ctype`, `json`, `openssl`, etc. (las requeridas por Laravel)
 - **Composer**: Instrucciones de instalación
 - **Base de datos**: MySQL, PostgreSQL, etc.
 
@@ -49,20 +51,13 @@ Sigue estos pasos para poner en marcha el proyecto en tu máquina local.
     ```
 
 6.  **Ejecutar las migraciones y seeders**:
-    Las migraciones crearán la estructura de tablas en tu base de datos.
+    Las migraciones crearán la estructura de tablas en tu base de datos y los seeders la poblarán con datos iniciales.
     ```bash
-    php artisan migrate
+    php artisan migrate --seed
     ```
-    Si necesitas reiniciar la base de datos y volver a crear todo desde cero:
+    Si necesitas reiniciar la base de datos y volver a ejecutar las migraciones y seeders:
     ```bash
     php artisan migrate:fresh --seed
-    ```
-
-7.  **Poblar la base de datos con datos iniciales (Seeders)**:
-    Para registrar datos de prueba, como los códigos de evaluador, ejecuta el seeder correspondiente.
-    ```bash
-    # Ejemplo para cargar los códigos de evaluador
-    php artisan db:seed --class=CodigoEvaluadorSeeder
     ```
 
 ## ▶️ Iniciar el Servidor de Desarrollo
