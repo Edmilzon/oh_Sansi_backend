@@ -26,26 +26,22 @@ class AuthService
         $usuario = $this->authRepository->findUserByEmail($credentials['email']);
 
         if (!$usuario || !Hash::check($credentials['password'], $usuario->password)) {
-            return null; // Credenciales inválidas
+            return null; 
         }
 
         // Roles permitidos para este login
-        $allowedRoles = [Usuario::ROL_ADMIN, 'responsable_area', 'evaluador'];
+        $allowedRoles = [Usuario::ROL_ADMIN, Usuario::ROL_RESPONSABLE, Usuario::ROL_EVALUADOR];
 
         if (!in_array($usuario->rol, $allowedRoles)) {
-            return null; // Rol no permitido
+            return null;
         }
 
         // Cargar datos adicionales según el rol
-        if ($usuario->rol === 'responsable_area') {
+        if ($usuario->rol === Usuario::ROL_RESPONSABLE) {
             $usuario->load('persona.responsableArea.area');
-        } elseif ($usuario->rol === 'evaluador') {
+        } elseif ($usuario->rol === Usuario::ROL_EVALUADOR) {
             // Carga la persona, el rol de evaluador y el código de evaluador con su área y nivel.
-            $usuario->load([
-                'persona.evaluador', 
-                'codigoEvaluador.area', 
-                'codigoEvaluador.nivel'
-            ]);
+            $usuario->load(['persona.evaluador']);
         } else {
             $usuario->load('persona');
         }

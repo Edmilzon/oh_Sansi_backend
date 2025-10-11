@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Validation\ValidationException;
 
+use function Laravel\Prompts\error;
+
 class AuthController extends Controller
 {
     protected $authService;
@@ -33,6 +35,7 @@ class AuthController extends Controller
 
         if (!$result) {
             return response()->json([
+                'errors' => $result,
                 'message' => 'Las credenciales proporcionadas son incorrectas o el rol no está permitido.'
             ], 401);
         }

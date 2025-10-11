@@ -18,7 +18,7 @@ class ResponsableAreaSeeder extends Seeder
     public function run(): void
     {
         $personaResponsable = Persona::firstOrCreate(
-            ['email' => 'responsable@ohsansi.com'],
+            ['email' => 'responsable@gmail.com'],
             [
                 'nombre' => 'Juan',
                 'apellido' => 'Perez',
@@ -31,7 +31,7 @@ class ResponsableAreaSeeder extends Seeder
             ['id_persona' => $personaResponsable->id_persona],
             [
                 'nombre' => 'responsable',
-                'password' => Hash::make('Resp1234*'),
+                'password' => 'Resp1234',
                 'rol' => Usuario::ROL_RESPONSABLE,
             ]
         );
