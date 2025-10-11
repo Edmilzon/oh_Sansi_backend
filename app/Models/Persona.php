@@ -28,7 +28,7 @@ class Persona extends Model
 
     public function usuario()
     {
-        return $this->hasOne(Usuario::class, 'id_persona', 'id_persona');
+        return $this->hasOne(\App\Models\Usuario::class, 'id_persona', 'id_persona');
     }
 
     public function evaluador()
