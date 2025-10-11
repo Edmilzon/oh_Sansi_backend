@@ -21,7 +21,8 @@ class Competidor extends Model
         'id_persona',
         'id_institucion',
         'id_area',
-        'id_nivel'
+        'id_nivel',
+        /*'id_archivo_csv'*/
     ];
 
     public function persona() {
@@ -41,4 +42,8 @@ class Competidor extends Model
     public function grupocompetidor() {
         return $this->hasMany(GrupoCompetidor::class, 'id_competidor', 'id_competidor');
     }
+
+    /*public function archivoCsv() {
+        return $this->belongsTo(ArchivoCsv::class, 'id_archivo_csv', 'id_archivo_csv');
+    }*/
 }

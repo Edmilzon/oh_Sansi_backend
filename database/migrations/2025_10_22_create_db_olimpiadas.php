@@ -108,6 +108,7 @@ return new class extends Migration
             $table->string('nombre_tutor')->nullable();
             $table->string('contacto_tutor')->nullable();
             $table->string('contacto_emergencia')->nullable();
+            /*$table->unsignedBigInteger('id_archivo_csv');*/
             $table->unsignedBigInteger('id_persona');
             $table->unsignedBigInteger('id_institucion');
             $table->unsignedBigInteger('id_area')->nullable();
@@ -210,6 +211,13 @@ return new class extends Migration
             $table->foreign('id_evaluacion')->references('id_evaluacion')->on('evaluacion')->onDelete('cascade');
         });
 
+        /*Schema::create('archivo_csv', function (Blueprint $table) {
+            $table->id('id_archivo_csv');
+            $table->string('nombre');
+            $table->dateTime('fecha_subida');
+            $table->timestamps();
+        });*/
+
         Schema::create('desclasificacion', function (Blueprint $table) {
             $table->id('id_desclasificacion');
             $table->date('fecha');
@@ -304,5 +312,7 @@ return new class extends Migration
         Schema::dropIfExists('codigo_evaluador');
         Schema::dropIfExists('codigo_encargado');
         Schema::dropIfExists('codigo_acceso');
+        Schema::dropIfExists('area_nivel');
+        /*Schema::dropIfExists('archivo_csv');*/
     }
 };
