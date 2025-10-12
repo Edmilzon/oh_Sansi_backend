@@ -20,6 +20,7 @@ class NivelSeeder extends Seeder
             ['nombre' => 'Tercero secundaria', 'descripcion' => 'Nivel inicial', 'orden' => 1],
             ['nombre' => 'Cuarto secundaria', 'descripcion' => 'Nivel intermedio', 'orden' => 2],
             ['nombre' => 'Quinto secundaria', 'descripcion' => 'Nivel avanzado', 'orden' => 3],
+            ['nombre' => 'Secundaria', 'descripcion' => 'Nivel de Secundaria en su totalidad', 'orden' => 4],
         ];
 
         DB::table('nivel')->insert($niveles);

@@ -34,6 +34,9 @@ class AreaSeeder extends Seeder
     ['nombre' => 'Filosofía', 'descripcion' => 'Olimpiadas Científicas de Filosofía', 'activo' => true],
     ['nombre' => 'Economía', 'descripcion' => 'Olimpiadas Científicas de Economía', 'activo' => true],
     ['nombre' => 'Arte', 'descripcion' => 'Olimpiadas Científicas de Arte', 'activo' => true],
+    ['nombre' => 'Tecnologia', 'descripcion' => 'Olimpiadas Científicas de Tecnologia', 'activo' => true],
+    ['nombre' => 'Humanidades', 'descripcion' => 'Olimpiadas Científicas de Humanidades', 'activo' => true],
+    ['nombre' => 'Ciencias', 'descripcion' => 'Olimpiadas Científicas de Ciencias', 'activo' => true],
 ];
 
 
