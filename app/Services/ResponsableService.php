@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Mail\UserCredentialsMail;
 use App\Repositories\ResponsableRepository;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 
 class ResponsableService {
@@ -20,6 +22,8 @@ class ResponsableService {
     public function createNewResponsable(array $data){
         return DB::transaction(function () use ($data)
         {
+            $plainPassword = $data['password'];
+
             $persona = $this->responsableRepository->createPersona([
                 'nombre' => $data['nombre'],
                 'apellido' => $data['apellido'],
@@ -28,7 +32,7 @@ class ResponsableService {
             ]);
 
             $usuario = $this->responsableRepository->createUsuario([
-                'nombre' => $data['nombre'],
+                'nombre' => $data['email'],
                 'password' => $data['password'],
                 'rol' => \App\Models\Usuario::ROL_RESPONSABLE,
                 'id_persona' => $persona->id_persona,
@@ -44,6 +48,9 @@ class ResponsableService {
                     'fecha_asignacion' => now()
                 ]);
             }
+
+            // Enviar el correo electrónico con las credenciales
+            Mail::to($persona->email)->send(new UserCredentialsMail($persona->nombre, $persona->email, $plainPassword));
 
             return $persona->load(['usuario', 'responsableArea']);
 

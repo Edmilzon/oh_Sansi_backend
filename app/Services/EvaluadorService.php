@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Evaluador;
+use App\Mail\UserCredentialsMail;
 use App\Models\Persona;
 use App\Repositories\EvaluadorRepository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class EvaluadorService
@@ -21,6 +22,9 @@ class EvaluadorService
     {
 
         return DB::transaction(function () use ($data) {
+            // Guardamos la contraseña en texto plano antes de que se encripte
+            $plainPassword = $data['password'];
+
             $persona = $this->evaluadorRepository->createPersona([
                 'nombre' => $data['nombre'],
                 'apellido' => $data['apellido'],
@@ -29,7 +33,7 @@ class EvaluadorService
             ]);
 
             $usuario = $this->evaluadorRepository->createUsuario([
-                'nombre' => $data['nombre'],
+                'nombre' => $data['email'], // Es mejor usar el email como nombre de usuario para login
                 'password' => $data['password'], 
                 'rol' => \App\Models\Usuario::ROL_EVALUADOR,
                 'id_persona' => $persona->id_persona,
@@ -50,6 +54,9 @@ class EvaluadorService
                 }
             }
             
+            // Enviar el correo electrónico con las credenciales
+            Mail::to($persona->email)->send(new UserCredentialsMail($persona->nombre, $persona->email, $plainPassword));
+
             return $persona->load(['usuario', 'evaluador']);
         });
     }
