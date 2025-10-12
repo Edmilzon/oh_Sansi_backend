@@ -162,12 +162,15 @@ return new class extends Migration
 
         Schema::create('fase', function (Blueprint $table) {
             $table->id('id_fase');
+            $table->string('nota_maxima_clasificacion')->nullable();
             $table->string('nota_minima_clasificacion')->nullable();
             $table->string('cantidad_maxima_de_clasificados')->nullable();
-            $table->string('nombre')->default('Fase 1')->nullable();
-            $table->integer('orden')->nullable();
-            $table->string('descripcion')->nullable();
+            $table->unsignedBigInteger('id_area');
+            $table->unsignedBigInteger('id_nivel');
             $table->timestamps();
+            
+            $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
+            $table->foreign('id_nivel')->references('id_nivel')->on('nivel')->onDelete('cascade');
         });
 
         Schema::create('evaluador', function (Blueprint $table) {

@@ -16,7 +16,11 @@ class FaseService
 
     public function crearFase(array $data)
     {
-        return $this->faseRepository->create($data);
+        foreach ($data['niveles'] as $id_nivel){
+            $data['id_nivel'] = $id_nivel;
+            $this->faseRepository->create($data);
+        }
+        return $data;
     }
 
 

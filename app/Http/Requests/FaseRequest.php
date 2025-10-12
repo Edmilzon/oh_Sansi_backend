@@ -14,11 +14,12 @@ class FaseRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'Nota_maxima_clasificacion' => 'nullable|numeric|min:0|max:100',
             'Nota_minima_clasificacion' => 'nullable|numeric|min:0|max:100',
             'cantidad_maxima_de_clasificados' => 'nullable|integer|min:1',
-            'nombre' => 'nullable|string|max:255',
-            'orden' => 'nullable|integer|min:1',
-            'descripcion' => 'nullable|string'
+            'id_area' => 'required|exists:area,id_area',
+            'niveles' => 'required|array|min:1',
+            'niveles.*' => 'integer|exists:nivel,id_nivel',
         ];
     }
 }
