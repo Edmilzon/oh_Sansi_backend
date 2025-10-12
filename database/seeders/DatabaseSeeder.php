@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             // Prerrequisitos
             AreaSeeder::class,
             NivelSeeder::class,
+            AreaNivelSeeder::class,
             InstitucionSeeder::class,
             RegisterAdmin::class,
             ResponsableAreaSeeder::class,

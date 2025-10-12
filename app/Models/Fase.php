@@ -13,10 +13,10 @@ class Fase extends Model
     protected $primaryKey = 'id_fase';
 
     protected $fillable = [
+        'Nota_maxima_clasificacion',
         'Nota_minima_clasificacion',
         'cantidad_maxima_de_clasificados',
-        'nombre',
-        'orden',
-        'descripcion'
+        'id_area',
+        'id_nivel'
     ];
 }
