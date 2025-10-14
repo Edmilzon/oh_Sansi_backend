@@ -29,9 +29,10 @@ class AreaNivelRepository{
     public function getAreaNivelAsignadosAll(): Collection
     {
         return Area::with([
-            'areaNiveles.nivel'
+            'areaNiveles.nivel:id_nivel,nombre,orden'
         ])
-        ->get(['id_area', 'nombre', 'descripcion', 'activo']);
+        ->where ('activo', true)
+        ->get(['id_area', 'nombre', 'activo']);
     }
     
     public function getById(int $id): ?AreaNivel

@@ -52,10 +52,32 @@ class AreaNivelService {
 
     public function getAreaNivelesAsignadosAll(): array
     {
-         $areas = $this->areaNivelRepository->getAreaNivelAsignadosAll();
+    $areas = $this->areaNivelRepository->getAreaNivelAsignadosAll();
     
-        $resultado = $areas->map(function($area) {
-        $nivelesArray = $area->areaNiveles->map(function($areaNivel) {
+    $resultado = $areas->filter(function($area) {
+        // Si no tiene relaciones en area_nivel
+        if ($area->areaNiveles->isEmpty()) {
+            return true;
+        }
+        
+        // Si tiene relaciones, solo se muestra si al menos una tiene activo = true
+        return $area->areaNiveles->contains('activo', true);
+    })->map(function($area) {
+        
+        // Si no tiene relaciones, array vacío
+        if ($area->areaNiveles->isEmpty()) {
+            return [
+                'id_area' => $area->id_area,
+                'nombre' => $area->nombre,
+                'activo' => (bool)$area->activo,
+                'niveles' => []
+            ];
+        }
+        
+        // Si tiene relaciones, mostrar solo los niveles con activo = true
+        $nivelesArray = $area->areaNiveles->filter(function($areaNivel) {
+            return $areaNivel->activo === true;
+        })->map(function($areaNivel) {
             return [
                 'id_nivel' => $areaNivel->nivel->id_nivel,
                 'nombre' => $areaNivel->nivel->nombre,
@@ -68,13 +90,13 @@ class AreaNivelService {
             'id_area' => $area->id_area,
             'nombre' => $area->nombre,
             'activo' => (bool)$area->activo,
-            'niveles' => $nivelesArray
+            'niveles' => $nivelesArray->values()
         ];
-    });
+        });
     
     return [
-        'areas' => $resultado,
-        'message' => 'Se muestran los Niveles asignados a cada Area existente'
+        'areas' => $resultado->values(),
+        'message' => 'Se muestran las áreas que tienen al menos una relación activa o no tienen relaciones'
     ];
     }
 
