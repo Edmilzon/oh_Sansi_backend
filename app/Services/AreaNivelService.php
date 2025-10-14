@@ -50,6 +50,34 @@ class AreaNivelService {
         return $this->areaNivelRepository->getByAreaAll($id_area);
     }
 
+    public function getAreaNivelesAsignadosAll(): array
+    {
+         $areas = $this->areaNivelRepository->getAreaNivelAsignadosAll();
+    
+        $resultado = $areas->map(function($area) {
+        $nivelesArray = $area->areaNiveles->map(function($areaNivel) {
+            return [
+                'id_nivel' => $areaNivel->nivel->id_nivel,
+                'nombre' => $areaNivel->nivel->nombre,
+                'orden' => $areaNivel->nivel->orden,
+                'asignado_activo' => $areaNivel->activo
+            ];
+        });
+        
+        return [
+            'id_area' => $area->id_area,
+            'nombre' => $area->nombre,
+            'activo' => (bool)$area->activo,
+            'niveles' => $nivelesArray
+        ];
+    });
+    
+    return [
+        'areas' => $resultado,
+        'message' => 'Se muestran los Niveles asignados a cada Area existente'
+    ];
+    }
+
     public function createNewAreaNivel(array $data){
         $existing = AreaNivel::where('id_area', $data['id_area'])
                             ->where('id_nivel', $data['id_nivel'])

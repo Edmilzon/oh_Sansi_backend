@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateAreaNivelRequest;
 use Illuminate\Http\Request;
 use App\Services\AreaNivelService;
 use Illuminate\Routing\Controller;
+use Illuminate\Http\JsonResponse;
 
 class AreaNivelController extends Controller {
 
@@ -94,6 +95,25 @@ class AreaNivelController extends Controller {
                 'success' => false,
                 'message' => 'Error al obtener las relaciones área-nivel a detalle: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function getAreasConNiveles(): JsonResponse
+        {
+            try {
+                $result = $this->areaNivelService->getAreaNivelesAsignadosAll();
+        
+                return response()->json([
+                'success' => true,
+                'data' => $result['areas'],
+                'message' => $result['message']
+            ]);
+        
+        } catch (\Exception $e) {
+            return response()->json([
+            'success' => false,
+            'message' => 'Error al obtener áreas con niveles: ' . $e->getMessage()
+        ], 500);
         }
     }
 

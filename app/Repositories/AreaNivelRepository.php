@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\AreaNivel;
+use App\Models\Area;
 use Illuminate\Database\Eloquent\Collection;
 class AreaNivelRepository{
 
@@ -23,6 +24,14 @@ class AreaNivelRepository{
     ])
     ->where('id_area', $id_area)
     ->get();
+    }
+
+    public function getAreaNivelAsignadosAll(): Collection
+    {
+        return Area::with([
+            'areaNiveles.nivel'
+        ])
+        ->get(['id_area', 'nombre', 'descripcion', 'activo']);
     }
     
     public function getById(int $id): ?AreaNivel
