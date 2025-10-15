@@ -11,13 +11,13 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             // Prerrequisitos
-            AreaSeeder::class,
+            /*AreaSeeder::class,
             NivelSeeder::class,
             AreaNivelSeeder::class,
-            InstitucionSeeder::class,
+            InstitucionSeeder::class,*/
             RegisterAdmin::class,
-            ResponsableAreaSeeder::class,
-            CompetidorSeeder::class,
+            /*ResponsableAreaSeeder::class,
+            CompetidorSeeder::class,*/
         ]);
     }
 }
