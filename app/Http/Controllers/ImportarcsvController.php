@@ -183,15 +183,15 @@ class ImportarcsvController extends Controller
                 $response['errores'] = $competidoresConError;
             }
 
-            $mensajeResumen = "Importación completada. " . 
-                count($competidoresCreados) . " competidores importados";
+            $mensajeResumen = "El archivo ha sido importado. " . 
+                count($competidoresCreados) . " competidores han sido registrados";
 
             if (count($competidoresDuplicados) > 0) {
-                $mensajeResumen .= ", " . count($competidoresDuplicados) . " omitidos por duplicidad";
+                $mensajeResumen .= ", " . count($competidoresDuplicados) . " han sido omitidos por duplicidad";
             }
 
             if (count($competidoresConError) > 0) {
-                $mensajeResumen .= ", " . count($competidoresConError) . " con errores";
+                $mensajeResumen .= ", " . count($competidoresConError) . " contienen errores y no fueron importados";
             }
 
             $response['message'] = $mensajeResumen;
@@ -209,11 +209,9 @@ class ImportarcsvController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             
-            // MEJORAR EL MENSAJE DE ERROR PARA DUPLICADOS
-            $mensajeError = 'Error al importar competidores';
+            $mensajeError = 'Hubo un error al importar competidores, parece existen datos duplicados o inválidos';
             $detallesError = $e->getMessage();
             
-            // Si es error de duplicidad, extraer información detallada
             if (str_contains($detallesError, 'Duplicate entry')) {
                 $mensajeError = 'Error de duplicidad en la base de datos';
                 $detallesDuplicidad = $this->analizarErrorDuplicidad($detallesError);
@@ -230,9 +228,6 @@ class ImportarcsvController extends Controller
         }
     }
 
-    /**
-     * Verifica detalladamente qué campos están duplicados en la misma área y nivel
-     */
     private function verificarDuplicadoDetallado(string $ci, string $email, ?string $telefono, int $areaId, int $nivelId): array
     {
         // Buscar competidores en la misma área y nivel
@@ -265,7 +260,6 @@ class ImportarcsvController extends Controller
                     'campos' => $duplicadosEnEsteCompetidor
                 ];
                 
-                // Agregar campos al array general
                 $camposDuplicados = array_merge($camposDuplicados, $duplicadosEnEsteCompetidor);
             }
         }
@@ -304,14 +298,10 @@ class ImportarcsvController extends Controller
         ];
     }
 
-    /**
-     * Analiza el error de duplicidad de la base de datos para extraer información
-     */
     private function analizarErrorDuplicidad(string $mensajeError): array
     {
         $detalles = [];
         
-        // Extraer información del error SQL de duplicidad
         if (preg_match("/Duplicate entry '([^']+)' for key '([^']+)'/", $mensajeError, $matches)) {
             $valorDuplicado = $matches[1];
             $campoDuplicado = $matches[2];
@@ -338,9 +328,6 @@ class ImportarcsvController extends Controller
         return $detalles;
     }
 
-    /**
-     * Obtener todos los competidores
-     */
     public function index(): JsonResponse
     {
         try {
