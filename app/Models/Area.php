@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Area extends Model {
     use HasFactory;
 
-    protected $table = 'area';
+    protected $table = 'areas';
     protected $primaryKey = 'id_area';
-    protected $fillable = ['nombre', 'descripcion', 'activo'];
+    protected $fillable = ['nombre'];
 
     public function codigoEncargado() {
         return $this->hasOne(CodigoEncargado::class, 'id_area', 'id_area');

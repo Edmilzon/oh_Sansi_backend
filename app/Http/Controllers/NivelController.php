@@ -24,11 +24,9 @@ class NivelController extends Controller {
     return DB::transaction(function() use ($request) {
 
         $validatedData = $request->validate([
-            'nombre' => 'required|string',
-            'descripcion' => 'nullable|string',
-            'orden' => 'nullable|integer'
+            'nombre' => 'required|string'
         ]);
-
+ 
         $existeNivel = Nivel::where('nombre', $validatedData['nombre'])->first();
         if ($existeNivel) {
             return response()->json([
@@ -44,5 +42,4 @@ class NivelController extends Controller {
         ], 201);
     });
 }
-
 }

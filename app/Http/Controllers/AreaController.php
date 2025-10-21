@@ -25,7 +25,6 @@ class AreaController extends Controller {
 
        $validateData = $request->validate([
             'nombre'      => 'required|string',
-            'descripcion' => 'nullable|string',
         ]);
 
         
