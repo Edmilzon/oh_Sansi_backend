@@ -48,10 +48,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('telefono')->nullable();
-            $table->unsignedBigInteger('id_olimpiada');
             $table->timestamps();
-
-            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiadas')->onDelete('cascade');
         });
 
         Schema::create('roles', function (Blueprint $table) {

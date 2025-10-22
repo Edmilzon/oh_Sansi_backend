@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Persona;
+use Illuminate\Database\Seeder; 
 use App\Models\Usuario;
 
 class RegisterAdmin extends Seeder
@@ -13,26 +12,20 @@ class RegisterAdmin extends Seeder
      */
     public function run(): void
     {
-        // Datos del administrador
-        $adminPersona = Persona::firstOrCreate(
-            ['email' => 'admin@ohsansi.com'],
+        // 1. Crear o encontrar el usuario administrador
+        $admin = Usuario::firstOrCreate(
+            [
+                'email' => 'admin@ohsansi.com',
+            ],
             [
                 'nombre' => 'Administrador',
                 'apellido' => 'Principal',
                 'ci' => '99999999',
-                'fecha_nac' => '1990-01-01',
-                'genero' => 'M',
                 'telefono' => '70000000',
+                'password' => 'Admin1234',
             ]
         );
 
-        Usuario::firstOrCreate(
-            ['id_persona' => $adminPersona->id_persona],
-            [
-                'nombre' => 'privilegiado',
-                'password' => 'Admin1234*',
-                'rol' => Usuario::ROL_ADMIN,
-            ]
-        );
+        $admin->asignarRol('Administrador', 1);
     }
 }

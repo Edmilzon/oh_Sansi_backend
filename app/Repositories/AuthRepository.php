@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\Usuario;
-use App\Models\Persona;
 
 class AuthRepository
 {
@@ -15,7 +14,6 @@ class AuthRepository
      */
     public function findUserByEmail(string $email): ?Usuario
     {
-        $persona = Persona::where('email', $email)->first();
-        return $persona ? $persona->usuario : null;
+        return Usuario::where('email', $email)->first();
     }
 }

@@ -3,6 +3,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Area; // Importar el modelo Area
+use App\Models\Nivel; // Importar el modelo Nivel
+use App\Models\Olimpiada; // Importar el modelo Olimpiada
 
 class AreaNivel extends Model {
     use HasFactory;
@@ -24,6 +27,8 @@ class AreaNivel extends Model {
     public function nivel() {
         return $this->belongsTo(Nivel::class, 'id_nivel');
     }
+
+    public function olimpiada() {
+        return $this->belongsTo(Olimpiada::class, 'id_olimpiada', 'id_olimpiada');
+    }
 }
-
-

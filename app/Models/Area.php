@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\CodigoEncargado; // Importar el modelo CodigoEncargado (asumiendo que existe)
 
 class Area extends Model {
     use HasFactory;
@@ -20,5 +21,3 @@ class Area extends Model {
         return $this->hasMany(AreaNivel::class, 'id_area');
     }
 }
-
-

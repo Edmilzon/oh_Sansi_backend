@@ -24,35 +24,36 @@ class ResponsableService {
         {
             $plainPassword = $data['password'];
 
-            $persona = $this->responsableRepository->createPersona([
+            // 1. Crear el usuario
+            $usuario = $this->responsableRepository->createUsuario([
                 'nombre' => $data['nombre'],
                 'apellido' => $data['apellido'],
                 'ci' => $data['ci'],
                 'email' => $data['email'],
-            ]);
-
-            $usuario = $this->responsableRepository->createUsuario([
-                'nombre' => $data['email'],
                 'password' => $data['password'],
-                'rol' => \App\Models\Usuario::ROL_RESPONSABLE,
-                'id_persona' => $persona->id_persona,
-                'id_codigo_evaluador' => null,
-                'id_codigo_encargado' => null,
+                'telefono' => $data['telefono'] ?? null,
             ]);
 
-            foreach ($data['areas'] as $id_area) {
+            // 2. Asignar el rol de "Responsable Area" al usuario para la olimpiada especificada
+            // Asegúrate de que $data['id_olimpiada'] venga en la solicitud y esté validado.
+            $usuario->asignarRol('Responsable Area', $data['id_olimpiada']);
+
+            // 3. Asociar al usuario con sus areas/niveles
+            // La tabla 'responsable_area' parece asociar un usuario a un 'id_area_nivel'
+            // Tu request actual envía 'areas', que parece ser un array de 'id_area'.
+            // Esto necesita ser ajustado según la lógica de negocio.
+            // Por ejemplo, si se asocia a un 'id_area_nivel':
+            foreach ($data['areas_niveles'] as $id_area_nivel) {
                 $this->responsableRepository->createResponsable([
-                    'id_persona' => $persona->id_persona,
-                    'activo' => true,
-                    'id_area' => $id_area,
-                    'fecha_asignacion' => now()
+                    'id_usuario' => $usuario->id_usuario,
+                    'id_area_nivel' => $id_area_nivel,
                 ]);
             }
 
             // Enviar el correo electrónico con las credenciales
-            Mail::to($persona->email)->send(new UserCredentialsMail($persona->nombre, $persona->email, $plainPassword));
+            Mail::to($usuario->email)->send(new UserCredentialsMail($usuario->nombre, $usuario->email, $plainPassword));
 
-            return $persona->load(['usuario', 'responsableArea']);
+            return $usuario->load(['roles', 'responsableArea']);
 
         });
     }

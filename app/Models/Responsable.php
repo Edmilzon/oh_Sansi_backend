@@ -4,32 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Persona;
 
 class Responsable extends Model {
     use HasFactory;
 
     protected $table = 'responsable_area';         
-    protected $primaryKey = 'id_responsable_area';  
+    protected $primaryKey = 'id_responsableArea';  
 
     protected $fillable = [
-        'fecha_asignacion',
-        'activo',
-        'id_persona',
-        'id_area'
+        'id_usuario',
+        'id_area_nivel'
     ];
-
-    protected $casts = [
-        'activo' => 'boolean',
-    ];
-
-    public function persona() {
-        return $this->belongsTo(Persona::class, 'id_persona', 'id_persona');
-    }  
     
-    public function area()
+    public function areaNivel()
     {
-        return $this->belongsTo(\App\Models\Area::class, 'id_area', 'id_area');
+        return $this->belongsTo(AreaNivel::class, 'id_area_nivel');
     }
 }
 
