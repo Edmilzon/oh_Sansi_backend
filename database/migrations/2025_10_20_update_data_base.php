@@ -27,6 +27,16 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('area_olimpiada', function (Blueprint $table) {
+            $table->id('id_area_olimpiada');
+            $table->unsignedBigInteger('id_area');
+            $table->unsignedBigInteger('id_olimpiada');
+            $table->timestamps();
+
+            $table->foreign('id_area')->references('id_area')->on('areas')->onDelete('cascade');
+            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiadas')->onDelete('cascade');
+        });
+
         Schema::create('area_nivel', function (Blueprint $table) {
             $table->id('id_area_nivel');
             $table->unsignedBigInteger('id_area');
@@ -258,5 +268,6 @@ return new class extends Migration
         Schema::dropIfExists('olimpiadas');
         Schema::dropIfExists('niveles');
         Schema::dropIfExists('areas');
+        Schema::dropIfExists('area_olimpiada');
     }
 };

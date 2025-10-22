@@ -51,6 +51,7 @@ Route::prefix('v1')->group(function () {
 //area mostrar y insertar
 Route::get('/area', [AreaController::class, 'index']);
 Route::post('/area', [AreaController::class, 'store']);
+Route::get('/areas/{gestion}', [AreaController::class, 'getAreasPorGestion']);
 
 //responsable de area mostrar y insertar 
 Route::get('/responsableArea', [ResponsableController::class, 'index']);

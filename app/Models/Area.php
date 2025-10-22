@@ -11,6 +11,8 @@ class Area extends Model {
     protected $table = 'areas';
     protected $primaryKey = 'id_area';
     protected $fillable = ['nombre'];
+    
+    protected $hidden = ['pivot'];
 
     public function codigoEncargado() {
         return $this->hasOne(CodigoEncargado::class, 'id_area', 'id_area');
@@ -19,6 +21,15 @@ class Area extends Model {
     public function areaNiveles(){
         return $this->hasMany(AreaNivel::class, 'id_area');
     }
+
+    public function olimpiadas() {
+        return $this->belongsToMany(Olimpiada::class, 'area_olimpiada', 'id_area', 'id_olimpiada')
+                    ->withTimestamps();
+    }
+
+    public function scopeDeOlimpiada($query, $idOlimpiada) {
+        return $query->whereHas('olimpiadas', function($q) use ($idOlimpiada) {
+            $q->where('id_olimpiada', $idOlimpiada);
+        });
+    }
 }
-
-
