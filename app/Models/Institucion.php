@@ -13,6 +13,13 @@ class Institucion extends Model
     protected $primaryKey = 'id_institucion';
 
     protected $fillable = [
-        'nombre', 'tipo', 'departamento', 'direccion', 'telefono', 'id_persona'
+        'nombre',
+        'tipo',
+        'departamento',
+        'direccion',
+        'telefono',
     ];
+    public function competidores() {
+        return $this->hasMany(Competidor::class, 'id_institucion', 'id_institucion');
+    }
 }

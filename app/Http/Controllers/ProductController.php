@@ -26,7 +26,7 @@ class ProductController extends Controller {
             'price'       => 'required|numeric',
             'stock'       => 'required|integer',
             'category'    => 'nullable|string',
-            'image_url'   => 'required|string',
+            'image_url'   => 'required|url',
             'is_active'   => 'boolean'
         ]);
         
