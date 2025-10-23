@@ -22,9 +22,6 @@ class Area extends Model {
     public function areaNiveles(){
         return $this->hasMany(AreaNivel::class, 'id_area');
     }
-<<<<<<< HEAD
-}
-=======
 
     public function olimpiadas() {
         return $this->belongsToMany(Olimpiada::class, 'area_olimpiada', 'id_area', 'id_olimpiada')
@@ -33,8 +30,10 @@ class Area extends Model {
 
     public function scopeDeOlimpiada($query, $idOlimpiada) {
         return $query->whereHas('olimpiadas', function($q) use ($idOlimpiada) {
-            $q->where('id_olimpiada', $idOlimpiada);
+            $q->where('olimpiadas.id_olimpiada', $idOlimpiada);
         });
     }
 }
->>>>>>> 7875b2d4133b40c8e8b2e009bacd4fc7f4ce860a
+
+   
+

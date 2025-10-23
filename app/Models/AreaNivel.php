@@ -15,6 +15,7 @@ class AreaNivel extends Model {
     protected $fillable = [
         'id_area',
         'id_nivel',
+        'id_olimpiada',
         'activo'];
 
     protected $casts = [

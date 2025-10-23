@@ -18,7 +18,12 @@ class OlimpiadaService {
     }
     
     public function obtenerOlimpiadaPorGestion($gestion) {
-        return Olimpiada::where('gestion', $gestion)->first();
+
+        $nombreOlimpiada = "Olimpiadas Oh! Sansi " . substr($gestion, -4);
+        return Olimpiada::firstOrCreate(
+            ['gestion' => $gestion],
+            ['nombre' => $nombreOlimpiada]
+        );
     }
     
     public function verificarGestionExiste($gestion) {

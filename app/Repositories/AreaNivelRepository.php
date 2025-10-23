@@ -8,36 +8,51 @@ use Illuminate\Database\Eloquent\Collection;
 class AreaNivelRepository{
 
     public function getAllAreasNiveles(): Collection{
-        return AreaNivel::with(['area', 'nivel'])->get();
+        return AreaNivel::with(['areas', 'nivel','olimpiada'])->get();
     }
 
-    public function getByArea(int $id_area): Collection
+    public function getByArea(int $id_area, ?int $idOlimpiada = null): Collection
     {
-    return AreaNivel::where('id_area', $id_area)-> get();
+    $query = AreaNivel::where('id_area', $id_area);
+    
+    if ($idOlimpiada) {
+        $query->where('id_olimpiada', $idOlimpiada);
     }
     
-    public function getByAreaAll(int $id_area): Collection
+    return $query->get();
+    }
+    
+    public function getByAreaAll(int $id_area, ?int $idOlimpiada = null): Collection
     {
-    return AreaNivel::with([
-        'area:id_area,nombre,descripcion,activo',
-        'nivel:id_nivel,nombre,descripcion,orden'
+    $query = AreaNivel::with([
+        'areas:id_area,nombre',
+        'nivel:id_nivel,nombre',
+        'olimpiada:id_olimpiada,gestion'
     ])
-    ->where('id_area', $id_area)
-    ->get();
+    ->where('id_area', $id_area);
+
+    if ($idOlimpiada) {
+        $query->where('id_olimpiada', $idOlimpiada);
+    }
+    return $query->get();
     }
 
     public function getAreaNivelAsignadosAll(): Collection
     {
         return Area::with([
-            'areaNiveles.nivel:id_nivel,nombre,orden'
+            'areaNiveles' => function($query) use ($idOlimpiada) {
+                $query->where('id_olimpiada', $idOlimpiada);
+            },
+            'areaNiveles.niveles:id_nivel,nombre,orden'
         ])
-        ->where ('activo', true)
+        ->where('activo', true)
         ->get(['id_area', 'nombre', 'activo']);
     }
     
+    
     public function getById(int $id): ?AreaNivel
     {
-        return AreaNivel::with(['area', 'nivel'])->find($id);
+        return AreaNivel::with(['areas', 'niveles','olimpiada'])->find($id);
     }
 
     public function createAreaNivel(array $data): AreaNivel

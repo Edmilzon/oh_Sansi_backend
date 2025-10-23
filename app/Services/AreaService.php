@@ -19,13 +19,7 @@ class AreaService {
     }
 
     public function getAreasPorGestion($gestion){
-        if (!$this->olimpiadaService->verificarGestionExiste($gestion)) {
-            return [
-                'error' => true,
-                'message' => "La gestión '$gestion' no existe"
-            ];
-        }
-        
+
         $olimpiada = $this->olimpiadaService->obtenerOlimpiadaPorGestion($gestion);
         
         if (!$olimpiada) {

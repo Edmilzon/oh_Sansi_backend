@@ -36,16 +36,12 @@ class AreaNivelController extends Controller {
     public function store(Request $request){
     try {
         $validatedData = $request->validate([
-            '*.id_area' => 'required|integer|exists:area,id_area',
-            '*.id_nivel' => 'required|integer|exists:nivel,id_nivel', 
+            '*.id_area' => 'required|integer|exists:areas,id_area',
+            '*.id_nivel' => 'required|integer|exists:niveles,id_nivel', 
             '*.activo' => 'required|boolean'
         ]);
-
-        \Log::info('=== INICIANDO STORE - DATOS VALIDADOS ===', $validatedData);
         
         $result = $this->areaNivelService->createMultipleAreaNivel($validatedData);
-        
-        \Log::info('=== STORE COMPLETADO ===', $result);
         
         return response()->json([
             'success' => true,
@@ -55,7 +51,7 @@ class AreaNivelController extends Controller {
         ], 201);
         
     } catch (\Exception $e) {
-        \Log::error('=== ERROR EN STORE ===', [
+        \Log::error('=== ERROR EN GUARDADO ===', [
             'error' => $e->getMessage(),
             'trace' => $e->getTraceAsString()
         ]);

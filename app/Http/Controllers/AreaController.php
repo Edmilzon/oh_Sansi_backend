@@ -59,26 +59,35 @@ class AreaController extends Controller {
         }
     }
 
-    public function store(Request $request) {
-       return DB::transaction(function() use ($request) {
-
-       $validateData = $request->validate([
-            'nombre' => 'required|string',
+    public function store(Request $request){
+    try {
+        $validatedData = $request->validate([
+            '*.id_area' => 'required|integer|exists:areas,id_area',
+            '*.id_nivel' => 'required|integer|exists:niveles,id_nivel', 
+            '*.activo' => 'required|boolean'
         ]);
-
-        $existeArea = Area::where('nombre', $validateData['nombre'])->first();
-        if ($existeArea) {
-            return response()->json([
-                'error' => 'El nombre del Área se encuentra registrado'
-            ], 422);
-        }
-
-        $area = $this->areaService->createNewArea($validateData);
-
+        
+        $result = $this->areaNivelService->createMultipleAreaNivel($validatedData);
+        
         return response()->json([
-            'area' => $area,
-            'message' => 'Área creada y asociada a la olimpiada actual'
+            'success' => true,
+            'data' => $result['area_niveles'],
+            'olimpiada' => $result['olimpiada'],
+            'message' => $result['message'],
+            'count_created' => count($result['area_niveles'])
         ], 201);
-    });
+        
+    } catch (\Exception $e) {
+        \Log::error('=== ERROR EN STORE ===', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al crear las relaciones área-nivel: ' . $e->getMessage(),
+            'debug_info' => 'Revisar logs para más detalles'
+        ], 400);
     }
+}
 }
