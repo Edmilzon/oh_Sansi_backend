@@ -56,6 +56,7 @@ Route::get('/areas/{gestion}', [AreaController::class, 'getAreasPorGestion']);
 //responsable de area mostrar y insertar 
 Route::get('/responsableArea', [ResponsableController::class, 'index']);
 Route::post('/responsableArea', [ResponsableController::class, 'store']);
+Route::get('/usuarios/roles/{ci}', [ResponsableController::class, 'showRolesByCi']);
 
 // Competidores por Responsable de Área
 Route::get('/responsables/{id_persona}/competidores', [ResponsableCompetidorController::class, 'index']);
