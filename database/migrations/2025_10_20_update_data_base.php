@@ -8,19 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('areas', function (Blueprint $table) {
+        Schema::create('area', function (Blueprint $table) {
             $table->id('id_area');
             $table->string('nombre');
             $table->timestamps();
         });
 
-        Schema::create('niveles', function (Blueprint $table) {
+        Schema::create('nivel', function (Blueprint $table) {
             $table->id('id_nivel');
             $table->string('nombre');
             $table->timestamps();
         });
 
-        Schema::create('olimpiadas', function (Blueprint $table) {
+        Schema::create('olimpiada', function (Blueprint $table) {
             $table->id('id_olimpiada');
             $table->string('nombre');
             $table->string('gestion');
@@ -33,8 +33,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_olimpiada');
             $table->timestamps();
 
-            $table->foreign('id_area')->references('id_area')->on('areas')->onDelete('cascade');
-            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiadas')->onDelete('cascade');
+            $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
+            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiada')->onDelete('cascade');
         });
 
         Schema::create('area_nivel', function (Blueprint $table) {
@@ -45,12 +45,12 @@ return new class extends Migration
             $table->boolean('activo')->default(true);
             $table->timestamps();
 
-            $table->foreign('id_area')->references('id_area')->on('areas')->onDelete('cascade');
-            $table->foreign('id_nivel')->references('id_nivel')->on('niveles')->onDelete('cascade');
-            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiadas')->onDelete('cascade');
+            $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
+            $table->foreign('id_nivel')->references('id_nivel')->on('nivel')->onDelete('cascade');
+            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiada')->onDelete('cascade');
         });
 
-        Schema::create('usuarios', function (Blueprint $table) {
+        Schema::create('usuario', function (Blueprint $table) {
             $table->id('id_usuario');
             $table->string('nombre');
             $table->string('apellido');
@@ -61,7 +61,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('rol', function (Blueprint $table) {
             $table->id('id_rol');
             $table->string('nombre');
             $table->timestamps();
@@ -74,18 +74,18 @@ return new class extends Migration
             $table->unsignedBigInteger('id_olimpiada');
             $table->timestamps();
 
-            $table->foreign('id_usuario')->references('id_usuario')->on('usuarios')->onDelete('cascade');
-            $table->foreign('id_rol')->references('id_rol')->on('roles')->onDelete('cascade');
-            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiadas')->onDelete('cascade');
+            $table->foreign('id_usuario')->references('id_usuario')->on('usuario')->onDelete('cascade');
+            $table->foreign('id_rol')->references('id_rol')->on('rol')->onDelete('cascade');
+            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiada')->onDelete('cascade');
         });
 
-        Schema::create('instituciones', function (Blueprint $table) {
+        Schema::create('institucion', function (Blueprint $table) {
             $table->id('id_institucion');
             $table->string('nombre');
             $table->timestamps();
         });
 
-        Schema::create('parametros', function (Blueprint $table) {
+        Schema::create('parametro', function (Blueprint $table) {
             $table->id('id_parametro');
             $table->integer('nota_max_clasif');
             $table->integer('nota_min_clasif');
@@ -96,7 +96,7 @@ return new class extends Migration
             $table->foreign('id_area_nivel')->references('id_area_nivel')->on('area_nivel')->onDelete('cascade');
         });
 
-        Schema::create('fases', function (Blueprint $table) {
+        Schema::create('fase', function (Blueprint $table) {
             $table->id('id_fase');
             $table->string('nombre');
             $table->integer('orden')->default(1);
@@ -112,7 +112,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_area_nivel');
             $table->timestamps();
 
-            $table->foreign('id_usuario')->references('id_usuario')->on('usuarios')->onDelete('cascade');
+            $table->foreign('id_usuario')->references('id_usuario')->on('usuario')->onDelete('cascade');
             $table->foreign('id_area_nivel')->references('id_area_nivel')->on('area_nivel')->onDelete('cascade');
         });
 
@@ -122,21 +122,21 @@ return new class extends Migration
             $table->unsignedBigInteger('id_area_nivel');
             $table->timestamps();
 
-            $table->foreign('id_usuario')->references('id_usuario')->on('usuarios')->onDelete('cascade');
+            $table->foreign('id_usuario')->references('id_usuario')->on('usuario')->onDelete('cascade');
             $table->foreign('id_area_nivel')->references('id_area_nivel')->on('area_nivel')->onDelete('cascade');
         });
 
-        Schema::create('archivos_csv', function (Blueprint $table) {
+        Schema::create('archivo_csv', function (Blueprint $table) {
             $table->id('id_archivo_csv');
             $table->string('nombre');
             $table->date('fecha');
             $table->unsignedBigInteger('id_olimpiada');
             $table->timestamps();
 
-            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiadas')->onDelete('cascade');
+            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiada')->onDelete('cascade');
         });
 
-        Schema::create('competidores', function (Blueprint $table) {
+        Schema::create('competidor', function (Blueprint $table) {
             $table->id('id_competidor');
             $table->string('datos');
             $table->unsignedBigInteger('id_institucion');
@@ -144,12 +144,12 @@ return new class extends Migration
             $table->unsignedBigInteger('id_archivo_csv')->nullable();
             $table->timestamps();
 
-            $table->foreign('id_institucion')->references('id_institucion')->on('instituciones')->onDelete('cascade');
+            $table->foreign('id_institucion')->references('id_institucion')->on('institucion')->onDelete('cascade');
             $table->foreign('id_area_nivel')->references('id_area_nivel')->on('area_nivel')->onDelete('cascade');
-            $table->foreign('id_archivo_csv')->references('id_archivo_csv')->on('archivos_csv')->onDelete('set null');
+            $table->foreign('id_archivo_csv')->references('id_archivo_csv')->on('archivo_csv')->onDelete('set null');
         });
 
-        Schema::create('evaluaciones', function (Blueprint $table) {
+        Schema::create('evaluacion', function (Blueprint $table) {
             $table->id('id_evaluacion');
             $table->decimal('nota', 5, 2);
             $table->text('observaciones')->nullable();
@@ -160,10 +160,10 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('id_evaluadorAN')->references('id_evaluadorAN')->on('evaluador_an')->onDelete('set null');
-            $table->foreign('id_competidor')->references('id_competidor')->on('competidores')->onDelete('cascade');
+            $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('cascade');
         });
         
-        Schema::create('competencias', function (Blueprint $table) {
+        Schema::create('competencia', function (Blueprint $table) {
             $table->id('id_competencia');
             $table->date('fecha_inicio');
             $table->date('fecha_fin');
@@ -178,19 +178,19 @@ return new class extends Migration
 
             $table->foreign('id_responsableArea')->references('id_responsableArea')->on('responsable_area')->onDelete('set null');
             $table->foreign('id_evaluadorAN')->references('id_evaluadorAN')->on('evaluador_an')->onDelete('set null');
-            $table->foreign('id_competidor')->references('id_competidor')->on('competidores')->onDelete('set null');
-            $table->foreign('id_fase')->references('id_fase')->on('fases')->onDelete('set null');
-            $table->foreign('id_parametro')->references('id_parametro')->on('parametros')->onDelete('set null');
-            $table->foreign('id_evaluacion')->references('id_evaluacion')->on('evaluaciones')->onDelete('set null');
+            $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('set null');
+            $table->foreign('id_fase')->references('id_fase')->on('fase')->onDelete('set null');
+            $table->foreign('id_parametro')->references('id_parametro')->on('parametro')->onDelete('set null');
+            $table->foreign('id_evaluacion')->references('id_evaluacion')->on('evaluacion')->onDelete('set null');
         });
 
-        Schema::create('grupos', function (Blueprint $table) {
+        Schema::create('grupo', function (Blueprint $table) {
             $table->id('id_grupo');
             $table->string('nombre');
             $table->unsignedBigInteger('id_fase');
             $table->timestamps();
 
-            $table->foreign('id_fase')->references('id_fase')->on('fases')->onDelete('cascade');
+            $table->foreign('id_fase')->references('id_fase')->on('fase')->onDelete('cascade');
         });
 
         Schema::create('grupos_competidores', function (Blueprint $table) {
@@ -199,8 +199,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_competidor');
             $table->timestamps();
 
-            $table->foreign('id_grupo')->references('id_grupo')->on('grupos')->onDelete('cascade');
-            $table->foreign('id_competidor')->references('id_competidor')->on('competidores')->onDelete('cascade');
+            $table->foreign('id_grupo')->references('id_grupo')->on('grupo')->onDelete('cascade');
+            $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('cascade');
         });
 
         Schema::create('aval', function (Blueprint $table) {
@@ -212,8 +212,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_responsableArea');
             $table->timestamps();
 
-            $table->foreign('id_competencia')->references('id_competencia')->on('competencias')->onDelete('cascade');
-            $table->foreign('id_fase')->references('id_fase')->on('fases')->onDelete('cascade');
+            $table->foreign('id_competencia')->references('id_competencia')->on('competencia')->onDelete('cascade');
+            $table->foreign('id_fase')->references('id_fase')->on('fase')->onDelete('cascade');
             $table->foreign('id_responsableArea')->references('id_responsableArea')->on('responsable_area')->onDelete('cascade');
         });
 
@@ -225,8 +225,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_evaluacion')->nullable();
             $table->timestamps();
 
-            $table->foreign('id_competidor')->references('id_competidor')->on('competidores')->onDelete('cascade');
-            $table->foreign('id_evaluacion')->references('id_evaluacion')->on('evaluaciones')->onDelete('set null');
+            $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('cascade');
+            $table->foreign('id_evaluacion')->references('id_evaluacion')->on('evaluacion')->onDelete('set null');
         });
 
         Schema::create('medallero', function (Blueprint $table) {
@@ -237,8 +237,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_competencia');
             $table->timestamps();
 
-            $table->foreign('id_competidor')->references('id_competidor')->on('competidores')->onDelete('cascade');
-            $table->foreign('id_competencia')->references('id_competencia')->on('competencias')->onDelete('cascade');
+            $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('cascade');
+            $table->foreign('id_competencia')->references('id_competencia')->on('competencia')->onDelete('cascade');
         });
     }
 
@@ -248,23 +248,23 @@ return new class extends Migration
         Schema::dropIfExists('desclasificaciones');
         Schema::dropIfExists('aval');
         Schema::dropIfExists('grupos_competidores');
-        Schema::dropIfExists('grupos');
-        Schema::dropIfExists('evaluaciones');
-        Schema::dropIfExists('competencias');
-        Schema::dropIfExists('competidores');
-        Schema::dropIfExists('archivos_csv');
+        Schema::dropIfExists('grupo');
+        Schema::dropIfExists('evaluacion');
+        Schema::dropIfExists('competencia');
+        Schema::dropIfExists('competidor');
+        Schema::dropIfExists('archivo_csv');
         Schema::dropIfExists('evaluador_an');
         Schema::dropIfExists('responsable_area');
-        Schema::dropIfExists('fases');
-        Schema::dropIfExists('parametros');
-        Schema::dropIfExists('instituciones');
+        Schema::dropIfExists('fase');
+        Schema::dropIfExists('parametro');
+        Schema::dropIfExists('institucion');
         Schema::dropIfExists('usuario_rol');
-        Schema::dropIfExists('roles');
-        Schema::dropIfExists('usuarios');
+        Schema::dropIfExists('rol');
+        Schema::dropIfExists('usuario');
         Schema::dropIfExists('area_nivel');
-        Schema::dropIfExists('olimpiadas');
-        Schema::dropIfExists('niveles');
-        Schema::dropIfExists('areas');
+        Schema::dropIfExists('olimpiada');
+        Schema::dropIfExists('nivel');
+        Schema::dropIfExists('area');
         Schema::dropIfExists('area_olimpiada');
     }
 };
