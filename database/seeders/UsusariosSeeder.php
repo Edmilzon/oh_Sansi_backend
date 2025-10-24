@@ -10,11 +10,13 @@ use Illuminate\Support\Facades\DB;
 class UsusariosSeeder extends Seeder{
     
     public function run():void{
-        // Crear olimpiada de prueba
-        $olimpiada = Olimpiada::create([
-            'nombre' => 'Olimpiada Científica Estudiantil 2024',
-            'gestion' => '2024',
-        ]);
+        // Buscar la olimpiada del año actual, que fue creada por OlimpiadaSeeder.
+        $olimpiada = Olimpiada::where('gestion', date('Y'))->first();
+
+        if (!$olimpiada) {
+            $this->command->error('No se encontró la olimpiada para el año actual. Asegúrate de que OlimpiadaSeeder se ejecute primero.');
+            return;
+        }
 
         // Crear usuarios de prueba para cada rol
         $usuarios = [

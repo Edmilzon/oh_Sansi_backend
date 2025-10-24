@@ -19,8 +19,10 @@ class DatabaseSeeder extends Seeder
             RolesSeeder::class,
             OlimpiadaSeeder::class, 
             AreasSeeder::class,
+            NivelesSeeder::class,
             UsusariosSeeder::class,
-            Olimpiada2023Seeder::class, // <-- Añadido el nuevo seeder
+            Olimpiada2023Seeder::class,
+            Olimpiadas2024Seeder::class,
         ]);
     }
 }

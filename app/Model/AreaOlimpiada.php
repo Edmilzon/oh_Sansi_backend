@@ -29,4 +29,12 @@ class AreaOlimpiada extends Model
      * @var array
      */
     protected $fillable = ['id_area', 'id_olimpiada'];
+
+    /**
+     * Obtiene la olimpiada a la que pertenece esta área.
+     */
+    public function olimpiada()
+    {
+        return $this->belongsTo(Olimpiada::class, 'id_olimpiada', 'id_olimpiada');
+    }
 }

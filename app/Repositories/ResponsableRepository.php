@@ -147,6 +147,78 @@ class ResponsableRepository
     }
 
     /**
+     * Encuentra las gestiones (olimpiadas) en las que un responsable ha trabajado, buscado por CI.
+     *
+     * @param string $ci
+     * @return array
+     */
+    public function findGestionesByCi(string $ci): array
+    {
+        $usuario = Usuario::where('ci', $ci)
+            ->whereHas('roles', function ($query) {
+                $query->where('nombre', 'Responsable Area');
+            })
+            ->with('roles')
+            ->first();
+
+        if (!$usuario) {
+            return [];
+        }
+
+        $olimpiadaIds = $usuario->roles->pluck('pivot.id_olimpiada')->unique()->values();
+
+        $olimpiadas = \App\Model\Olimpiada::whereIn('id_olimpiada', $olimpiadaIds)
+            ->get(['id_olimpiada', 'gestion']);
+
+        return $olimpiadas->map(function ($olimpiada) {
+            return [
+                'Id_olimpiada' => $olimpiada->id_olimpiada,
+                'gestion' => $olimpiada->gestion,
+            ];
+        })->toArray();
+    }
+
+    /**
+      * Encuentra las áreas asignadas a un responsable por su CI y una gestión específica.
+     *
+     * @param string $ci
+     * @param string $gestion
+     * @return array
+     */
+    public function findAreasByCiAndGestion(string $ci, string $gestion): array
+    {
+        $usuario = Usuario::where('ci', $ci)
+            ->whereHas('roles', function ($query) use ($gestion) {
+                $query->where('nombre', 'Responsable Area');
+                $query->whereIn('usuario_rol.id_olimpiada', function ($subquery) use ($gestion) {
+                    $subquery->select('id_olimpiada')->from('olimpiada')->where('gestion', $gestion);
+                });
+            })
+            ->with(['responsableArea.areaOlimpiada.olimpiada', 'responsableArea.area'])
+            ->first();
+
+        if (!$usuario) {
+            return [];
+        }
+
+        // Filtrar las áreas para que coincidan solo con la gestión solicitada
+        $areasDeLaGestion = $usuario->responsableArea->filter(function ($responsableArea) use ($gestion) {
+            return $responsableArea->areaOlimpiada && $responsableArea->areaOlimpiada->olimpiada->gestion == $gestion;
+        });
+
+        // Formatear la salida como se solicitó
+        return $areasDeLaGestion->map(function ($responsableArea) {
+            return [
+                'id_responsable_area' => $responsableArea->id_responsableArea,
+                'Area' => [
+                    'Id_area' => $responsableArea->area->id_area,
+                    'Nombre' => $responsableArea->area->nombre,
+                ]
+            ];
+        })->values()->toArray();
+    }
+
+    /**
      * Actualiza un usuario existente.
      *
      * @param int $id

@@ -6,6 +6,7 @@ use App\Http\Controllers\ResponsableController;
 use App\Http\Controllers\NivelController;
 // use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\AreaOlimpiadaController;
 use App\Http\Controllers\EvaluadorController;
 // use App\Http\Controllers\ResponsableController;
 // use App\Http\Controllers\Responsable\CompetidorController as ResponsableCompetidorController;
@@ -57,6 +58,8 @@ Route::prefix('responsables')->group(function () {
     Route::post('/', [ResponsableController::class, 'store']);
     Route::get('/', [ResponsableController::class, 'index']);
     Route::get('/{id}', [ResponsableController::class, 'show']);
+    Route::get('/ci/{ci}/gestiones', [ResponsableController::class, 'getGestionesByCi']);
+    Route::get('/ci/{ci}/gestion/{gestion}/areas', [ResponsableController::class, 'getAreasByCiAndGestion']);
 });
 
 // Rutas para evaluadores
@@ -65,6 +68,8 @@ Route::prefix('evaluadores')->group(function () {
     Route::get('/', [EvaluadorController::class, 'index']);
     Route::get('/{id}', [EvaluadorController::class, 'show']);
 });
+
+Route::get('olimpiadas/{identifier}/areas', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);
 
 //Rutas para la gestión de niveles
 Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);

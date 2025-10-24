@@ -123,4 +123,60 @@ class ResponsableController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Obtiene las gestiones en las que ha trabajado un responsable por su CI.
+     *
+     * @param string $ci
+     * @return JsonResponse
+     */
+    public function getGestionesByCi(string $ci): JsonResponse
+    {
+        try {
+            $gestiones = $this->responsableService->getGestionesByCi($ci);
+
+            if (empty($gestiones)) {
+                return response()->json([
+                    'message' => 'No se encontraron gestiones para el responsable con el CI proporcionado o el usuario no es un responsable.',
+                    'data' => []
+                ]);
+            }
+
+            return response()->json($gestiones);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener las gestiones del responsable.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Obtiene las áreas asignadas a un responsable para una gestión específica.
+     *
+     * @param string $ci
+     * @param string $gestion
+     * @return JsonResponse
+     */
+    public function getAreasByCiAndGestion(string $ci, string $gestion): JsonResponse
+    {
+        try {
+            $areas = $this->responsableService->getAreasByCiAndGestion($ci, $gestion);
+
+            if (empty($areas)) {
+                return response()->json([
+                    'message' => 'No se encontraron áreas asignadas para el responsable con el CI y la gestión proporcionados.',
+                    'data' => []
+                ]);
+            }
+
+            return response()->json($areas);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener las áreas del responsable.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

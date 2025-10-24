@@ -90,6 +90,29 @@ class ResponsableService
     }
 
     /**
+     * Obtiene las gestiones (olimpiadas) en las que ha trabajado un responsable.
+     *
+     * @param string $ci
+     * @return array
+     */
+    public function getGestionesByCi(string $ci): array
+    {
+        return $this->responsableRepository->findGestionesByCi($ci);
+    }
+
+    /**
+     * Obtiene las áreas asignadas a un responsable para una gestión específica.
+     *
+     * @param string $ci
+     * @param string $gestion
+     * @return array
+     */
+    public function getAreasByCiAndGestion(string $ci, string $gestion): array
+    {
+        return $this->responsableRepository->findAreasByCiAndGestion($ci, $gestion);
+    }
+
+    /**
      * Actualiza un responsable existente.
      *
      * @param int $id
