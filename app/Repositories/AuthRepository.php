@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Models\Usuario;
-use App\Models\Roles;
+use App\Model\Usuario;
+use App\Model\Roles;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -49,9 +49,7 @@ class AuthRepository
      */
     public function getUserWithRoles(Usuario $user): Usuario
     {
-        return $user->load(['roles' => function ($query) {
-            $query->with('olimpiada');
-        }]);
+        return $user->load('roles');
     }
 
     /**
@@ -93,12 +91,11 @@ class AuthRepository
     public function getUserOlimpiadas(Usuario $user)
     {
         return $user->roles()
-            ->with('olimpiada')
             ->get()
             ->pluck('pivot.id_olimpiada')
             ->unique()
             ->map(function ($idOlimpiada) {
-                return \App\Models\Olimpiada::find($idOlimpiada);
+                return \App\Model\Olimpiada::find($idOlimpiada);
             })
             ->filter();
     }

@@ -5,8 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Usuario;
-use App\Models\Olimpiada;
+use App\Model\Usuario;
+use App\Model\Olimpiada;
 
 class DataBaseSeeder extends Seeder
 {
@@ -33,7 +33,7 @@ class DataBaseSeeder extends Seeder
                 'apellido' => 'Sistema',
                 'ci' => '12345678',
                 'email' => 'admin@ohsansi.com',
-                'password' => Hash::make('admin123'),
+                'password' => 'admin123',
                 'telefono' => '12345678',
             ],
             [
@@ -41,7 +41,7 @@ class DataBaseSeeder extends Seeder
                 'apellido' => 'Responsable',
                 'ci' => '87654321',
                 'email' => 'responsable@ohsansi.com',
-                'password' => Hash::make('responsable123'),
+                'password' => 'responsable123',
                 'telefono' => '87654321',
             ],
             [
@@ -49,7 +49,7 @@ class DataBaseSeeder extends Seeder
                 'apellido' => 'Evaluadora',
                 'ci' => '11223344',
                 'email' => 'evaluador@ohsansi.com',
-                'password' => Hash::make('evaluador123'),
+                'password' => 'evaluador123',
                 'telefono' => '11223344',
             ],
         ];

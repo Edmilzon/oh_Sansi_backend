@@ -1,15 +1,15 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\EvaluadorController;
-use App\Http\Controllers\NivelController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\AreaController;
-use App\Http\Controllers\ResponsableController;
-use App\Http\Controllers\Responsable\CompetidorController as ResponsableCompetidorController;
-use App\Http\Controllers\ImportarcsvController;
-use App\Http\Controllers\FaseController;
-use App\Http\Controllers\AreaNivelController;
+// use App\Http\Controllers\EvaluadorController;
+// use App\Http\Controllers\NivelController;
+// use App\Http\Controllers\ProductController;
+// use App\Http\Controllers\AreaController;
+// use App\Http\Controllers\ResponsableController;
+// use App\Http\Controllers\Responsable\CompetidorController as ResponsableCompetidorController;
+// use App\Http\Controllers\ImportarcsvController;
+// use App\Http\Controllers\FaseController;
+// use App\Http\Controllers\AreaNivelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,12 +36,6 @@ Route::get('/', function () {
     return response()->json(['message' => 'API funcionando correctamente']);
 });
 
-// Rutas para la gestión de productos
-Route::apiResource('products', ProductController::class)->only(['index', 'store']);
-
-// Rutas para la gestión de niveles
-Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);
-
 // Rutas de autenticación
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
@@ -50,6 +44,14 @@ Route::prefix('auth')->group(function () {
         Route::get('me', [AuthController::class, 'me']);
     });
 });
+
+// Rutas comentadas temporalmente hasta que se creen los controladores
+/*
+// Rutas para la gestión de productos
+Route::apiResource('products', ProductController::class)->only(['index', 'store']);
+
+// Rutas para la gestión de niveles
+Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);
 
 // Rutas para la gestión de evaluadores
 Route::prefix('v1')->group(function () {
@@ -88,4 +90,5 @@ Route::get('area-niveles/{id_area}', [AreaNivelController::class, 'getByArea']);
 Route::put('area-niveles/{id_area}', [AreaNivelController::class, 'updateByArea']);
 Route::get('area-niveles/detalle/{id_area}', [AreaNivelController::class, 'getByAreaAll']);
 Route::get('/areas-con-niveles', [AreaNivelController::class, 'getAreasConNiveles']);
+*/
     

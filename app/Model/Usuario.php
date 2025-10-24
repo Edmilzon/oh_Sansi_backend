@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Models;
+namespace App\Model;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Roles;
-use App\Models\ResponsableArea; 
-use App\Models\EvaluadorAn; 
+use App\Model\Roles;
+use App\Model\ResponsableArea; 
+use App\Model\EvaluadorAn; 
 
 class Usuario extends Authenticatable
 {
