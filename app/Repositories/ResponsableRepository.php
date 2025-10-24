@@ -24,7 +24,7 @@ class ResponsableRepository
             'apellido' => $data['apellido'],
             'ci' => $data['ci'],
             'email' => $data['email'],
-            'password' => $data['password'], // El modelo Usuario tiene un mutator para hashear
+            'password' => $data['password'], 
             'telefono' => $data['telefono'] ?? null,
         ];
 
