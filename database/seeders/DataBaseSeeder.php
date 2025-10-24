@@ -18,6 +18,7 @@ class DataBaseSeeder extends Seeder
         // Ejecutar otros seeders
         $this->call([
             RolesSeeder::class,
+            AreasSeeder::class,
             UsusariosSeeder::class,
         ]);
     }

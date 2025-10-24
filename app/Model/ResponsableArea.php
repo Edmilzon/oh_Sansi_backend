@@ -14,7 +14,7 @@ class ResponsableArea extends Model
     
     protected $fillable = [
         'id_usuario',
-        'id_area_nivel',
+        'id_area',
     ];
 
     public function usuario()
@@ -22,8 +22,8 @@ class ResponsableArea extends Model
         return $this->belongsTo(Usuario::class, 'id_usuario', 'id_usuario');
     }
 
-    public function areaNivel()
+    public function area()
     {
-        return $this->belongsTo(AreaNivel::class, 'id_area_nivel', 'id_area_nivel');
+        return $this->belongsTo(Area::class, 'id_area', 'id_area');
     }
 }

@@ -109,11 +109,11 @@ return new class extends Migration
         Schema::create('responsable_area', function (Blueprint $table) {
             $table->id('id_responsableArea');
             $table->unsignedBigInteger('id_usuario');
-            $table->unsignedBigInteger('id_area_nivel');
+            $table->unsignedBigInteger('id_area');
             $table->timestamps();
 
             $table->foreign('id_usuario')->references('id_usuario')->on('usuario')->onDelete('cascade');
-            $table->foreign('id_area_nivel')->references('id_area_nivel')->on('area_nivel')->onDelete('cascade');
+            $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
         });
 
         Schema::create('evaluador_an', function (Blueprint $table) {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ResponsableController;
 // use App\Http\Controllers\EvaluadorController;
 // use App\Http\Controllers\NivelController;
 // use App\Http\Controllers\ProductController;
@@ -48,6 +49,13 @@ Route::prefix('auth')->group(function () {
 // Rutas para usuarios
 Route::prefix('usuarios')->group(function () {
     Route::get('ci/{ci}', [AuthController::class, 'getUserByCi']);
+});
+
+// Rutas para responsables de área
+Route::prefix('responsables')->group(function () {
+    Route::post('/', [ResponsableController::class, 'store']);
+    Route::get('/', [ResponsableController::class, 'index']);
+    Route::get('/{id}', [ResponsableController::class, 'show']);
 });
 
 // Rutas comentadas temporalmente hasta que se creen los controladores
