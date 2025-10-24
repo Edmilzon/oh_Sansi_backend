@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EvaluadorController;
 use App\Http\Controllers\NivelController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\ResponsableController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Responsable\CompetidorController as ResponsableCompetidorController;
 use App\Http\Controllers\ImportarcsvController;
 use App\Http\Controllers\FaseController;
@@ -42,10 +42,18 @@ Route::apiResource('products', ProductController::class)->only(['index', 'store'
 // Rutas para la gestión de niveles
 Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);
 
+// Rutas de autenticación
+Route::prefix('auth')->group(function () {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::get('me', [AuthController::class, 'me']);
+    });
+});
+
 // Rutas para la gestión de evaluadores
 Route::prefix('v1')->group(function () {
     Route::apiResource('evaluadores', EvaluadorController::class)->only(['store']);
-    Route::post('login', [AuthController::class, 'login']);
 });
 
 //area mostrar y insertar
