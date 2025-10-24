@@ -21,20 +21,20 @@ class AuthRepository
     }
 
     /**
-     * Verifica las credenciales del usuario.
+     * Verifica las credenciales del usuario por email.
      *
-     * @param string $ci
+     * @param string $email
      * @param string $password
      * @return Usuario|null
      * @throws ValidationException
      */
-    public function verifyCredentials(string $ci, string $password): ?Usuario
+    public function verifyCredentialsByEmail(string $email, string $password): ?Usuario
     {
-        $user = $this->findByCi($ci);
+        $user = Usuario::where('email', $email)->first();
 
         if (!$user || !Hash::check($password, $user->password)) {
             throw ValidationException::withMessages([
-                'ci' => ['Las credenciales proporcionadas son incorrectas.'],
+                'email' => ['Las credenciales proporcionadas son incorrectas.'],
             ]);
         }
 

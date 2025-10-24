@@ -26,12 +26,12 @@ class AuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         $request->validate([
-            'ci' => 'required|string',
+            'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
         try {
-            $result = $this->authService->login($request->only('ci', 'password'));
+            $result = $this->authService->login($request->only('email', 'password'));
             return response()->json($result);
         } catch (ValidationException $e) {
             return response()->json(['message' => $e->getMessage()], 401);
@@ -55,18 +55,25 @@ class AuthController extends Controller
     }
 
     /**
-     * Obtiene la información del usuario autenticado.
+     * Busca un usuario por su CI.
      *
-     * @param Request $request
+     * @param string $ci
      * @return JsonResponse
      */
-    public function me(Request $request): JsonResponse
+    public function getUserByCi(string $ci): JsonResponse
     {
         try {
-            $user = $this->authService->getUserWithRoles($request->user());
-            return response()->json($user);
+            $user = $this->authService->getUserByCi($ci);
+            
+            if (!$user) {
+                return response()->json(['message' => 'Usuario no encontrado'], 404);
+            }
+            
+            return response()->json([
+                'data' => $user
+            ]);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al obtener información del usuario'], 500);
+            return response()->json(['message' => 'Error al buscar usuario'], 500);
         }
     }
 }

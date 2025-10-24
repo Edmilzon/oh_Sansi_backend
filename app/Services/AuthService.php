@@ -25,11 +25,11 @@ class AuthService
      */
     public function login(array $credentials): array
     {
-        $ci = $credentials['ci'];
+        $email = $credentials['email'];
         $password = $credentials['password'];
 
         // Verificar credenciales
-        $user = $this->authRepository->verifyCredentials($ci, $password);
+        $user = $this->authRepository->verifyCredentialsByEmail($email, $password);
 
         // Crear token de acceso
         $token = $this->authRepository->createToken($user);
@@ -181,6 +181,37 @@ class AuthService
             'es_administrador' => $this->userHasRole($user, 'Administrador', $idOlimpiada),
             'es_responsable_area' => $this->userHasRole($user, 'Responsable Area', $idOlimpiada),
             'es_evaluador' => $this->userHasRole($user, 'Evaluador', $idOlimpiada),
+        ];
+    }
+
+    /**
+     * Obtiene información de un usuario por su CI.
+     *
+     * @param string $ci
+     * @return array|null
+     */
+    public function getUserByCi(string $ci): ?array
+    {
+        $user = $this->authRepository->findByCi($ci);
+        
+        if (!$user) {
+            return null;
+        }
+
+        // Obtener el primer rol del usuario (asumiendo que tiene al menos uno)
+        $firstRole = $user->roles()->first();
+        
+        return [
+            'Id_usuario' => $user->id_usuario,
+            'Nombres' => $user->nombre,
+            'Apellidos' => $user->apellido,
+            'Correo' => $user->email,
+            'Ci' => $user->ci,
+            'Teléfono' => $user->telefono,
+            'Rol' => $firstRole ? [
+                'Id_rol' => $firstRole->id_rol,
+                'Nombre_rol' => $firstRole->nombre
+            ] : null
         ];
     }
 }

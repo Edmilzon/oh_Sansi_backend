@@ -45,6 +45,11 @@ Route::prefix('auth')->group(function () {
     });
 });
 
+// Rutas para usuarios
+Route::prefix('usuarios')->group(function () {
+    Route::get('ci/{ci}', [AuthController::class, 'getUserByCi']);
+});
+
 // Rutas comentadas temporalmente hasta que se creen los controladores
 /*
 // Rutas para la gestión de productos
