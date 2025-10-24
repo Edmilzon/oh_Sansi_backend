@@ -22,10 +22,10 @@ class AreaNivelService
     private function obtenerOlimpiadaActual(): Olimpiada
     {
         $gestionActual = date('Y');
-        $nombreOlimpiada = "Olimpiadas Oh! Sansi $gestionActual";
+        $nombreOlimpiada = "Olimpiada Científica Estudiantil $gestionActual";
         
         return Olimpiada::firstOrCreate(
-            ['gestion' => "Gestión $gestionActual"],
+            ['gestion' => "$gestionActual"],
             ['nombre' => $nombreOlimpiada]
         );
     }
