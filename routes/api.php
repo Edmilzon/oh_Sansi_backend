@@ -3,9 +3,9 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ResponsableController;
 // use App\Http\Controllers\EvaluadorController;
-// use App\Http\Controllers\NivelController;
+use App\Http\Controllers\NivelController;
 // use App\Http\Controllers\ProductController;
-// use App\Http\Controllers\AreaController;
+use App\Http\Controllers\AreaController;
 // use App\Http\Controllers\ResponsableController;
 // use App\Http\Controllers\Responsable\CompetidorController as ResponsableCompetidorController;
 // use App\Http\Controllers\ImportarcsvController;
@@ -58,13 +58,17 @@ Route::prefix('responsables')->group(function () {
     Route::get('/{id}', [ResponsableController::class, 'show']);
 });
 
+//Rutas para la gestión de niveles
+Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);
+
+//area mostrar y insertar
+Route::get('/area', [AreaController::class, 'index']);
+Route::post('/area', [AreaController::class, 'store']);
 // Rutas comentadas temporalmente hasta que se creen los controladores
 /*
 // Rutas para la gestión de productos
 Route::apiResource('products', ProductController::class)->only(['index', 'store']);
 
-// Rutas para la gestión de niveles
-Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);
 
 // Rutas para la gestión de evaluadores
 Route::prefix('v1')->group(function () {
@@ -72,8 +76,6 @@ Route::prefix('v1')->group(function () {
 });
 
 //area mostrar y insertar
-Route::get('/area', [AreaController::class, 'index']);
-Route::post('/area', [AreaController::class, 'store']);
 Route::get('/areas/{gestion}', [AreaController::class, 'getAreasPorGestion']);
 
 //responsable de area mostrar y insertar 
