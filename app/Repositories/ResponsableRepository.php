@@ -6,6 +6,7 @@ use App\Model\Usuario;
 use App\Model\ResponsableArea;
 use App\Model\Roles;
 use App\Model\Area;
+use App\Model\AreaOlimpiada;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -54,21 +55,29 @@ class ResponsableRepository
      *
      * @param Usuario $usuario
      * @param array $areaIds
+     * @param int $olimpiadaId
      * @return array
      */
-    public function createResponsableAreaRelations(Usuario $usuario, array $areaIds): array
+    public function createResponsableAreaRelations(Usuario $usuario, array $areaIds, int $olimpiadaId): array
     {
         $responsableAreas = [];
 
         foreach ($areaIds as $areaId) {
+            $areaOlimpiada = AreaOlimpiada::where('id_area', $areaId)
+                                          ->where('id_olimpiada', $olimpiadaId)
+                                          ->first();
+
+            if (!$areaOlimpiada) {
+                throw new \Exception("La combinación del área ID {$areaId} y la olimpiada ID {$olimpiadaId} no existe.");
+            }
+
             $responsableArea = ResponsableArea::create([
                 'id_usuario' => $usuario->id_usuario,
-                'id_area' => $areaId,
+                'id_area_olimpiada' => $areaOlimpiada->id_area_olimpiada,
             ]);
 
             $responsableAreas[] = $responsableArea->load('area');
         }
-
         return $responsableAreas;
     }
 
@@ -82,33 +91,8 @@ class ResponsableRepository
         $responsables = Usuario::whereHas('roles', function ($query) {
             $query->where('nombre', 'Responsable Area');
         })
-        ->with(['responsableArea.area', 'roles'])
-        ->get();
-
-        return $responsables->map(function ($usuario) {
-            return [
-                'id_usuario' => $usuario->id_usuario,
-                'nombre' => $usuario->nombre,
-                'apellido' => $usuario->apellido,
-                'ci' => $usuario->ci,
-                'email' => $usuario->email,
-                'telefono' => $usuario->telefono,
-                'areas_asignadas' => $usuario->responsableArea->map(function ($ra) {
-                    return [
-                        'id_area' => $ra->area->id_area,
-                        'nombre_area' => $ra->area->nombre
-                    ];
-                }),
-                'olimpiadas' => $usuario->roles->map(function ($role) {
-                    return [
-                        'id_olimpiada' => $role->pivot->id_olimpiada,
-                        'rol' => $role->nombre
-                    ];
-                }),
-                'created_at' => $usuario->created_at,
-                'updated_at' => $usuario->updated_at
-            ];
-        })->toArray();
+        ->with(['responsableArea.area', 'roles'])->get();
+        return $responsables->map(fn($usuario) => $this->formatResponsableData($usuario))->toArray();
     }
 
     /**
@@ -122,35 +106,12 @@ class ResponsableRepository
         $usuario = Usuario::whereHas('roles', function ($query) {
             $query->where('nombre', 'Responsable Area');
         })
-        ->with(['responsableArea.area', 'roles'])
-        ->find($id);
+        ->with(['responsableArea.area', 'roles'])->find($id);
 
         if (!$usuario) {
             return null;
         }
-
-        return [
-            'id_usuario' => $usuario->id_usuario,
-            'nombre' => $usuario->nombre,
-            'apellido' => $usuario->apellido,
-            'ci' => $usuario->ci,
-            'email' => $usuario->email,
-            'telefono' => $usuario->telefono,
-            'areas_asignadas' => $usuario->responsableArea->map(function ($ra) {
-                return [
-                    'id_area' => $ra->area->id_area,
-                    'nombre_area' => $ra->area->nombre
-                ];
-            }),
-            'olimpiadas' => $usuario->roles->map(function ($role) {
-                return [
-                    'id_olimpiada' => $role->pivot->id_olimpiada,
-                    'rol' => $role->nombre
-                ];
-            }),
-            'created_at' => $usuario->created_at,
-            'updated_at' => $usuario->updated_at
-        ];
+        return $this->formatResponsableData($usuario);
     }
 
     /**
@@ -162,30 +123,12 @@ class ResponsableRepository
     public function getResponsablesByArea(int $areaId): array
     {
         $responsables = Usuario::whereHas('responsableArea', function ($query) use ($areaId) {
-            $query->where('id_area', $areaId);
+            $query->whereHas('area', fn($q) => $q->where('area.id_area', $areaId));
         })
         ->whereHas('roles', function ($query) {
             $query->where('nombre', 'Responsable Area');
-        })
-        ->with(['responsableArea.area', 'roles'])
-        ->get();
-
-        return $responsables->map(function ($usuario) {
-            return [
-                'id_usuario' => $usuario->id_usuario,
-                'nombre' => $usuario->nombre,
-                'apellido' => $usuario->apellido,
-                'ci' => $usuario->ci,
-                'email' => $usuario->email,
-                'telefono' => $usuario->telefono,
-                'areas_asignadas' => $usuario->responsableArea->map(function ($ra) {
-                    return [
-                        'id_area' => $ra->area->id_area,
-                        'nombre_area' => $ra->area->nombre
-                    ];
-                })
-            ];
-        })->toArray();
+        })->with(['responsableArea.area', 'roles'])->get();
+        return $responsables->map(fn($usuario) => $this->formatResponsableData($usuario, false))->toArray();
     }
 
     /**
@@ -199,26 +142,8 @@ class ResponsableRepository
         $responsables = Usuario::whereHas('roles', function ($query) use ($olimpiadaId) {
             $query->where('nombre', 'Responsable Area')
                   ->where('usuario_rol.id_olimpiada', $olimpiadaId);
-        })
-        ->with(['responsableArea.area', 'roles'])
-        ->get();
-
-        return $responsables->map(function ($usuario) {
-            return [
-                'id_usuario' => $usuario->id_usuario,
-                'nombre' => $usuario->nombre,
-                'apellido' => $usuario->apellido,
-                'ci' => $usuario->ci,
-                'email' => $usuario->email,
-                'telefono' => $usuario->telefono,
-                'areas_asignadas' => $usuario->responsableArea->map(function ($ra) {
-                    return [
-                        'id_area' => $ra->area->id_area,
-                        'nombre_area' => $ra->area->nombre
-                    ];
-                })
-            ];
-        })->toArray();
+        })->with(['responsableArea.area', 'roles'])->get();
+        return $responsables->map(fn($usuario) => $this->formatResponsableData($usuario, false))->toArray();
     }
 
     /**
@@ -249,15 +174,15 @@ class ResponsableRepository
      *
      * @param Usuario $usuario
      * @param array $areaIds
+     * @param int $olimpiadaId
      * @return void
      */
-    public function updateResponsableAreaRelations(Usuario $usuario, array $areaIds): void
+    public function updateResponsableAreaRelations(Usuario $usuario, array $areaIds, int $olimpiadaId): void
     {
         // Eliminar relaciones existentes
         ResponsableArea::where('id_usuario', $usuario->id_usuario)->delete();
-
         // Crear nuevas relaciones
-        $this->createResponsableAreaRelations($usuario, $areaIds);
+        $this->createResponsableAreaRelations($usuario, $areaIds, $olimpiadaId);
     }
 
     /**
@@ -282,5 +207,37 @@ class ResponsableRepository
 
         // Eliminar usuario
         return $usuario->delete();
+    }
+
+    /**
+     * Formatea los datos de un usuario responsable.
+     *
+     * @param Usuario $usuario
+     * @param bool $includeOlimpiadas
+     * @return array
+     */
+    private function formatResponsableData(Usuario $usuario, bool $includeOlimpiadas = true): array
+    {
+        $data = [
+            'id_usuario' => $usuario->id_usuario,
+            'nombre' => $usuario->nombre,
+            'apellido' => $usuario->apellido,
+            'ci' => $usuario->ci,
+            'email' => $usuario->email,
+            'telefono' => $usuario->telefono,
+            'areas_asignadas' => $usuario->responsableArea->map(function ($ra) {
+                return $ra->area ? ['id_area' => $ra->area->id_area, 'nombre_area' => $ra->area->nombre] : null;
+            })->filter()->values(),
+            'created_at' => $usuario->created_at,
+            'updated_at' => $usuario->updated_at,
+        ];
+
+        if ($includeOlimpiadas) {
+            $data['olimpiadas'] = $usuario->roles->map(function ($role) {
+                return ['id_olimpiada' => $role->pivot->id_olimpiada, 'rol' => $role->nombre];
+            });
+        }
+
+        return $data;
     }
 }

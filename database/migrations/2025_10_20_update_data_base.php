@@ -109,21 +109,21 @@ return new class extends Migration
         Schema::create('responsable_area', function (Blueprint $table) {
             $table->id('id_responsableArea');
             $table->unsignedBigInteger('id_usuario');
-            $table->unsignedBigInteger('id_area');
+            $table->unsignedBigInteger('id_area_olimpiada');
             $table->timestamps();
 
             $table->foreign('id_usuario')->references('id_usuario')->on('usuario')->onDelete('cascade');
-            $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
+            $table->foreign('id_area_olimpiada')->references('id_area_olimpiada')->on('area_olimpiada')->onDelete('cascade');
         });
 
         Schema::create('evaluador_an', function (Blueprint $table) {
             $table->id('id_evaluadorAN');
             $table->unsignedBigInteger('id_usuario');
-            $table->unsignedBigInteger('id_area_nivel');
+            $table->unsignedBigInteger('id_area_olimpiada');
             $table->timestamps();
 
             $table->foreign('id_usuario')->references('id_usuario')->on('usuario')->onDelete('cascade');
-            $table->foreign('id_area_nivel')->references('id_area_nivel')->on('area_nivel')->onDelete('cascade');
+            $table->foreign('id_area_olimpiada')->references('id_area_olimpiada')->on('area_olimpiada')->onDelete('cascade');
         });
 
         Schema::create('archivo_csv', function (Blueprint $table) {

@@ -14,7 +14,7 @@ class ResponsableArea extends Model
     
     protected $fillable = [
         'id_usuario',
-        'id_area',
+        'id_area_olimpiada',
     ];
 
     public function usuario()
@@ -22,8 +22,13 @@ class ResponsableArea extends Model
         return $this->belongsTo(Usuario::class, 'id_usuario', 'id_usuario');
     }
 
+    public function areaOlimpiada()
+    {
+        return $this->belongsTo(AreaOlimpiada::class, 'id_area_olimpiada', 'id_area_olimpiada');
+    }
+
     public function area()
     {
-        return $this->belongsTo(Area::class, 'id_area', 'id_area');
+        return $this->hasOneThrough(Area::class, AreaOlimpiada::class, 'id_area_olimpiada', 'id_area', 'id_area_olimpiada', 'id_area');
     }
 }

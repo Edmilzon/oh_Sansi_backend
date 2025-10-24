@@ -1,0 +1,298 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Model\Usuario;
+use App\Model\EvaluadorAn;
+use App\Model\Roles;
+use App\Model\Area;
+use App\Model\AreaOlimpiada;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+
+class EvaluadorRepository
+{
+    /**
+     * Crea un nuevo usuario.
+     *
+     * @param array $data
+     * @return Usuario
+     */
+    public function createUsuario(array $data): Usuario
+    {
+        $usuarioData = [
+            'nombre' => $data['nombre'],
+            'apellido' => $data['apellido'],
+            'ci' => $data['ci'],
+            'email' => $data['email'],
+            'password' => $data['password'], 
+            'telefono' => $data['telefono'] ?? null,
+        ];
+
+        return Usuario::create($usuarioData);
+    }
+
+    /**
+     * Asigna el rol de "Responsable Area" al usuario.
+     *
+     * @param Usuario $usuario
+     * @param int $olimpiadaId
+     * @return void
+     */
+    public function assignEvaluadorRole(Usuario $usuario, int $olimpiadaId): void
+    {
+        $rolEvaluador = Roles::where('nombre', 'Evaluador')->first();
+
+        if (!$rolEvaluador) {
+            throw new \Exception('El rol "Evaluador" no existe en el sistema');
+        }
+
+        $usuario->asignarRol('Evaluador', $olimpiadaId);
+    }
+
+    /**
+     * Crea las relaciones entre el evaluador y las áreas.
+     *
+     * @param Usuario $usuario
+     * @param array $areaIds
+     * @param int $olimpiadaId
+     * @return array
+     */
+    public function createEvaluadorAreaRelations(Usuario $usuario, array $areaIds, int $olimpiadaId): array
+    {
+        $evaluadorAreas = [];
+
+        foreach ($areaIds as $areaId) {
+            // Buscar el id_area_olimpiada correspondiente
+            $areaOlimpiada = AreaOlimpiada::where('id_area', $areaId)
+                                          ->where('id_olimpiada', $olimpiadaId)
+                                          ->first();
+
+            if (!$areaOlimpiada) {
+                // Si no se encuentra, lanza una excepción para detener la transacción.
+                throw new \Exception("La combinación del área ID {$areaId} y la olimpiada ID {$olimpiadaId} no existe.");
+            }
+
+            $evaluadorArea = EvaluadorAn::create([
+                'id_usuario' => $usuario->id_usuario,
+                'id_area_olimpiada' => $areaOlimpiada->id_area_olimpiada,
+            ]);
+
+            $evaluadorAreas[] = $evaluadorArea->load('area');
+        }
+
+        return $evaluadorAreas;
+    }
+
+    /**
+     * Obtiene todos los evaluadores con sus áreas asignadas.
+     *
+     * @return array
+     */
+    public function getAllEvaluadoresWithAreas(): array
+    {
+        $evaluadores = Usuario::whereHas('roles', function ($query) {
+            $query->where('nombre', 'Evaluador');
+        })
+        ->with(['evaluadorAn.area', 'roles'])
+        ->get();
+
+        return $evaluadores->map(function ($usuario) {
+            return [
+                'id_usuario' => $usuario->id_usuario,
+                'nombre' => $usuario->nombre,
+                'apellido' => $usuario->apellido,
+                'ci' => $usuario->ci,
+                'email' => $usuario->email,
+                'telefono' => $usuario->telefono,
+                'areas_asignadas' => $usuario->evaluadorAn->map(function ($ra) {
+                    return [
+                        'id_area' => $ra->area->id_area,
+                        'nombre_area' => $ra->area->nombre
+                    ];
+                }),
+                'olimpiadas' => $usuario->roles->map(function ($role) {
+                    return [
+                        'id_olimpiada' => $role->pivot->id_olimpiada,
+                        'rol' => $role->nombre
+                    ];
+                }),
+                'created_at' => $usuario->created_at,
+                'updated_at' => $usuario->updated_at
+            ];
+        })->toArray();
+    }
+
+    /**
+     * Obtiene un evaluador específico por ID con sus áreas.
+     *
+     * @param int $id
+     * @return array|null
+     */
+    public function getEvaluadorByIdWithAreas(int $id): ?array
+    {
+        $usuario = Usuario::whereHas('roles', function ($query) {
+            $query->where('nombre', 'Evaluador');
+        })
+        ->with(['evaluadorAn.area', 'roles'])
+        ->find($id);
+
+        if (!$usuario) {
+            return null;
+        }
+
+        return [
+            'id_usuario' => $usuario->id_usuario,
+            'nombre' => $usuario->nombre,
+            'apellido' => $usuario->apellido,
+            'ci' => $usuario->ci,
+            'email' => $usuario->email,
+            'telefono' => $usuario->telefono,
+            'areas_asignadas' => $usuario->evaluadorAn->map(function ($ra) {
+                return [
+                    'id_area' => $ra->area->id_area,
+                    'nombre_area' => $ra->area->nombre
+                ];
+            }),
+            'olimpiadas' => $usuario->roles->map(function ($role) {
+                return [
+                    'id_olimpiada' => $role->pivot->id_olimpiada,
+                    'rol' => $role->nombre
+                ];
+            }),
+            'created_at' => $usuario->created_at,
+            'updated_at' => $usuario->updated_at
+        ];
+    }
+
+    /**
+     * Obtiene responsables por área específica.
+     *
+     * @param int $areaId
+     * @return array
+     */
+    public function getEvaluadoresByArea(int $areaId): array
+    {
+        $evaluadores = Usuario::whereHas('evaluadorAn', function ($query) use ($areaId) {
+            $query->where('id_area', $areaId);
+        })
+        ->whereHas('roles', function ($query) {
+            $query->where('nombre', 'Evaluador');
+        })
+        ->with(['evaluadorAn.area', 'roles'])
+        ->get();
+
+        return $evaluadores->map(function ($usuario) {
+            return [
+                'id_usuario' => $usuario->id_usuario,
+                'nombre' => $usuario->nombre,
+                'apellido' => $usuario->apellido,
+                'ci' => $usuario->ci,
+                'email' => $usuario->email,
+                'telefono' => $usuario->telefono,
+                'areas_asignadas' => $usuario->evaluadorAn->map(function ($ra) {
+                    return [
+                        'id_area' => $ra->area->id_area,
+                        'nombre_area' => $ra->area->nombre
+                    ];
+                })
+            ];
+        })->toArray();
+    }
+
+    /**
+     * Obtiene responsables por olimpiada específica.
+     *
+     * @param int $olimpiadaId
+     * @return array
+     */
+    public function getEvaluadoresByOlimpiada(int $olimpiadaId): array
+    {
+        $evaluadores = Usuario::whereHas('roles', function ($query) use ($olimpiadaId) {
+            $query->where('nombre', 'Evaluador')
+                  ->where('usuario_rol.id_olimpiada', $olimpiadaId);
+        })
+        ->with(['evaluadorAn.area', 'roles'])
+        ->get();
+
+        return $evaluadores->map(function ($usuario) {
+            return [
+                'id_usuario' => $usuario->id_usuario,
+                'nombre' => $usuario->nombre,
+                'apellido' => $usuario->apellido,
+                'ci' => $usuario->ci,
+                'email' => $usuario->email,
+                'telefono' => $usuario->telefono,
+                'areas_asignadas' => $usuario->evaluadorAn->map(function ($ra) {
+                    return [
+                        'id_area' => $ra->area->id_area,
+                        'nombre_area' => $ra->area->nombre
+                    ];
+                })
+            ];
+        })->toArray();
+    }
+
+    /**
+     * Actualiza un usuario existente.
+     *
+     * @param int $id
+     * @param array $data
+     * @return Usuario
+     */
+    public function updateUsuario(int $id, array $data): Usuario
+    {
+        $usuario = Usuario::findOrFail($id);
+
+        $updateData = [];
+        if (isset($data['nombre'])) $updateData['nombre'] = $data['nombre'];
+        if (isset($data['apellido'])) $updateData['apellido'] = $data['apellido'];
+        if (isset($data['ci'])) $updateData['ci'] = $data['ci'];
+        if (isset($data['email'])) $updateData['email'] = $data['email'];
+        if (isset($data['password'])) $updateData['password'] = $data['password'];
+        if (isset($data['telefono'])) $updateData['telefono'] = $data['telefono'];
+
+        $usuario->update($updateData);
+        return $usuario->fresh();
+    }
+
+    /**
+     * Actualiza las relaciones del responsable con las áreas.
+     *
+     * @param Usuario $usuario
+     * @param array $areaIds
+     * @return void
+     */
+    public function updateEvaluadorAreaRelations(Usuario $usuario, array $areaIds): void
+    {
+        // Eliminar relaciones existentes
+        EvaluadorAn::where('id_usuario', $usuario->id_usuario)->delete();
+
+        // Crear nuevas relaciones
+        $this->createEvaluadorAreaRelations($usuario, $areaIds);
+    }
+
+    /**
+     * Elimina un responsable y todas sus relaciones.
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function deleteEvaluador(int $id): bool
+    {
+        $usuario = Usuario::find($id);
+        
+        if (!$usuario) {
+            return false;
+        }
+
+        // Eliminar relaciones con áreas
+        EvaluadorAn::where('id_usuario', $id)->delete();
+
+        // Eliminar relaciones con roles
+        $usuario->roles()->detach();
+
+        // Eliminar usuario
+        return $usuario->delete();
+    }
+}

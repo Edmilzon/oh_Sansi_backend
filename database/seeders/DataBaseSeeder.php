@@ -8,18 +8,19 @@ use Illuminate\Support\Facades\Hash;
 use App\Model\Usuario;
 use App\Model\Olimpiada;
 
-class DataBaseSeeder extends Seeder
+class DatabaseSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        // Ejecutar otros seeders
         $this->call([
             RolesSeeder::class,
+            OlimpiadaSeeder::class, 
             AreasSeeder::class,
             UsusariosSeeder::class,
+            Olimpiada2023Seeder::class, // <-- Añadido el nuevo seeder
         ]);
     }
 }

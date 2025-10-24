@@ -6,6 +6,7 @@ use App\Http\Controllers\ResponsableController;
 use App\Http\Controllers\NivelController;
 // use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\EvaluadorController;
 // use App\Http\Controllers\ResponsableController;
 // use App\Http\Controllers\Responsable\CompetidorController as ResponsableCompetidorController;
 // use App\Http\Controllers\ImportarcsvController;
@@ -56,6 +57,13 @@ Route::prefix('responsables')->group(function () {
     Route::post('/', [ResponsableController::class, 'store']);
     Route::get('/', [ResponsableController::class, 'index']);
     Route::get('/{id}', [ResponsableController::class, 'show']);
+});
+
+// Rutas para evaluadores
+Route::prefix('evaluadores')->group(function () {
+    Route::post('/', [EvaluadorController::class, 'store']);
+    Route::get('/', [EvaluadorController::class, 'index']);
+    Route::get('/{id}', [EvaluadorController::class, 'show']);
 });
 
 //Rutas para la gestión de niveles

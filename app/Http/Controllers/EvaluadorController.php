@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\EvaluadorService;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
-use App\Services\ResponsableService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class ResponsableController extends Controller
+class EvaluadorController extends Controller
 {
-    protected $responsableService;
+    protected $evaluadorService;
 
-    public function __construct(ResponsableService $responsableService)
+    public function __construct(EvaluadorService $evaluadorService)
     {
-        $this->responsableService = $responsableService;
+        $this->evaluadorService = $evaluadorService;
     }
 
     /**
-     * Registra un nuevo usuario responsable de área.
+     * Registra un nuevo usuario evaluador.
      *
      * @param Request $request
      * @return JsonResponse
@@ -36,6 +36,8 @@ class ResponsableController extends Controller
             'id_olimpiada' => 'required|integer|exists:olimpiada,id_olimpiada',
             'areas' => 'required|array|min:1',
             'areas.*' => 'integer|exists:area,id_area',
+        ], [
+            'areas.*.exists' => 'Una o más de las áreas proporcionadas no son válidas.'
         ]);
 
         // Validación personalizada para la combinación de área y olimpiada
@@ -53,10 +55,10 @@ class ResponsableController extends Controller
                 'telefono', 'id_olimpiada', 'areas'
             ]);
 
-            $result = $this->responsableService->createResponsable($responsableData);
+            $result = $this->evaluadorService->createEvaluador($responsableData);
 
             return response()->json([
-                'message' => 'Responsable de área registrado exitosamente',
+                'message' => 'Evaluador registrado exitosamente',
                 'data' => $result
             ], 201);
 
@@ -67,7 +69,7 @@ class ResponsableController extends Controller
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error al registrar responsable de área',
+                'message' => 'Error al registrar evaluador',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -81,22 +83,22 @@ class ResponsableController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $responsables = $this->responsableService->getAllResponsables();
+            $evaluadores = $this->evaluadorService->getAllEvaluadores();
             
             return response()->json([
-                'message' => 'Responsables obtenidos exitosamente',
-                'data' => $responsables
+                'message' => 'Evaluadores obtenidos exitosamente',
+                'data' => $evaluadores
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error al obtener responsables',
+                'message' => 'Error al obtener evaluadores',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Obtiene un responsable específico por ID.
+     * Obtiene un evaluador específico por ID.
      *
      * @param int $id
      * @return JsonResponse
@@ -104,21 +106,21 @@ class ResponsableController extends Controller
     public function show(int $id): JsonResponse
     {
         try {
-            $responsable = $this->responsableService->getResponsableById($id);
-            
-            if (!$responsable) {
+            $evaluador = $this->evaluadorService->getEvaluadorById($id);
+
+            if (!$evaluador) {
                 return response()->json([
-                    'message' => 'Responsable no encontrado'
+                    'message' => 'Evaluador no encontrado'
                 ], 404);
             }
 
             return response()->json([
-                'message' => 'Responsable obtenido exitosamente',
-                'data' => $responsable
+                'message' => 'Evaluador obtenido exitosamente',
+                'data' => $evaluador
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error al obtener responsable',
+                'message' => 'Error al obtener evaluador',
                 'error' => $e->getMessage()
             ], 500);
         }

@@ -2,20 +2,21 @@
 
 namespace App\Services;
 
-use App\Repositories\ResponsableRepository;
+use App\Repositories\EvaluadorRepository;
 use App\Model\Usuario;
 use App\Model\ResponsableArea;
 use App\Model\Area;
+use App\Model\EvaluadorAn;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
-class ResponsableService
+class EvaluadorService
 {
-    protected $responsableRepository;
+    protected $evaluadorRepository;
 
-    public function __construct(ResponsableRepository $responsableRepository)
+    public function __construct(EvaluadorRepository $evaluadorRepository)
     {
-        $this->responsableRepository = $responsableRepository;
+        $this->evaluadorRepository = $evaluadorRepository;
     }
 
     /**
@@ -25,46 +26,46 @@ class ResponsableService
      * @return array
      * @throws \Exception
      */
-    public function createResponsable(array $data): array
+    public function createEvaluador(array $data): array
     {
         return DB::transaction(function () use ($data) {
             // Crear el usuario
-            $usuario = $this->responsableRepository->createUsuario($data);
+            $usuario = $this->evaluadorRepository->createUsuario($data);
 
-            // Asignar rol de "Responsable Area"
-            $this->responsableRepository->assignResponsableRole($usuario, $data['id_olimpiada']);
+            // Asignar rol de "Evaluador"
+            $this->evaluadorRepository->assignEvaluadorRole($usuario, $data['id_olimpiada']);
 
             // Crear relaciones con las áreas
-            $responsableAreas = $this->responsableRepository->createResponsableAreaRelations(
-                $usuario, 
+            $evaluadorAreas = $this->evaluadorRepository->createEvaluadorAreaRelations(
+                $usuario,
                 $data['areas'],
                 $data['id_olimpiada']
             );
 
-            // Obtener información completa del responsable creado
-            return $this->getResponsableData($usuario, $responsableAreas);
+            // Obtener información completa del evaluador creado
+            return $this->getEvaluadorData($usuario, $evaluadorAreas);
         });
     }
 
     /**
-     * Obtiene todos los responsables de área.
+     * Obtiene todos los evaluadores.
      *
      * @return array
      */
-    public function getAllResponsables(): array
+    public function getAllEvaluadores(): array
     {
-        return $this->responsableRepository->getAllResponsablesWithAreas();
+        return $this->evaluadorRepository->getAllEvaluadoresWithAreas();
     }
 
     /**
-     * Obtiene un responsable específico por ID.
+     * Obtiene un evaluador específico por ID.
      *
      * @param int $id
      * @return array|null
      */
-    public function getResponsableById(int $id): ?array
+    public function getEvaluadorById(int $id): ?array
     {
-        return $this->responsableRepository->getResponsableByIdWithAreas($id);
+        return $this->evaluadorRepository->getEvaluadorByIdWithAreas($id);
     }
 
     /**
@@ -73,9 +74,9 @@ class ResponsableService
      * @param int $areaId
      * @return array
      */
-    public function getResponsablesByArea(int $areaId): array
+    public function getEvaluadoresByArea(int $areaId): array
     {
-        return $this->responsableRepository->getResponsablesByArea($areaId);
+        return $this->evaluadorRepository->getEvaluadoresByArea($areaId);
     }
 
     /**
@@ -84,41 +85,41 @@ class ResponsableService
      * @param int $olimpiadaId
      * @return array
      */
-    public function getResponsablesByOlimpiada(int $olimpiadaId): array
+    public function getEvaluadoresByOlimpiada(int $olimpiadaId): array
     {
-        return $this->responsableRepository->getResponsablesByOlimpiada($olimpiadaId);
+        return $this->evaluadorRepository->getEvaluadoresByOlimpiada($olimpiadaId);
     }
 
     /**
-     * Actualiza un responsable existente.
+     * Actualiza un evaluador existente.
      *
      * @param int $id
      * @param array $data
      * @return array
      */
-    public function updateResponsable(int $id, array $data): array
+    public function updateEvaluador(int $id, array $data): array
     {
         return DB::transaction(function () use ($id, $data) {
-            $usuario = $this->responsableRepository->updateUsuario($id, $data);
+            $usuario = $this->evaluadorRepository->updateUsuario($id, $data);
 
             if (isset($data['areas'])) {
-                $this->responsableRepository->updateResponsableAreaRelations($usuario, $data['areas'], $data['id_olimpiada']);
+                $this->evaluadorRepository->updateEvaluadorAreaRelations($usuario, $data['areas']);
             }
 
-            return $this->getResponsableData($usuario);
+            return $this->getEvaluadorData($usuario);
         });
     }
 
     /**
-     * Elimina un responsable.
+     * Elimina un evaluador.
      *
      * @param int $id
      * @return bool
      */
-    public function deleteResponsable(int $id): bool
+    public function deleteEvaluador(int $id): bool
     {
         return DB::transaction(function () use ($id) {
-            return $this->responsableRepository->deleteResponsable($id);
+            return $this->evaluadorRepository->deleteEvaluador($id);
         });
     }
 
@@ -148,10 +149,10 @@ class ResponsableService
      * @param array|null $responsableAreas
      * @return array
      */
-    private function getResponsableData(Usuario $usuario, ?array $responsableAreas = null): array
+    private function getEvaluadorData(Usuario $usuario, ?array $evaluadorAreas = null): array
     {
-        if (!$responsableAreas) {
-            $responsableAreas = $usuario->responsableArea()->with('area')->get()->toArray();
+        if (!$evaluadorAreas) {
+            $evaluadorAreas = $usuario->evaluadorArea()->with('area')->get()->toArray();
         }
 
         return [
@@ -161,13 +162,13 @@ class ResponsableService
             'ci' => $usuario->ci,
             'email' => $usuario->email,
             'telefono' => $usuario->telefono,
-            'rol' => 'Responsable Area',
+            'rol' => 'Evaluador',
             'areas_asignadas' => array_map(function ($ra) {
                 return [
                     'id_area' => $ra['area']['id_area'],
                     'nombre_area' => $ra['area']['nombre']
                 ];
-            }, $responsableAreas),
+            }, $evaluadorAreas),
             'created_at' => $usuario->created_at,
             'updated_at' => $usuario->updated_at
         ];
