@@ -12,7 +12,7 @@ use App\Http\Controllers\EvaluadorController;
 // use App\Http\Controllers\Responsable\CompetidorController as ResponsableCompetidorController;
 // use App\Http\Controllers\ImportarcsvController;
 // use App\Http\Controllers\FaseController;
-// use App\Http\Controllers\AreaNivelController;
+use App\Http\Controllers\AreaNivelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -109,14 +109,14 @@ Route::get('/fases', [FaseController::class, 'index']);
 Route::get('/fases/{idFase}', [FaseController::class, 'show']);
 
 //Asignar Area Nivel
-Route::post('/asignarArea' ,[FaseController::class, 'store']);
+Route::post('/asignarArea' ,[FaseController::class, 'store']);*/
 
 //Rutas asociacion area - nivel
-Route::apiResource('nivel',NivelController::class)->only(['index']);
+/*Route::apiResource('nivel',NivelController::class)->only(['index']);*/
 Route::post('area-niveles', [AreaNivelController::class, 'store']);
-Route::get('area-niveles/{id_area}', [AreaNivelController::class, 'getByArea']);
+/*Route::get('area-niveles/{id_area}', [AreaNivelController::class, 'getByArea']);
 Route::put('area-niveles/{id_area}', [AreaNivelController::class, 'updateByArea']);
 Route::get('area-niveles/detalle/{id_area}', [AreaNivelController::class, 'getByAreaAll']);
-Route::get('/areas-con-niveles', [AreaNivelController::class, 'getAreasConNiveles']);
-*/
+Route::get('/areas-con-niveles', [AreaNivelController::class, 'getAreasConNiveles']);*/
+
     
