@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Routing\Controller;
 use App\Http\Requests\StoreParametroRequest;
 use App\Services\ParametroService;
 use Illuminate\Http\JsonResponse;
