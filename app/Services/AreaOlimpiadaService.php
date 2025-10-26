@@ -39,6 +39,6 @@ class AreaOlimpiadaService
     public function getNombresAreasGestionActual()
     {
         $areas = $this->getAreasGestionActual();
-        return $areas->pluck('nombre');
+        return $areas->pluck('id_area','nombre');
     }
 }
