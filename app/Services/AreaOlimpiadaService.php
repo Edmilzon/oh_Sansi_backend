@@ -37,15 +37,8 @@ class AreaOlimpiadaService
     }
 
     public function getNombresAreasGestionActual()
-    {
+{
     $areas = $this->getAreasGestionActual();
-    $nombresAreas = $areas->pluck('nombre', 'id_area');
-    
-    return response()->json([
-        'success' => true,
-        'data' => [
-            'nombres_areas' => $nombresAreas
-        ]
-    ]);
-    }
+    return $areas->pluck('nombre', 'id_area');
+}
 }
