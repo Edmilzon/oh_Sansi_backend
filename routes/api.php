@@ -13,6 +13,7 @@ use App\Http\Controllers\EvaluadorController;
 // use App\Http\Controllers\ImportarcsvController;
 use App\Http\Controllers\ParametroController;
 use App\Http\Controllers\AreaNivelController;
+use App\Http\Controllers\ListaResponsableAreaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -122,3 +123,8 @@ Route::get('/areas-nombres', [AreaOlimpiadaController::class, 'getNombresAreasGe
 Route::apiResource('parametros', ParametroController::class);
 Route::get('/parametros/olimpiada/{idOlimpiada}', [ParametroController::class, 'getByOlimpiada']);
 Route::get('/parametros/gestion-actual', [ParametroController::class, 'getParametrosGestionActual']);
+
+//lista de competidores
+Route::get('/responsable/{idResponsable}', [ListaResponsableAreaController::class, 'getAreaPorResponsable']);
+Route::get('/niveles/{idArea}', [ListaResponsableAreaController::class, 'getNivelesPorArea']);
+Route::get('/listaCompleta/{idArea}/{idNivel}', [ListaResponsableAreaController::class, 'getEstudiantes']);
