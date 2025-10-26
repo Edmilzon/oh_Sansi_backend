@@ -114,7 +114,7 @@ Route::get('area-niveles/{id_area}', [AreaNivelController::class, 'getByAreaAll'
 Route::get('/areas-con-niveles', [AreaNivelController::class, 'getAreasConNiveles']);
 Route::get('/area-nivel', [AreaNivelController::class, 'getAreasConNivelesSimplificado']);
 Route::get('/area-nivel/{id_olimpiada}', [AreaNivelController::class, 'getAreasConNivelesPorOlimpiada']);
-Route::get('/area-nivel/{gestion}', [AreaNivelController::class, 'getAreasConNivelesPorGestion']);
+Route::get('/area-nivel/gestion/{gestion}', [AreaNivelController::class, 'getAreasConNivelesPorGestion']);
 
 //Rutas Parametros de clasificación
 Route::get('/areas-olimpiada/{id_olimpiada}', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);
