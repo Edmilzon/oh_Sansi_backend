@@ -91,4 +91,20 @@ class AreaNivelRepository
         return AreaNivel::create($data);
     }
 
+    public function getAreasConNivelesSimplificado(int $idOlimpiada): Collection
+{
+    return Area::with([
+        'areaNiveles' => function($query) use ($idOlimpiada) {
+            $query->where('id_olimpiada', $idOlimpiada)
+                  ->where('activo', true);
+        },
+        'areaNiveles.nivel:id_nivel,nombre'
+    ])
+    ->whereHas('areaNiveles', function($query) use ($idOlimpiada) {
+        $query->where('id_olimpiada', $idOlimpiada)
+              ->where('activo', true);
+    })
+    ->get(['id_area', 'nombre']);
+}
+
 }

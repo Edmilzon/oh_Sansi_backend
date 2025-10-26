@@ -11,7 +11,7 @@ use App\Http\Controllers\EvaluadorController;
 // use App\Http\Controllers\ResponsableController;
 // use App\Http\Controllers\Responsable\CompetidorController as ResponsableCompetidorController;
 // use App\Http\Controllers\ImportarcsvController;
-// use App\Http\Controllers\FaseController;
+use App\Http\Controllers\ParametroController;
 use App\Http\Controllers\AreaNivelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -77,6 +77,7 @@ Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);
 //area mostrar y insertar
 Route::get('/area', [AreaController::class, 'index']);
 Route::post('/area', [AreaController::class, 'store']);
+
 // Rutas comentadas temporalmente hasta que se creen los controladores
 /*
 // Rutas para la gestión de productos
@@ -103,20 +104,21 @@ Route::get('/responsables/{id_persona}/competidores', [ResponsableCompetidorCont
 Route::post('/competidores/importar',[ImportarcsvController::class,'importar']);
 Route::get('/competidores', [ImportarcsvController::class, 'index']);
 
-//Parametros de clasificación - Fase
-Route::post('/fases', [FaseController::class, 'store']);
-Route::get('/fases', [FaseController::class, 'index']);
-Route::get('/fases/{idFase}', [FaseController::class, 'show']);
-
-//Asignar Area Nivel
-Route::post('/asignarArea' ,[FaseController::class, 'store']);*/
-
 //Rutas asociacion area - nivel
 /*Route::apiResource('nivel',NivelController::class)->only(['index']);*/
 Route::post('area-niveles', [AreaNivelController::class, 'store']);
 /*Route::get('area-niveles/{id_area}', [AreaNivelController::class, 'getByArea']);
-Route::put('area-niveles/{id_area}', [AreaNivelController::class, 'updateByArea']);
-Route::get('area-niveles/detalle/{id_area}', [AreaNivelController::class, 'getByAreaAll']);*/
+Route::put('area-niveles/{id_area}', [AreaNivelController::class, 'updateByArea']);*/
+Route::get('area-niveles/{id_area}', [AreaNivelController::class, 'getByAreaAll']);
 Route::get('/areas-con-niveles', [AreaNivelController::class, 'getAreasConNiveles']);
+Route::get('/area-nivel', [AreaNivelController::class, 'getAreasConNivelesSimplificado']);
+Route::get('/area-nivel/{id_olimpiada}', [AreaNivelController::class, 'getAreasConNivelesPorOlimpiada']);
+Route::get('/area-nivel/{gestion}', [AreaNivelController::class, 'getAreasConNivelesPorGestion']);
 
-    
+//Rutas Parametros de clasificación
+Route::get('/areas-olimpiada/{id_olimpiada}', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);
+Route::get('/areas-gestion', [AreaOlimpiadaController::class, 'getAreasGestionActual']);
+Route::get('/areas-nombres', [AreaOlimpiadaController::class, 'getNombresAreasGestionActual']);
+Route::apiResource('parametros', ParametroController::class);
+Route::get('/parametros/olimpiada/{idOlimpiada}', [ParametroController::class, 'getByOlimpiada']);
+Route::get('/parametros/gestion-actual', [ParametroController::class, 'getParametrosGestionActual']);

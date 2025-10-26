@@ -29,4 +29,16 @@ class AreaOlimpiadaService
 
         return $this->areaOlimpiadaRepository->findAreasByOlimpiadaId((int) $identifier);
     }
+
+    public function getAreasGestionActual()
+    {
+        $gestionActual = date('Y');
+        return $this->areaOlimpiadaRepository->findAreasByGestionN($gestionActual);
+    }
+
+    public function getNombresAreasGestionActual()
+    {
+        $areas = $this->getAreasGestionActual();
+        return $areas->pluck('nombre');
+    }
 }

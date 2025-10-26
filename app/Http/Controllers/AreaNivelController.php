@@ -155,6 +155,66 @@ class AreaNivelController extends Controller
         }
     }
 
+    public function getAreasConNivelesSimplificado(): JsonResponse
+    {
+        try {
+        $result = $this->areaNivelService->getAreasConNivelesSimplificado();
+
+        return response()->json([
+            'success' => true,
+            'data' => $result['areas'],
+            'olimpiada_actual' => $result['olimpiada_actual'],
+            'message' => $result['message']
+        ]);
+
+        } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al obtener áreas con niveles: ' . $e->getMessage()
+        ], 500);
+        }
+    }
+
+    public function getAreasConNivelesPorOlimpiada(int $id_olimpiada): JsonResponse
+    {
+        try {
+        $result = $this->areaNivelService->getAreasConNivelesPorOlimpiada($id_olimpiada);
+
+        return response()->json([
+            'success' => true,
+            'data' => $result['areas'],
+            'olimpiada' => $result['olimpiada'],
+            'message' => $result['message']
+        ]);
+
+        } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al obtener áreas con niveles: ' . $e->getMessage()
+        ], 500);
+        }
+    }
+
+    public function getAreasConNivelesPorGestion(string $gestion): JsonResponse
+    {
+        try {
+        $result = $this->areaNivelService->getAreasConNivelesPorGestion($gestion);
+
+        return response()->json([
+            'success' => true,
+            'data' => $result['areas'],
+            'olimpiada' => $result['olimpiada'],
+            'message' => $result['message']
+        ]);
+
+        } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al obtener áreas con niveles: ' . $e->getMessage()
+        ], 500);
+        }
+    }
+
     public function show($id): JsonResponse
     {
         try {

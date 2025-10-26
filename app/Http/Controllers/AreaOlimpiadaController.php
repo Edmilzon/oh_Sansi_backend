@@ -37,4 +37,44 @@ class AreaOlimpiadaController extends Controller
             ], 500);
         }
     }
+
+    public function getAreasGestionActual(): JsonResponse
+    {
+        try {
+            $areas = $this->areaOlimpiadaService->getAreasGestionActual();
+            
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'areas' => $areas
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener las áreas: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getNombresAreasGestionActual(): JsonResponse
+    {
+        try {
+            $nombresAreas = $this->areaOlimpiadaService->getNombresAreasGestionActual();
+            
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'nombres_areas' => $nombresAreas
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener los nombres de las áreas: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

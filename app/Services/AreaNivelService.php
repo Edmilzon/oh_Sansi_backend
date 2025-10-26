@@ -392,4 +392,66 @@ class AreaNivelService
             'message' => 'Relación área-nivel eliminada exitosamente'
         ];
     }
+
+    public function getAreasConNivelesSimplificado(): array
+    {
+    $olimpiadaActual = $this->obtenerOlimpiadaActual();
+    $areas = $this->areaNivelRepository->getAreasConNivelesSimplificado($olimpiadaActual->id_olimpiada);
+
+    $resultado = $areas->map(function($area) {
+        $niveles = $area->areaNiveles->map(function($areaNivel) {
+            return [
+                'id_nivel' => $areaNivel->nivel->id_nivel,
+                'nombre' => $areaNivel->nivel->nombre
+            ];
+        });
+
+        return [
+            'id_area' => $area->id_area,
+            'nombre' => $area->nombre,
+            'niveles' => $niveles->values()
+        ];
+    });
+
+    return [
+        'areas' => $resultado->values(),
+        'olimpiada_actual' => $olimpiadaActual->gestion,
+        'message' => 'Áreas con niveles activos obtenidas exitosamente'
+    ];
+    }
+
+    public function getAreasConNivelesPorOlimpiada(int $idOlimpiada): array
+    {
+    $olimpiada = Olimpiada::findOrFail($idOlimpiada);
+    $areas = $this->areaNivelRepository->getAreasConNivelesSimplificado($idOlimpiada);
+
+    $resultado = $areas->map(function($area) {
+        $niveles = $area->areaNiveles->map(function($areaNivel) {
+            return [
+                'id_nivel' => $areaNivel->nivel->id_nivel,
+                'nombre' => $areaNivel->nivel->nombre
+            ];
+        });
+
+        return [
+            'id_area' => $area->id_area,
+            'nombre' => $area->nombre,
+            'niveles' => $niveles->values()
+        ];
+    });
+
+    return [
+        'areas' => $resultado->values(),
+        'olimpiada' => $olimpiada->gestion,
+        'message' => "Áreas con niveles activos obtenidas para la gestión {$olimpiada->gestion}"
+    ];
+    }
+
+    public function getAreasConNivelesPorGestion(string $gestion): array
+    {
+    $olimpiada = Olimpiada::where('gestion', $gestion)->firstOrFail();
+    return $this->getAreasConNivelesPorOlimpiada($olimpiada->id_olimpiada);
+    }
+
+
 }
