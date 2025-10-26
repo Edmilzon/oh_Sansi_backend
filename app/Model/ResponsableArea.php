@@ -31,4 +31,5 @@ class ResponsableArea extends Model
     {
         return $this->hasOneThrough(Area::class, AreaOlimpiada::class, 'id_area_olimpiada', 'id_area', 'id_area_olimpiada', 'id_area');
     }
+ 
 }
