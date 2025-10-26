@@ -122,6 +122,7 @@ Route::get('/areas-gestion', [AreaOlimpiadaController::class, 'getAreasGestionAc
 Route::get('/areas-nombres', [AreaOlimpiadaController::class, 'getNombresAreasGestionActual']);
 Route::get('/parametros/gestion-actual', [ParametroController::class, 'getParametrosGestionActual']);
 Route::get('/parametros/{idOlimpiada}', [ParametroController::class, 'getByOlimpiada']);
+Route::post('/parametros', [ParametroController::class, 'store']);
 
 //lista de competidores
 Route::get('/responsable/{idResponsable}', [ListaResponsableAreaController::class, 'getAreaPorResponsable']);
