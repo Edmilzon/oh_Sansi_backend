@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Model\Area;
 use App\Model\ResponsableArea;
+use App\Model\Competidor;
 use Illuminate\Support\Collection;
 
 class ListaResponsableAreaRepository
@@ -37,5 +38,25 @@ class ListaResponsableAreaRepository
             ->distinct()
             ->get();
     }
-
-}
+    
+     public function ListarPorAreaYNivel(int $idArea, int $idNivel): Collection
+    {
+      return Competidor::join('area_nivel', 'competidor.id_area_nivel', '=', 'area_nivel.id_area_nivel')
+            ->join('area', 'area_nivel.id_area', '=', 'area.id_area')
+            ->join('nivel', 'area_nivel.id_nivel', '=', 'nivel.id_nivel')
+            ->where('area.id_area', $idArea)
+            ->where('nivel.id_nivel', $idNivel)
+            ->select('competidor.datos', 'area.nombre as area', 'nivel.nombre as nivel')
+            ->get()
+            ->map(function($c) {
+                $datos = $c->datos; // ya es array gracias al cast
+                return [
+                    'nombre' => $datos['nombre'] ?? null,
+                    'apellido' => $datos['apellido'] ?? null,
+                    'ci' => $datos['ci'] ?? null,
+                    'grado' => $datos['grado'] ?? null,
+                    'area' => $c->area,
+                    'nivel' => $c->nivel
+                ];
+            });
+}}
