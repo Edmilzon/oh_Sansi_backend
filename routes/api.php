@@ -120,9 +120,8 @@ Route::get('/area-nivel/{gestion}', [AreaNivelController::class, 'getAreasConNiv
 Route::get('/areas-olimpiada/{id_olimpiada}', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);
 Route::get('/areas-gestion', [AreaOlimpiadaController::class, 'getAreasGestionActual']);
 Route::get('/areas-nombres', [AreaOlimpiadaController::class, 'getNombresAreasGestionActual']);
-Route::apiResource('parametros', ParametroController::class);
-Route::get('/parametros/{idOlimpiada}', [ParametroController::class, 'getByOlimpiada']);
 Route::get('/parametros/gestion-actual', [ParametroController::class, 'getParametrosGestionActual']);
+Route::get('/parametros/{idOlimpiada}', [ParametroController::class, 'getByOlimpiada']);
 
 //lista de competidores
 Route::get('/responsable/{idResponsable}', [ListaResponsableAreaController::class, 'getAreaPorResponsable']);
