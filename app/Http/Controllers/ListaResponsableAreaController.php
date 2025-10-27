@@ -26,9 +26,9 @@ class ListaResponsableAreaController extends Controller {
         $areas = $this->listaResponsableAreaService->getAreaporResponsable((int)$idResponsable);
         return response()->json($areas);
     }
-public function listarPorAreaYNivel($idArea, $idNivel)
+public function listarPorAreaYNivel($idResponsable, $idArea, $idNivel)
 {
-    $competidores = $this->listaResponsableAreaService->listarPorAreaYNivel((int)$idArea, (int)$idNivel);
+    $competidores = $this->listaResponsableAreaService->listarPorAreaYNivel((int)$idResponsable,(int)$idArea, (int)$idNivel);
     return response()->json($competidores);
 }
 
