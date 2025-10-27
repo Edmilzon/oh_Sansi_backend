@@ -108,4 +108,24 @@ class ParametroController extends Controller
             ], 500);
         }
     }
+
+    public function getAllParametrosByGestiones(): JsonResponse
+    {
+    try {
+        $result = $this->parametroService->getAllParametrosByGestiones();
+
+        return response()->json([
+            'success' => true,
+            'data' => $result['gestiones'],
+            'total_gestiones' => $result['total_gestiones'],
+            'message' => $result['message']
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al obtener los parámetros por gestiones: ' . $e->getMessage()
+        ], 500);
+    }
+    }
 }

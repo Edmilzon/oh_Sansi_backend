@@ -116,6 +116,49 @@ class ParametroService
         ];
     }
 
+public function getAllParametrosByGestiones(): array
+    {
+    $parametros = $this->parametroRepository->getAllParametrosByGestiones();
+
+    $parametrosPorGestion = $parametros->groupBy(function($parametro) {
+        return $parametro->areaNivel->olimpiada->id_olimpiada;
+    });
+
+    $resultado = [];
+
+    foreach ($parametrosPorGestion as $idOlimpiada => $parametrosGestion) {
+        $olimpiada = $parametrosGestion->first()->areaNivel->olimpiada;
+        
+        $parametrosFormateados = $parametrosGestion->map(function($parametro) {
+            return [
+                'id_area_nivel' => $parametro->areaNivel->id_area_nivel,
+                'nombre_area' => $parametro->areaNivel->area->nombre,
+                'nombre_nivel' => $parametro->areaNivel->nivel->nombre,
+                'nota_minima' => $parametro->nota_min_clasif,
+                'nota_maxima' => $parametro->nota_max_clasif,
+                'cant_max_clasificados' => $parametro->cantidad_max_apro
+            ];
+        });
+
+        $resultado[] = [
+            'id_olimpiada' => $idOlimpiada,
+            'gestion' => $olimpiada->gestion,
+            'parametros' => $parametrosFormateados,
+            'total_parametros' => $parametrosFormateados->count()
+        ];
+    }
+
+    usort($resultado, function($a, $b) {
+        return $b['gestion'] - $a['gestion'];
+    });
+
+    return [
+        'gestiones' => $resultado,
+        'total_gestiones' => count($resultado),
+        'message' => 'Parámetros de todas las gestiones obtenidos exitosamente'
+    ];
+    }
+
     private function formatParametro($parametro): array
     {
         return [

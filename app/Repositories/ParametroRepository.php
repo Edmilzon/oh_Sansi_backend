@@ -84,4 +84,26 @@ class ParametroRepository
         
         return $results;
     }
+
+    public function getAllParametrosByGestiones(): Collection
+    {
+    return Parametro::join('area_nivel', 'parametro.id_area_nivel', '=', 'area_nivel.id_area_nivel')
+        ->join('area', 'area_nivel.id_area', '=', 'area.id_area')
+        ->join('nivel', 'area_nivel.id_nivel', '=', 'nivel.id_nivel')
+        ->join('olimpiada', 'area_nivel.id_olimpiada', '=', 'olimpiada.id_olimpiada')
+        ->select([
+            'olimpiada.id_olimpiada',
+            'olimpiada.gestion',
+            'area_nivel.id_area_nivel',
+            'area.nombre as nombre_area',
+            'nivel.nombre as nombre_nivel',
+            'parametro.nota_min_clasif as nota_minima',
+            'parametro.nota_max_clasif as nota_maxima',
+            'parametro.cantidad_max_apro as cant_max_clasificados'
+        ])
+        ->orderBy('olimpiada.gestion', 'desc')
+        ->orderBy('area.nombre')
+        ->orderBy('nivel.nombre')
+        ->get();
+    }
 }
