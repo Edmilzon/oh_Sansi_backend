@@ -29,7 +29,7 @@ class ListaResponsableAreaController extends Controller {
 public function listarPorAreaYNivel($idArea, $idNivel)
 {
     $competidores = $this->listaResponsableAreaService->listarPorAreaYNivel((int)$idArea, (int)$idNivel);
-    return response()->json($competidores->values()->all());
+    return response()->json($competidores);
 }
 
 }
