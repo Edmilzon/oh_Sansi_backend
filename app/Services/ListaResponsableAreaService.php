@@ -24,9 +24,14 @@ class ListaResponsableAreaService
         return $this->listaResponsableAreaRepository->getNivelesByAreaAndOlimpiada($idArea, $idOlimpiada);
     }
     
-   public function getAreaPorResponsable(int $idResponsable): Collection
+    public function getAreaPorResponsable(int $idResponsable): Collection
+    {
+        return $this->listaResponsableAreaRepository->getAreaPorResponsable($idResponsable);
+    }
+   
+   public function listarPorAreaYNivel($idArea, $idNivel)
 {
-    return $this->listaResponsableAreaRepository->getAreaPorResponsable($idResponsable);
+    $competidores = $this->listaResponsableAreaRepository->listarPorAreaYNivel((int)$idArea, (int)$idNivel);
+    return response()->json($competidores);
 }
-
 }

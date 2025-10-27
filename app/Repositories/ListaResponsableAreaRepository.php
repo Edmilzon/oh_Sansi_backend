@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Model\Area;
 use App\Model\ResponsableArea;
+use App\Model\Competidor;
 use Illuminate\Support\Collection;
 
 class ListaResponsableAreaRepository
@@ -28,14 +29,87 @@ class ListaResponsableAreaRepository
              });
 
     }
-   public function getAreaPorResponsable(int $idUsuario): Collection
-    {
-        return ResponsableArea::where('id_usuario', $idUsuario)
-            ->join('area_olimpiada', 'responsable_area.id_area_olimpiada', '=', 'area_olimpiada.id_area_olimpiada')
-            ->join('area', 'area_olimpiada.id_area', '=', 'area.id_area')
-            ->select('area.id_area', 'area.nombre')
-            ->distinct()
-            ->get();
-    }
+
+public function getAreaPorResponsable(int $idUsuario): Collection
+{
+    $competidores = Competidor::join('area_nivel', 'competidor.id_area_nivel', '=', 'area_nivel.id_area_nivel')
+        ->join('area_olimpiada', 'area_nivel.id_area', '=', 'area_olimpiada.id_area')
+        ->join('responsable_area', 'area_olimpiada.id_area_olimpiada', '=', 'responsable_area.id_area_olimpiada')
+        ->join('area', 'area_nivel.id_area', '=', 'area.id_area')
+        ->join('nivel', 'area_nivel.id_nivel', '=', 'nivel.id_nivel')
+        ->where('responsable_area.id_usuario', $idUsuario)
+        ->select('competidor.datos', 'area.id_area', 'area.nombre as area', 'nivel.nombre as nivel')
+        ->get()
+        ->map(function ($c) {
+            $datos = json_decode($c->datos, true);
+
+            if (is_string($datos)) {
+                $datos2 = json_decode($datos, true);
+                if (is_array($datos2)) {
+                    $datos = $datos2;
+                }
+            }
+
+            $datos = is_array($datos) ? $datos : [];
+
+            return [
+                'id_area'  => $c->id_area,
+                'area'     => $c->area,
+                'nivel'    => $c->nivel,
+                'nombre'   => $datos['nombre'] ?? null,
+                'apellido' => $datos['apellido'] ?? null,
+                'ci'       => $datos['ci'] ?? $datos['carnet'] ?? null,
+                'grado'    => $datos['grado'] ?? null,
+            ];
+        });
+
+    // Agrupar por área usando Collection->groupBy
+    $areas = $competidores->groupBy('area')->map(function ($competidoresPorArea, $area) {
+        return [
+            'area' => $area,
+            'competidores' => $competidoresPorArea->values(), // resetear keys
+        ];
+    })->values();
+
+    return $areas;
+}
+   
+     public function ListarPorAreaYNivel(int $idArea, int $idNivel): Collection
+{
+    return Competidor::join('area_nivel', 'competidor.id_area_nivel', '=', 'area_nivel.id_area_nivel')
+        ->join('area', 'area_nivel.id_area', '=', 'area.id_area')
+        ->join('nivel', 'area_nivel.id_nivel', '=', 'nivel.id_nivel')
+        ->where('area.id_area', $idArea)
+        // Aplica el filtro de nivel solo si $idNivel !== 0
+        ->when($idNivel !== 0, function ($query) use ($idNivel) {
+            $query->where('nivel.id_nivel', $idNivel);
+        })
+        ->select('competidor.datos', 'area.nombre as area', 'nivel.nombre as nivel')
+        ->get()
+        ->map(function ($c) {
+            $datosRaw = $c->datos;
+
+            $datos = json_decode($datosRaw, true);
+
+            // Si el campo es una cadena JSON doblemente codificada
+            if (is_string($datos)) {
+                $datos2 = json_decode($datos, true);
+                if (is_array($datos2)) {
+                    $datos = $datos2;
+                }
+            }
+
+            $datos = is_array($datos) ? $datos : [];
+
+            return [
+                'nombre'   => $datos['nombre']   ?? null,
+                'apellido' => $datos['apellido'] ?? null,
+                'ci'       => $datos['ci']       ?? $datos['carnet'] ?? null,
+                'grado'    => $datos['grado']    ?? null,
+                'area'     => $c->area,
+                'nivel'    => $c->nivel,
+            ];
+        });
+}
 
 }
