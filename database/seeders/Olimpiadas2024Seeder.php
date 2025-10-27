@@ -22,7 +22,7 @@ use App\Model\Competencia;
 use App\Model\Medallero;
 use App\Model\Aval;
 
-class Olimpiada2024Seeder extends Seeder
+class Olimpiadas2024Seeder extends Seeder
 {
     public function run(): void
     {
