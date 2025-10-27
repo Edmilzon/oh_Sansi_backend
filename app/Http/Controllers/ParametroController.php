@@ -128,4 +128,38 @@ class ParametroController extends Controller
         ], 500);
     }
     }
+
+    public function getParametrosByAreaNiveles(Request $request): JsonResponse
+{
+    try {
+        $request->validate([
+            'ids' => 'required|string'
+        ]);
+
+        $idsAreaNivel = array_map('intval', explode(',', $request->ids));
+
+        foreach ($idsAreaNivel as $id) {
+            if ($id <= 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Los IDs deben ser números positivos'
+                ], 400);
+            }
+        }
+
+        $result = $this->parametroService->getParametrosByAreaNiveles($idsAreaNivel);
+
+        return response()->json([
+            'success' => true,
+            'data' => $result,
+            'message' => $result['message']
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al obtener los parámetros históricos: ' . $e->getMessage()
+        ], 500);
+    }
+}
 }

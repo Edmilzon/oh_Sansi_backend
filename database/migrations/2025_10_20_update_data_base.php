@@ -27,6 +27,18 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('persona',function (Blueprint $table){
+            $table ->id('id_persona');
+            $table ->string('nombre');
+            $table ->string('apellido');
+            $table ->string('ci')->unique();
+            $table->date('fecha_nac');
+            $table->enum('genero', ['M', 'F'])->nullable();
+            $table->string('telefono')->nullable()->unique();
+            $table->string('email')->unique();
+            $table->timestamps();
+        });
+
         Schema::create('area_olimpiada', function (Blueprint $table) {
             $table->id('id_area_olimpiada');
             $table->unsignedBigInteger('id_area');
@@ -138,7 +150,10 @@ return new class extends Migration
 
         Schema::create('competidor', function (Blueprint $table) {
             $table->id('id_competidor');
-            $table->string('datos');
+            $table->string('grado_escolar');
+            $table->string('departamento');
+            $table->string('contacto_tutor')->nullable();
+            $table->string('contacto_emergencia')->nullable();
             $table->unsignedBigInteger('id_institucion');
             $table->unsignedBigInteger('id_area_nivel');
             $table->unsignedBigInteger('id_archivo_csv')->nullable();

@@ -184,4 +184,52 @@ public function getAllParametrosByGestiones(): array
             ]
         ];
     }
+
+    public function getParametrosByAreaNiveles(array $idsAreaNivel): array
+{
+    $parametros = $this->parametroRepository->getParametrosByAreaNiveles($idsAreaNivel);
+
+    if ($parametros->isEmpty()) {
+        return [
+            'areas_nivel' => $idsAreaNivel,
+            'parametros' => [],
+            'total_areas' => 0,
+            'message' => 'No se encontraron parámetros para los áreas-nivel especificados'
+        ];
+    }
+
+    $parametrosPorAreaNivel = $parametros->groupBy('id_area_nivel');
+
+    $resultado = [];
+
+    foreach ($parametrosPorAreaNivel as $idAreaNivel => $parametrosArea) {
+        $primero = $parametrosArea->first();
+
+        $parametrosFormateados = $parametrosArea->map(function($parametro) {
+            return [
+                'id_olimpiada' => $parametro->id_olimpiada,
+                'gestion' => $parametro->gestion,
+                'nota_minima' => $parametro->nota_minima,
+                'nota_maxima' => $parametro->nota_maxima,
+                'cant_max_clasificados' => $parametro->cant_max_clasificados
+            ];
+        });
+
+        $resultado[] = [
+            'area_nivel' => [
+                'id_area_nivel' => $idAreaNivel,
+                'nombre_area' => $primero->nombre_area,
+                'nombre_nivel' => $primero->nombre_nivel
+            ],
+            'parametros' => $parametrosFormateados,
+            'total_gestiones' => $parametrosArea->count()
+        ];
+    }
+
+    return [
+        'areas_nivel' => $resultado,
+        'total_areas' => count($resultado),
+        'message' => 'Parámetros históricos obtenidos para ' . count($idsAreaNivel) . ' áreas-nivel'
+    ];
+}
 }
