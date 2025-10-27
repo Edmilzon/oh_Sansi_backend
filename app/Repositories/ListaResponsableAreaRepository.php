@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Model\Area;
+use App\Model\Nivel;
 use App\Model\ResponsableArea;
 use App\Model\Competidor;
 use Illuminate\Support\Facades\DB;
