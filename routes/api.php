@@ -128,4 +128,4 @@ Route::post('/parametros', [ParametroController::class, 'store']);
 //lista de competidores
 Route::get('/responsable/{idResponsable}', [ListaResponsableAreaController::class, 'getAreaPorResponsable']);
 Route::get('/niveles/{idArea}', [ListaResponsableAreaController::class, 'getNivelesPorArea']);
-Route::get('/listaCompleta/{idArea}/{idNivel}', [ListaResponsableAreaController::class, 'listarPorAreaYNivel']);
+Route::get('/listaCompleta/{idResponsable}/{idArea}/{idNivel}', [ListaResponsableAreaController::class, 'listarPorAreaYNivel']);
