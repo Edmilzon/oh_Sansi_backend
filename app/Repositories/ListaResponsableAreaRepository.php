@@ -30,9 +30,14 @@ class ListaResponsableAreaRepository
 
     }
 
-     public function getAreaPorResponsable($idResponsable){
-        $areas = $this->listaResponsableAreaService->getAreaporResponsable((int)$idResponsable);
-        return response()->json($areas);
+    public function getAreaPorResponsable(int $idUsuario): Collection
+    {
+        return ResponsableArea::where('id_usuario', $idUsuario)
+            ->join('area_olimpiada', 'responsable_area.id_area_olimpiada', '=', 'area_olimpiada.id_area_olimpiada')
+            ->join('area', 'area_olimpiada.id_area', '=', 'area.id_area')
+            ->select('area.id_area', 'area.nombre')
+            ->distinct()
+            ->get();
     }
    
      public function ListarPorAreaYNivel(int $idArea, int $idNivel): Collection
