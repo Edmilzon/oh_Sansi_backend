@@ -10,7 +10,7 @@ use App\Http\Controllers\AreaOlimpiadaController;
 use App\Http\Controllers\EvaluadorController;
 // use App\Http\Controllers\ResponsableController;
 // use App\Http\Controllers\Responsable\CompetidorController as ResponsableCompetidorController;
-// use App\Http\Controllers\ImportarcsvController;
+use App\Http\Controllers\CompetidorImportController;
 use App\Http\Controllers\ParametroController;
 use App\Http\Controllers\AreaNivelController;
 use App\Http\Controllers\ListaResponsableAreaController;
@@ -101,9 +101,6 @@ Route::get('/usuarios/roles/{ci}', [ResponsableController::class, 'showRolesByCi
 // Competidores por Responsable de Área
 Route::get('/responsables/{id_persona}/competidores', [ResponsableCompetidorController::class, 'index']);
 
-//Importar csv
-Route::post('/competidores/importar',[ImportarcsvController::class,'importar']);
-Route::get('/competidores', [ImportarcsvController::class, 'index']);
 
 //Rutas asociacion area - nivel
 /*Route::apiResource('nivel',NivelController::class)->only(['index']);*/
@@ -130,3 +127,6 @@ Route::post('/parametros', [ParametroController::class, 'store']);
 Route::get('/responsable/{idResponsable}', [ListaResponsableAreaController::class, 'getAreaPorResponsable']);
 Route::get('/niveles/{idArea}', [ListaResponsableAreaController::class, 'getNivelesPorArea']);
 Route::get('/listaCompleta/{idResponsable}/{idArea}/{idNivel}', [ListaResponsableAreaController::class, 'listarPorAreaYNivel']);
+
+//Importar csv
+Route::post('/competidores/importar',[ImportarcsvController::class,'importar']);

@@ -32,7 +32,6 @@ return new class extends Migration
             $table ->string('nombre');
             $table ->string('apellido');
             $table ->string('ci')->unique();
-            $table->date('fecha_nac');
             $table->enum('genero', ['M', 'F'])->nullable();
             $table->string('telefono')->nullable()->unique();
             $table->string('email')->unique();
@@ -153,15 +152,16 @@ return new class extends Migration
             $table->string('grado_escolar');
             $table->string('departamento');
             $table->string('contacto_tutor')->nullable();
-            $table->string('contacto_emergencia')->nullable();
             $table->unsignedBigInteger('id_institucion');
             $table->unsignedBigInteger('id_area_nivel');
             $table->unsignedBigInteger('id_archivo_csv')->nullable();
+            $table->unsignedBigInteger('id_persona');
             $table->timestamps();
 
             $table->foreign('id_institucion')->references('id_institucion')->on('institucion')->onDelete('cascade');
             $table->foreign('id_area_nivel')->references('id_area_nivel')->on('area_nivel')->onDelete('cascade');
             $table->foreign('id_archivo_csv')->references('id_archivo_csv')->on('archivo_csv')->onDelete('set null');
+            $table->foreign('id_persona')->references('id_persona')->on('persona')->onDelete('cascade');
         });
 
         Schema::create('evaluacion', function (Blueprint $table) {
@@ -208,7 +208,7 @@ return new class extends Migration
             $table->foreign('id_fase')->references('id_fase')->on('fase')->onDelete('cascade');
         });
 
-        Schema::create('grupos_competidores', function (Blueprint $table) {
+        Schema::create('grupo_competidor', function (Blueprint $table) {
             $table->id('id_grupo_competidor');
             $table->unsignedBigInteger('id_grupo');
             $table->unsignedBigInteger('id_competidor');
@@ -232,7 +232,7 @@ return new class extends Migration
             $table->foreign('id_responsableArea')->references('id_responsableArea')->on('responsable_area')->onDelete('cascade');
         });
 
-        Schema::create('desclasificaciones', function (Blueprint $table) {
+        Schema::create('desclasificacion', function (Blueprint $table) {
             $table->id('id_desclasificacion');
             $table->date('fecha');
             $table->text('motivo');
@@ -260,9 +260,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('medallero');
-        Schema::dropIfExists('desclasificaciones');
+        Schema::dropIfExists('desclasificacion');
         Schema::dropIfExists('aval');
-        Schema::dropIfExists('grupos_competidores');
+        Schema::dropIfExists('grupo_competidor');
         Schema::dropIfExists('grupo');
         Schema::dropIfExists('evaluacion');
         Schema::dropIfExists('competencia');
@@ -281,5 +281,6 @@ return new class extends Migration
         Schema::dropIfExists('nivel');
         Schema::dropIfExists('area');
         Schema::dropIfExists('area_olimpiada');
+        Schema::dropIfExists('persona');
     }
 };

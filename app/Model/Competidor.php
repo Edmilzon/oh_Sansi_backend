@@ -13,10 +13,13 @@ class Competidor extends Model
     protected $primaryKey = 'id_competidor';
 
     protected $fillable = [
-        'datos',
+        'grado_escolar',
+        'departamento',
+        'contacto_tutor',
         'id_institucion',
         'id_area_nivel',
         'id_archivo_csv',
+        'id_persona',
     ];
 
     protected $casts = [
@@ -47,6 +50,11 @@ class Competidor extends Model
         return $this->belongsTo(ArchivoCsv::class, 'id_archivo_csv', 'id_archivo_csv');
     }
 
+    public function persona()
+    {
+        return $this->belongsTo(Persona::class, 'id_persona', 'id_persona');
+    }
+
     /**
      * The grupos that belong to the competidor.
      */
@@ -55,4 +63,6 @@ class Competidor extends Model
         return $this->belongsToMany(Grupo::class, 'grupos_competidores', 'id_competidor', 'id_grupo')
                     ->withTimestamps();
     }
+
+    
 }
