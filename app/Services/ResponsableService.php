@@ -6,6 +6,8 @@ use App\Repositories\ResponsableRepository;
 use App\Model\Usuario;
 use App\Model\ResponsableArea;
 use App\Model\Area;
+use App\Mail\UserCredentialsMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -28,6 +30,9 @@ class ResponsableService
     public function createResponsable(array $data): array
     {
         return DB::transaction(function () use ($data) {
+            // Guardar la contraseña en texto plano para el correo
+            $plainPassword = $data['password'];
+
             // Crear el usuario
             $usuario = $this->responsableRepository->createUsuario($data);
 
@@ -40,6 +45,14 @@ class ResponsableService
                 $data['areas'],
                 $data['id_olimpiada']
             );
+
+            // Enviar correo con las credenciales
+            Mail::to($usuario->email)->send(new UserCredentialsMail(
+                $usuario->nombre,
+                $usuario->email,
+                $plainPassword,
+                'Responsable de Área'
+            ));
 
             // Obtener información completa del responsable creado
             return $this->getResponsableData($usuario, $responsableAreas);
@@ -131,6 +144,34 @@ class ResponsableService
             return $this->getResponsableData($usuario);
         });
     }
+
+    /**
+     * Actualiza un responsable existente por su CI.
+     *
+     * @param string $ci
+     * @param array $data
+     * @return array|null
+     */
+    public function updateResponsableByCi(string $ci, array $data): ?array
+    {
+        $usuario = $this->responsableRepository->findUsuarioByCi($ci);
+
+        if (!$usuario) {
+            return null; // O lanzar una excepción si se prefiere
+        }
+
+        return DB::transaction(function () use ($usuario, $data) {
+            $usuarioActualizado = $this->responsableRepository->updateUsuario($usuario->id_usuario, $data);
+
+            // Solo actualiza las áreas si se proporcionan tanto 'areas' como 'id_olimpiada'
+            if (isset($data['areas']) && isset($data['id_olimpiada'])) {
+                $this->responsableRepository->updateResponsableAreaRelations($usuarioActualizado, $data['areas'], $data['id_olimpiada']);
+            }
+
+            return $this->getResponsableData($usuarioActualizado);
+        });
+    }
+
 
     /**
      * Elimina un responsable.
