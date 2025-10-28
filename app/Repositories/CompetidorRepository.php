@@ -107,4 +107,28 @@ class CompetidorRepository
                 'areaNivel.nivel'
             ])->whereIn('id_area', $areaIds)->get();
     }
+
+    public function obtenerAreasNivelesPorCombinaciones(array $combinaciones, int $idOlimpiada): array
+{
+    $areasNiveles = [];
+    
+    foreach ($combinaciones as $combinacion) {
+        $area = Area::where('nombre', 'like', '%' . $combinacion['area'] . '%')->first();
+        $nivel = Nivel::where('nombre', 'like', '%' . $combinacion['nivel'] . '%')->first();
+        
+        if ($area && $nivel) {
+            $areaNivel = AreaNivel::where('id_area', $area->id_area)
+                ->where('id_nivel', $nivel->id_nivel)
+                ->where('id_olimpiada', $idOlimpiada)
+                ->where('activo', true)
+                ->first();
+                
+            if ($areaNivel) {
+                $areasNiveles[$combinacion['area'] . '|' . $combinacion['nivel']] = $areaNivel;
+            }
+        }
+    }
+    
+    return $areasNiveles;
+}
 }

@@ -4,23 +4,25 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Model\Olimpiada;
-use App\Model\Area;
-use App\Model\Nivel;
-use App\Model\Usuario;
-use App\Model\Institucion;
-use App\Model\AreaOlimpiada;
-use App\Model\AreaNivel;
-use App\Model\Fase;
-use App\Model\Parametro;
-use App\Model\ResponsableArea;
-use App\Model\EvaluadorAn;
-use App\Model\Competidor;
-use App\Model\Evaluacion;
-use App\Model\Grupo;
-use App\Model\Competencia;
-use App\Model\Medallero;
-use App\Model\Aval;
+use App\Models\Olimpiada;
+use App\Models\Area;
+use App\Models\Nivel;
+use App\Models\Persona;
+use App\Models\Usuario;
+use App\Models\Rol;
+use App\Models\Institucion;
+use App\Models\AreaOlimpiada;
+use App\Models\AreaNivel;
+use App\Models\Fase;
+use App\Models\Parametro;
+use App\Models\ResponsableArea;
+use App\Models\EvaluadorAn;
+use App\Models\Competidor;
+use App\Models\Evaluacion;
+use App\Models\Grupo;
+use App\Models\Competencia;
+use App\Models\Medallero;
+use App\Models\Aval;
 
 class Olimpiadas2024Seeder extends Seeder
 {
@@ -77,16 +79,29 @@ class Olimpiadas2024Seeder extends Seeder
 
             $this->command->info('Fases y parámetros creados para Química.');
 
-            // 6. Crear usuarios responsables y evaluadores para Química
+            // 6. Crear Personas primero
+            $personasData = [
+                ['nombre' => 'Roberto', 'apellido' => 'Gomez', 'ci' => '9988777', 'email' => 'roberto.gomez@test.com', 'genero' => 'M', 'telefono' => '77788877'],
+                ['nombre' => 'Mariana', 'apellido' => 'Salas', 'ci' => '6655444', 'email' => 'mariana.salas@test.com', 'genero' => 'F', 'telefono' => '77788844'],
+                ['nombre' => 'Ana', 'apellido' => 'Lopez', 'ci' => '5678901', 'email' => 'ana.lopez@test.com', 'genero' => 'F', 'telefono' => '77711121'],
+                ['nombre' => 'Carlos', 'apellido' => 'Perez', 'ci' => '6789012', 'email' => 'carlos.perez@test.com', 'genero' => 'M', 'telefono' => '77711122'],
+            ];
+
+            $personas = [];
+            foreach ($personasData as $data) {
+                $personas[] = Persona::create($data);
+            }
+
+            // 7. Crear usuarios responsables y evaluadores para Química
             $responsableUser = Usuario::firstOrCreate([
                 'ci' => '9988777',
             ], [
                 'nombre' => 'Roberto',
                 'apellido' => 'Gomez',
                 'email' => 'roberto.gomez@test.com',
-                'password' => bcrypt('password123')
+                'password' => bcrypt('password123'),
+                'telefono' => '77788877'
             ]);
-            $responsableUser->asignarRol('Responsable Area', $olimpiada->id_olimpiada);
 
             $evaluadorUser = Usuario::firstOrCreate([
                 'ci' => '6655444',
@@ -94,9 +109,20 @@ class Olimpiadas2024Seeder extends Seeder
                 'nombre' => 'Mariana',
                 'apellido' => 'Salas',
                 'email' => 'mariana.salas@test.com',
-                'password' => bcrypt('password123')
+                'password' => bcrypt('password123'),
+                'telefono' => '77788844'
             ]);
-            $evaluadorUser->asignarRol('Evaluador', $olimpiada->id_olimpiada);
+
+            // Asignar roles
+            $rolResponsable = Rol::where('nombre', 'Responsable Area')->first();
+            $rolEvaluador = Rol::where('nombre', 'Evaluador')->first();
+
+            if ($rolResponsable && $rolEvaluador) {
+                DB::table('usuario_rol')->insert([
+                    ['id_usuario' => $responsableUser->id_usuario, 'id_rol' => $rolResponsable->id_rol, 'id_olimpiada' => $olimpiada->id_olimpiada],
+                    ['id_usuario' => $evaluadorUser->id_usuario, 'id_rol' => $rolEvaluador->id_rol, 'id_olimpiada' => $olimpiada->id_olimpiada],
+                ]);
+            }
 
             $responsableQuimica = ResponsableArea::create([
                 'id_usuario' => $responsableUser->id_usuario,
@@ -110,35 +136,41 @@ class Olimpiadas2024Seeder extends Seeder
 
             $this->command->info('Responsable y evaluador asignados a Química.');
 
-            // 7. Crear Instituciones
+            // 8. Crear Instituciones
             $institucion1 = Institucion::firstOrCreate(['nombre' => 'Colegio San Agustín']);
             $institucion2 = Institucion::firstOrCreate(['nombre' => 'Colegio Alemán']);
 
-            // 8. Crear competidores para Química
+            // 9. Crear competidores para Química
             $competidoresQuimicaData = [
-                ['nombre' => 'Ana','apellido' => 'Lopez','ci' => '5678901','grado' => '1ro de Secundaria','id_institucion' => $institucion1->id_institucion],
-                ['nombre' => 'Carlos','apellido' => 'Perez','ci' => '6789012','grado' => '2do de Secundaria','id_institucion' => $institucion2->id_institucion],
+                [
+                    'grado_escolar' => '1ro de Secundaria', 
+                    'departamento' => 'La Paz', 
+                    'contacto_tutor' => '77722230', 
+                    'id_institucion' => $institucion1->id_institucion, 
+                    'id_persona' => $personas[2]->id_persona
+                ],
+                [
+                    'grado_escolar' => '2do de Secundaria', 
+                    'departamento' => 'Cochabamba', 
+                    'contacto_tutor' => '77722231', 
+                    'id_institucion' => $institucion2->id_institucion, 
+                    'id_persona' => $personas[3]->id_persona
+                ],
             ];
 
             $competidoresQuimica = [];
             foreach ($competidoresQuimicaData as $data) {
-                $competidoresQuimica[] = Competidor::create([
-                    'datos' => json_encode([
-                        'nombre' => $data['nombre'],
-                        'apellido' => $data['apellido'],
-                        'ci' => $data['ci'],
-                        'grado' => $data['grado'],
-                    ]),
-                    'id_institucion' => $data['id_institucion'],
+                $competidoresQuimica[] = Competidor::create(array_merge($data, [
                     'id_area_nivel' => $areaNivelQuimica->id_area_nivel
-                ]);
+                ]));
             }
 
             $this->command->info('Competidores de Química creados.');
 
-            // 9. Crear evaluaciones
+            // 10. Crear evaluaciones
+            $evaluaciones = [];
             foreach ($competidoresQuimica as $index => $comp) {
-                Evaluacion::create([
+                $evaluaciones[] = Evaluacion::create([
                     'nota' => [90, 85][$index] ?? 0,
                     'fecha_evaluacion' => '2024-10-15',
                     'estado' => 'finalizado',
@@ -149,26 +181,28 @@ class Olimpiadas2024Seeder extends Seeder
 
             $this->command->info('Evaluaciones de Química creadas.');
 
-            // 10. Crear competencia final
+            // 11. Crear competencia final
             $competencia = Competencia::create([
                 'fecha_inicio' => '2024-11-01',
                 'fecha_fin' => '2024-11-02',
                 'estado' => 'En Curso',
                 'id_fase' => $faseFinalQuimica->id_fase,
                 'id_parametro' => $paramQuimica->id_parametro,
+                'id_evaluacion' => $evaluaciones[0]->id_evaluacion,
             ]);
 
-            // 11. Crear grupo final y asignar competidores
+            // 12. Crear grupo final y asignar competidores
             $grupoFinal = Grupo::create([
                 'nombre' => 'Grupo Finalistas Química',
                 'id_fase' => $faseFinalQuimica->id_fase
             ]);
 
+            // Asignar competidores al grupo usando la tabla pivote
             $grupoFinal->competidores()->attach(array_map(fn($c) => $c->id_competidor, $competidoresQuimica));
 
             $this->command->info('Grupo final de Química creado y competidores asignados.');
 
-            // 12. Medallero
+            // 13. Medallero
             foreach ($competidoresQuimica as $i => $comp) {
                 Medallero::create([
                     'puesto' => $i+1,
@@ -180,7 +214,7 @@ class Olimpiadas2024Seeder extends Seeder
 
             $this->command->info('Medallero de Química generado.');
 
-            // 13. Crear Aval
+            // 14. Crear Aval
             Aval::create([
                 'fecha_aval' => '2024-11-05',
                 'estado' => 'Pendiente',

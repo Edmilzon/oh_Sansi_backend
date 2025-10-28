@@ -129,4 +129,4 @@ Route::get('/niveles/{idArea}', [ListaResponsableAreaController::class, 'getNive
 Route::get('/listaCompleta/{idResponsable}/{idArea}/{idNivel}', [ListaResponsableAreaController::class, 'listarPorAreaYNivel']);
 
 //Importar csv
-Route::post('/competidores/importar',[ImportarcsvController::class,'importar']);
+Route::post('/competidores/importar',[CompetidorImportController::class,'importar']);

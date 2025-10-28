@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ImportCompetidoresRequest;
 use App\Services\ImportCompetidoresService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class CompetidorImportController extends Controller
 {
