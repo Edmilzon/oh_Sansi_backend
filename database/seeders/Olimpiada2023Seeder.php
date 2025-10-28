@@ -4,26 +4,26 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\Olimpiada;
-use App\Models\Area;
-use App\Models\Nivel;
-use App\Models\Persona;
-use App\Models\Usuario;
-use App\Models\Rol;
-use App\Models\Institucion;
-use App\Models\AreaOlimpiada;
-use App\Models\AreaNivel;
-use App\Models\Fase;
-use App\Models\Parametro;
-use App\Models\ResponsableArea;
-use App\Models\EvaluadorAn;
-use App\Models\Competidor;
-use App\Models\Evaluacion;
-use App\Models\Grupo;
-use App\Models\Competencia;
-use App\Models\Medallero;
-use App\Models\Desclasificacion;
-use App\Models\Aval;
+use App\Model\Olimpiada;
+use App\Model\Area;
+use App\Model\Nivel;
+use App\Model\Persona;
+use App\Model\Usuario;
+use App\Model\Rol;
+use App\Model\Institucion;
+use App\Model\AreaOlimpiada;
+use App\Model\AreaNivel;
+use App\Model\Fase;
+use App\Model\Parametro;
+use App\Model\ResponsableArea;
+use App\Model\EvaluadorAn;
+use App\Model\Competidor;
+use App\Model\Evaluacion;
+use App\Model\Grupo;
+use App\Model\Competencia;
+use App\Model\Medallero;
+use App\Model\Desclasificacion;
+use App\Model\Aval;
 
 class Olimpiada2023Seeder extends Seeder
 {

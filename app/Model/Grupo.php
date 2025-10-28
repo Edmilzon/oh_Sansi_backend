@@ -30,7 +30,7 @@ class Grupo extends Model
      */
     public function competidores()
     {
-        return $this->belongsToMany(Competidor::class, 'grupos_competidores', 'id_grupo', 'id_competidor')
+        return $this->belongsToMany(Competidor::class, 'grupo_competidor', 'id_grupo', 'id_competidor')
                     ->withTimestamps();
     }
 }

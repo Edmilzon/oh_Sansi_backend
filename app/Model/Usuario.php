@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
-use App\Model\Roles;
+use App\Model\Rol;
 use App\Model\ResponsableArea; 
 use App\Model\EvaluadorAn; 
 
@@ -33,7 +33,7 @@ class Usuario extends Authenticatable
     
     public function roles()
     {
-        return $this->belongsToMany(Roles::class, 'usuario_rol', 'id_usuario', 'id_rol', 'id_usuario', 'id_rol')
+        return $this->belongsToMany(Rol::class, 'usuario_rol', 'id_usuario', 'id_rol', 'id_usuario', 'id_rol')
                     ->withPivot('id_olimpiada')
                     ->withTimestamps();
     }
@@ -50,7 +50,7 @@ class Usuario extends Authenticatable
 
     public function asignarRol(string $nombreRol, int $idOlimpiada)
     {
-        $rol = Roles::where('nombre', $nombreRol)->firstOrFail();
+        $rol = Rol::where('nombre', $nombreRol)->firstOrFail();
         $this->roles()->attach($rol->id_rol, ['id_olimpiada' => $idOlimpiada]);
     }
 

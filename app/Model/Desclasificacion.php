@@ -5,11 +5,11 @@ namespace App\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Desclasificaciones extends Model
+class Desclasificacion extends Model
 {
     use HasFactory;
 
-    protected $table = 'desclasificaciones';
+    protected $table = 'desclasificacion';
     protected $primaryKey = 'id_desclasificacion';
 
     protected $fillable = [

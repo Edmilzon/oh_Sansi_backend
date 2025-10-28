@@ -4,25 +4,25 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\Olimpiada;
-use App\Models\Area;
-use App\Models\Nivel;
-use App\Models\Persona;
-use App\Models\Usuario;
-use App\Models\Rol;
-use App\Models\Institucion;
-use App\Models\AreaOlimpiada;
-use App\Models\AreaNivel;
-use App\Models\Fase;
-use App\Models\Parametro;
-use App\Models\ResponsableArea;
-use App\Models\EvaluadorAn;
-use App\Models\Competidor;
-use App\Models\Evaluacion;
-use App\Models\Grupo;
-use App\Models\Competencia;
-use App\Models\Medallero;
-use App\Models\Aval;
+use App\Model\Olimpiada;
+use App\Model\Area;
+use App\Model\Nivel;
+use App\Model\Persona;
+use App\Model\Usuario;
+use App\Model\Rol;
+use App\Model\Institucion;
+use App\Model\AreaOlimpiada;
+use App\Model\AreaNivel;
+use App\Model\Fase;
+use App\Model\Parametro;
+use App\Model\ResponsableArea;
+use App\Model\EvaluadorAn;
+use App\Model\Competidor;
+use App\Model\Evaluacion;
+use App\Model\Grupo;
+use App\Model\Competencia;
+use App\Model\Medallero;
+use App\Model\Aval;
 
 class Olimpiadas2024Seeder extends Seeder
 {
@@ -83,14 +83,17 @@ class Olimpiadas2024Seeder extends Seeder
             $personasData = [
                 ['nombre' => 'Roberto', 'apellido' => 'Gomez', 'ci' => '9988777', 'email' => 'roberto.gomez@test.com', 'genero' => 'M', 'telefono' => '77788877'],
                 ['nombre' => 'Mariana', 'apellido' => 'Salas', 'ci' => '6655444', 'email' => 'mariana.salas@test.com', 'genero' => 'F', 'telefono' => '77788844'],
-                ['nombre' => 'Ana', 'apellido' => 'Lopez', 'ci' => '5678901', 'email' => 'ana.lopez@test.com', 'genero' => 'F', 'telefono' => '77711121'],
-                ['nombre' => 'Carlos', 'apellido' => 'Perez', 'ci' => '6789012', 'email' => 'carlos.perez@test.com', 'genero' => 'M', 'telefono' => '77711122'],
+                ['nombre' => 'Pedro', 'apellido' => 'Lopez', 'ci' => '5678901', 'email' => 'pedro.lopez@test.com', 'genero' => 'M', 'telefono' => '77711117'],
+                ['nombre' => 'Juan', 'apellido' => 'Tiburcio', 'ci' => '6789020', 'email' => 'juan.tiburcio@test.com', 'genero' => 'M', 'telefono' => '77711122'],
             ];
 
             $personas = [];
-            foreach ($personasData as $data) {
-                $personas[] = Persona::create($data);
-            }
+                foreach ($personasData as $data) {
+                $personas[] = Persona::firstOrCreate(
+                ['ci' => $data['ci']],
+            $data
+            );
+        }
 
             // 7. Crear usuarios responsables y evaluadores para Química
             $responsableUser = Usuario::firstOrCreate([
