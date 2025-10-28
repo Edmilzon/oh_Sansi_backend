@@ -25,7 +25,7 @@ class ResponsableRepository
             'apellido' => $data['apellido'],
             'ci' => $data['ci'],
             'email' => $data['email'],
-            'password' => $data['password'], 
+            'password' => Hash::make($data['password']), 
             'telefono' => $data['telefono'] ?? null,
         ];
 
@@ -234,7 +234,7 @@ class ResponsableRepository
         if (isset($data['apellido'])) $updateData['apellido'] = $data['apellido'];
         if (isset($data['ci'])) $updateData['ci'] = $data['ci'];
         if (isset($data['email'])) $updateData['email'] = $data['email'];
-        if (isset($data['password'])) $updateData['password'] = $data['password'];
+        if (isset($data['password'])) $updateData['password'] = Hash::make($data['password']);
         if (isset($data['telefono'])) $updateData['telefono'] = $data['telefono'];
 
         $usuario->update($updateData);
@@ -311,5 +311,16 @@ class ResponsableRepository
         }
 
         return $data;
+    }
+
+    /**
+     * Busca un usuario por su CI.
+     *
+     * @param string $ci
+     * @return Usuario|null
+     */
+    public function findUsuarioByCi(string $ci): ?Usuario
+    {
+        return Usuario::where('ci', $ci)->first();
     }
 }

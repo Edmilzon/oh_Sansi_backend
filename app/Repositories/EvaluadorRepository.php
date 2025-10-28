@@ -25,7 +25,7 @@ class EvaluadorRepository
             'apellido' => $data['apellido'],
             'ci' => $data['ci'],
             'email' => $data['email'],
-            'password' => $data['password'], 
+            'password' => Hash::make($data['password']), 
             'telefono' => $data['telefono'] ?? null,
         ];
 
@@ -249,7 +249,7 @@ class EvaluadorRepository
         if (isset($data['apellido'])) $updateData['apellido'] = $data['apellido'];
         if (isset($data['ci'])) $updateData['ci'] = $data['ci'];
         if (isset($data['email'])) $updateData['email'] = $data['email'];
-        if (isset($data['password'])) $updateData['password'] = $data['password'];
+        if (isset($data['password'])) $updateData['password'] = Hash::make($data['password']);
         if (isset($data['telefono'])) $updateData['telefono'] = $data['telefono'];
 
         $usuario->update($updateData);
@@ -261,15 +261,16 @@ class EvaluadorRepository
      *
      * @param Usuario $usuario
      * @param array $areaIds
+     * @param int $olimpiadaId
      * @return void
      */
-    public function updateEvaluadorAreaRelations(Usuario $usuario, array $areaIds): void
+    public function updateEvaluadorAreaRelations(Usuario $usuario, array $areaIds, int $olimpiadaId): void
     {
         // Eliminar relaciones existentes
         EvaluadorAn::where('id_usuario', $usuario->id_usuario)->delete();
 
         // Crear nuevas relaciones
-        $this->createEvaluadorAreaRelations($usuario, $areaIds);
+        $this->createEvaluadorAreaRelations($usuario, $areaIds, $olimpiadaId);
     }
 
     /**
@@ -294,5 +295,16 @@ class EvaluadorRepository
 
         // Eliminar usuario
         return $usuario->delete();
+    }
+
+    /**
+     * Busca un usuario por su CI.
+     *
+     * @param string $ci
+     * @return Usuario|null
+     */
+    public function findUsuarioByCi(string $ci): ?Usuario
+    {
+        return Usuario::where('ci', $ci)->first();
     }
 }

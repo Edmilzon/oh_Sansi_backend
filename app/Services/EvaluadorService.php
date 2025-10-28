@@ -6,6 +6,8 @@ use App\Repositories\EvaluadorRepository;
 use App\Model\Usuario;
 use App\Model\ResponsableArea;
 use App\Model\Area;
+use App\Mail\UserCredentialsMail;
+use Illuminate\Support\Facades\Mail;
 use App\Model\EvaluadorAn;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -29,6 +31,9 @@ class EvaluadorService
     public function createEvaluador(array $data): array
     {
         return DB::transaction(function () use ($data) {
+            // Guardar la contraseña en texto plano para el correo
+            $plainPassword = $data['password'];
+
             // Crear el usuario
             $usuario = $this->evaluadorRepository->createUsuario($data);
 
@@ -41,6 +46,14 @@ class EvaluadorService
                 $data['areas'],
                 $data['id_olimpiada']
             );
+
+            // Enviar correo con las credenciales
+            Mail::to($usuario->email)->send(new UserCredentialsMail(
+                $usuario->nombre,
+                $usuario->email,
+                $plainPassword,
+                'Evaluador'
+            ));
 
             // Obtener información completa del evaluador creado
             return $this->getEvaluadorData($usuario, $evaluadorAreas);
@@ -102,11 +115,37 @@ class EvaluadorService
         return DB::transaction(function () use ($id, $data) {
             $usuario = $this->evaluadorRepository->updateUsuario($id, $data);
 
-            if (isset($data['areas'])) {
-                $this->evaluadorRepository->updateEvaluadorAreaRelations($usuario, $data['areas']);
+            if (isset($data['areas']) && isset($data['id_olimpiada'])) {
+                $this->evaluadorRepository->updateEvaluadorAreaRelations($usuario, $data['areas'], $data['id_olimpiada']);
             }
 
             return $this->getEvaluadorData($usuario);
+        });
+    }
+
+    /**
+     * Actualiza un evaluador existente por su CI.
+     *
+     * @param string $ci
+     * @param array $data
+     * @return array|null
+     */
+    public function updateEvaluadorByCi(string $ci, array $data): ?array
+    {
+        $usuario = $this->evaluadorRepository->findUsuarioByCi($ci);
+
+        if (!$usuario) {
+            return null; // O lanzar una excepción si se prefiere
+        }
+
+        return DB::transaction(function () use ($usuario, $data) {
+            $usuarioActualizado = $this->evaluadorRepository->updateUsuario($usuario->id_usuario, $data);
+
+            if (isset($data['areas']) && isset($data['id_olimpiada'])) {
+                $this->evaluadorRepository->updateEvaluadorAreaRelations($usuarioActualizado, $data['areas'], $data['id_olimpiada']);
+            }
+
+            return $this->getEvaluadorData($usuarioActualizado);
         });
     }
 
@@ -152,7 +191,7 @@ class EvaluadorService
     private function getEvaluadorData(Usuario $usuario, ?array $evaluadorAreas = null): array
     {
         if (!$evaluadorAreas) {
-            $evaluadorAreas = $usuario->evaluadorArea()->with('area')->get()->toArray();
+            $evaluadorAreas = $usuario->evaluadorAn()->with('area')->get()->toArray();
         }
 
         return [

@@ -125,4 +125,57 @@ class EvaluadorController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Actualiza un evaluador existente por su CI.
+     *
+     * @param Request $request
+     * @param string $ci
+     * @return JsonResponse
+     */
+    public function updateByCi(Request $request, string $ci): JsonResponse
+    {
+        $usuario = DB::table('usuario')->where('ci', $ci)->first();
+
+        if (!$usuario) {
+            return response()->json(['message' => 'Evaluador no encontrado con el CI proporcionado.'], 404);
+        }
+
+        $request->validate([
+            'nombre' => 'sometimes|required|string|max:255',
+            'apellido' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|email|unique:usuario,email,' . $usuario->id_usuario . ',id_usuario',
+            'password' => 'sometimes|required|string|min:8',
+            'telefono' => 'nullable|string|max:20',
+            'id_olimpiada' => 'sometimes|required|integer|exists:olimpiada,id_olimpiada',
+            'areas' => 'sometimes|required|array|min:1',
+            'areas.*' => ['integer', 'exists:area,id_area', function ($attribute, $value, $fail) use ($request) {
+                if ($request->has('id_olimpiada') && !DB::table('area_olimpiada')->where('id_area', $value)->where('id_olimpiada', $request->id_olimpiada)->exists()) {
+                    $fail("El área con ID {$value} no está asociada a la olimpiada con ID {$request->id_olimpiada}.");
+                }
+            }],
+        ]);
+
+        try {
+            $data = $request->only([
+                'nombre', 'apellido', 'email', 'password', 
+                'telefono', 'id_olimpiada', 'areas'
+            ]);
+
+            $result = $this->evaluadorService->updateEvaluadorByCi($ci, $data);
+
+            return response()->json([
+                'message' => 'Evaluador actualizado exitosamente',
+                'data' => $result
+            ]);
+
+        } catch (ValidationException $e) {
+            return response()->json(['message' => 'Error de validación', 'errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al actualizar el evaluador',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

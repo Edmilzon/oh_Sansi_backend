@@ -60,6 +60,7 @@ Route::prefix('responsables')->group(function () {
     Route::get('/', [ResponsableController::class, 'index']);
     Route::get('/{id}', [ResponsableController::class, 'show']);
     Route::get('/ci/{ci}/gestiones', [ResponsableController::class, 'getGestionesByCi']);
+    Route::put('/ci/{ci}', [ResponsableController::class, 'updateByCi']);
     Route::get('/ci/{ci}/gestion/{gestion}/areas', [ResponsableController::class, 'getAreasByCiAndGestion']);
 });
 
@@ -68,6 +69,7 @@ Route::prefix('evaluadores')->group(function () {
     Route::post('/', [EvaluadorController::class, 'store']);
     Route::get('/', [EvaluadorController::class, 'index']);
     Route::get('/{id}', [EvaluadorController::class, 'show']);
+    Route::put('/ci/{ci}', [EvaluadorController::class, 'updateByCi']);
 });
 
 Route::get('olimpiadas/{identifier}/areas', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);
