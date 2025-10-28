@@ -81,6 +81,9 @@ Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);
 Route::get('/area', [AreaController::class, 'index']);
 Route::post('/area', [AreaController::class, 'store']);
 
+//Importar csv
+Route::post('competidores/importar',[CompetidorImportController::class,'importar']);
+
 // Rutas comentadas temporalmente hasta que se creen los controladores
 /*
 // Rutas para la gestión de productos
@@ -129,6 +132,3 @@ Route::post('/parametros', [ParametroController::class, 'store']);
 Route::get('/responsable/{idResponsable}', [ListaResponsableAreaController::class, 'getAreaPorResponsable']);
 Route::get('/niveles/{idArea}', [ListaResponsableAreaController::class, 'getNivelesPorArea']);
 Route::get('/listaCompleta/{idResponsable}/{idArea}/{idNivel}', [ListaResponsableAreaController::class, 'listarPorAreaYNivel']);
-
-//Importar csv
-Route::post('/competidores/importar',[CompetidorImportController::class,'importar']);
