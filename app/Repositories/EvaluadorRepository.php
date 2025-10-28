@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Model\Usuario;
 use App\Model\EvaluadorAn;
-use App\Model\Roles;
+use App\Model\Rol;
 use App\Model\Area;
 use App\Model\AreaOlimpiada;
 use Illuminate\Support\Facades\Hash;
@@ -41,7 +41,7 @@ class EvaluadorRepository
      */
     public function assignEvaluadorRole(Usuario $usuario, int $olimpiadaId): void
     {
-        $rolEvaluador = Roles::where('nombre', 'Evaluador')->first();
+        $rolEvaluador = Rol::where('nombre', 'Evaluador')->first();
 
         if (!$rolEvaluador) {
             throw new \Exception('El rol "Evaluador" no existe en el sistema');

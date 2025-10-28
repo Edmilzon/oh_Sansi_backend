@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Model\Usuario;
-use App\Model\Roles;
+use App\Model\Rol;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 

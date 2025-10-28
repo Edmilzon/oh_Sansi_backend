@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Model\Usuario;
 use App\Model\ResponsableArea;
-use App\Model\Roles;
+use App\Model\Rol;
 use App\Model\Area;
 use App\Model\AreaOlimpiada;
 use Illuminate\Support\Facades\Hash;
@@ -41,7 +41,7 @@ class ResponsableRepository
      */
     public function assignResponsableRole(Usuario $usuario, int $olimpiadaId): void
     {
-        $rolResponsable = Roles::where('nombre', 'Responsable Area')->first();
+        $rolResponsable = Rol::where('nombre', 'Responsable Area')->first();
         
         if (!$rolResponsable) {
             throw new \Exception('El rol "Responsable Area" no existe en el sistema');
