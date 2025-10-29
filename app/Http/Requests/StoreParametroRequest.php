@@ -16,8 +16,8 @@ class StoreParametroRequest extends FormRequest
         return [
             'area_niveles' => 'required|array|min:1',
             'area_niveles.*.id_area_nivel' => 'required|integer|exists:area_nivel,id_area_nivel',
-            'area_niveles.*.nota_max_clasif' => 'required|integer|min:0',
-            'area_niveles.*.nota_min_clasif' => 'required|integer|min:0',
+            'area_niveles.*.nota_max_clasif' => 'required|numeric|min:0',
+            'area_niveles.*.nota_min_clasif' => 'required|numeric|min:0',
             'area_niveles.*.cantidad_max_apro' => 'required|integer|min:0',
         ];
     }
