@@ -8,6 +8,7 @@ use App\Model\ResponsableArea;
 use App\Model\Competidor;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Carbon\Carbon;
 
 class ListaResponsableAreaRepository
 {
@@ -42,58 +43,53 @@ class ListaResponsableAreaRepository
             ->get();
     }
    
-  public function ListarPorAreaYNivel(int $idResponsable, int $idArea, int $idNivel): Collection
+ public function ListarPorAreaYNivel(int $idResponsable, int $idArea, int $idNivel): Collection
 {
-    // 1. Obtener todos los competidores del responsable (1/0/0)
-    $listaBase = DB::table('responsable_area')
+    // Áreas que administra el responsable
+    $areasDelResponsable = DB::table('responsable_area')
         ->join('area_olimpiada', 'responsable_area.id_area_olimpiada', '=', 'area_olimpiada.id_area_olimpiada')
-        ->join('area', 'area_olimpiada.id_area', '=', 'area.id_area')
         ->where('responsable_area.id_usuario', $idResponsable)
-        ->pluck('area.id_area');
+        ->pluck('area_olimpiada.id_area')
+        ->unique()
+        ->values();
 
-    if ($listaBase->isEmpty()) {
+    if ($areasDelResponsable->isEmpty()) {
         return collect();
     }
 
-    $competidores = Competidor::join('area_nivel', 'competidor.id_area_nivel', '=', 'area_nivel.id_area_nivel')
+    // Consulta principal: solo campos solicitados
+    $query = DB::table('competidor')
+        ->join('persona', 'competidor.id_persona', '=', 'persona.id_persona')
+        ->join('area_nivel', 'competidor.id_area_nivel', '=', 'area_nivel.id_area_nivel')
         ->join('area', 'area_nivel.id_area', '=', 'area.id_area')
         ->join('nivel', 'area_nivel.id_nivel', '=', 'nivel.id_nivel')
-        ->select('competidor.datos', 'area.nombre as area', 'nivel.nombre as nivel')
-        ->whereIn('area.id_area', $listaBase)
-        ->get()
-        ->map(function ($c) {
-            $datos = $this->decodeDatos($c->datos);
-            return [
-                'nombre'   => $datos['nombre']   ?? null,
-                'apellido' => $datos['apellido'] ?? null,
-                'ci'       => $datos['ci']       ?? $datos['carnet'] ?? null,
-                'grado'    => $datos['grado']    ?? null,
-                'area'     => $c->area,
-                'nivel'    => $c->nivel,
-            ];
-        });
+        ->whereIn('area.id_area', $areasDelResponsable);
 
-    // 2. Filtrar sobre la lista base según parámetros
-    $competidoresFiltrados = $competidores->filter(function ($c) use ($idArea, $idNivel) {
-        if ($idArea != 0 && $c['area'] !== Area::find($idArea)->nombre) return false;
-        if ($idNivel != 0 && $c['nivel'] !== Nivel::find($idNivel)->nombre) return false;
-        return true;
-    });
+    if ($idArea !== 0)  $query->where('area.id_area', $idArea);
+    if ($idNivel !== 0) $query->where('nivel.id_nivel', $idNivel);
 
-    return $competidoresFiltrados->values(); // reindexar
-}
+    $rows = $query->select(
+            'persona.nombre as nombre',
+            'persona.apellido as apellido',
+            'area.nombre as area',
+            'persona.ci as ci',
+            'nivel.nombre as nivel',
+            'competidor.grado_escolar as grado'
+        )
+        ->orderBy('persona.apellido')
+        ->orderBy('persona.nombre')
+        ->get();
 
-private function decodeDatos($datosRaw): array
-{
-    if (empty($datosRaw)) return [];
-
-    $datos = json_decode($datosRaw, true);
-
-    if (is_string($datos)) {
-        $datos2 = json_decode($datos, true);
-        if (is_array($datos2)) $datos = $datos2;
-    }
-
-    return is_array($datos) ? $datos : [];
+    // Normalizar la salida exactamente con las claves solicitadas
+    return $rows->map(function ($r) {
+        return [
+            'nombre' => $r->nombre,
+            'apellido' => $r->apellido,
+            'area' => $r->area,
+            'ci' => $r->ci,
+            'nivel' => $r->nivel,
+            'grado' => $r->grado,
+        ];
+    })->values();
 }
 }
