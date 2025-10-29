@@ -39,8 +39,7 @@ class CompetidorService
                 'contacto_emergencia' => $data['contacto_emergencia'] ?? null,
                 'id_institucion' => $data['id_institucion'] ?? null,
                 'id_area' => $data['id_area'] ?? null,
-                'id_nivel' => $data['id_nivel'] ?? null,
-                /*'id_archivo_csv' => $data['id_archivo_csv'] ?? null,*/         
+                'id_nivel' => $data['id_nivel'] ?? null,         
             ]);
 
             return $persona->load(['competidor']);

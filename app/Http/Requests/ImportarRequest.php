@@ -14,7 +14,6 @@ class ImportarRequest extends FormRequest
     public function rules(): array
     {
         return [
-            /*'archivo_csv.nombre' => 'required|string|max:255',*/
             //Array de competidores
             'competidores' => 'required|array|min:1',
             'competidores.*.persona.nombre' => 'required|string|max:255',
