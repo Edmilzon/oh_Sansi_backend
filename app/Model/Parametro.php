@@ -19,6 +19,11 @@ class Parametro extends Model
         'id_area_nivel',
     ];
 
+    protected $casts = [
+        'nota_max_clasif' => 'double',
+        'nota_min_clasif' => 'double',
+    ];
+
     /**
      * Get the area_nivel that owns the parametro.
      */

@@ -117,32 +117,30 @@ class ParametroService
     }
 
 public function getAllParametrosByGestiones(): array
-    {
+{
     $parametros = $this->parametroRepository->getAllParametrosByGestiones();
 
-    $parametrosPorGestion = $parametros->groupBy(function($parametro) {
-        return $parametro->areaNivel->olimpiada->id_olimpiada;
-    });
+    $parametrosPorGestion = $parametros->groupBy('id_olimpiada');
 
     $resultado = [];
 
     foreach ($parametrosPorGestion as $idOlimpiada => $parametrosGestion) {
-        $olimpiada = $parametrosGestion->first()->areaNivel->olimpiada;
-        
+        $gestion = $parametrosGestion->first()->gestion;
+
         $parametrosFormateados = $parametrosGestion->map(function($parametro) {
             return [
-                'id_area_nivel' => $parametro->areaNivel->id_area_nivel,
-                'nombre_area' => $parametro->areaNivel->area->nombre,
-                'nombre_nivel' => $parametro->areaNivel->nivel->nombre,
-                'nota_minima' => $parametro->nota_min_clasif,
-                'nota_maxima' => $parametro->nota_max_clasif,
-                'cant_max_clasificados' => $parametro->cantidad_max_apro
+                'id_area_nivel' => $parametro->id_area_nivel,
+                'nombre_area' => $parametro->nombre_area,
+                'nombre_nivel' => $parametro->nombre_nivel,
+                'nota_minima' => $parametro->nota_minima,
+                'nota_maxima' => $parametro->nota_maxima,
+                'cant_max_clasificados' => $parametro->cant_max_clasificados
             ];
         });
 
         $resultado[] = [
             'id_olimpiada' => $idOlimpiada,
-            'gestion' => $olimpiada->gestion,
+            'gestion' => $gestion,
             'parametros' => $parametrosFormateados,
             'total_parametros' => $parametrosFormateados->count()
         ];
@@ -157,7 +155,7 @@ public function getAllParametrosByGestiones(): array
         'total_gestiones' => count($resultado),
         'message' => 'Parámetros de todas las gestiones obtenidos exitosamente'
     ];
-    }
+}
 
     private function formatParametro($parametro): array
     {
