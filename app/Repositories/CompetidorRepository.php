@@ -4,131 +4,72 @@ namespace App\Repositories;
 
 use App\Model\Competidor;
 use App\Model\Persona;
-use App\Model\Institucion;
-use App\Model\ArchivoCsv;
-use App\Model\Area;
-use App\Model\Nivel;
+use App\Model\AreaOlimpiada;
 use App\Model\AreaNivel;
-use App\Model\Olimpiada;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class CompetidorRepository
 {
-    public function crearInstitucion($nombre)
+    public function findWithRelations($id) {
+        return Competidor::with(['persona', 'institucion', 'areaNivel', 'archivoCsv'])->find($id);
+    }
+    
+    public function createPersona(array $data): Persona
     {
-        return Institucion::firstOrCreate(
-            ['nombre' => trim($nombre)],
-            ['nombre' => trim($nombre)]
-        );
+        return Persona::create($data);
     }
 
-    public function buscarOCrearPersona($datos)
+    public function createCompetidor(array $data): Competidor
     {
-        return Persona::firstOrCreate(
-            ['ci' => $datos['ci']],
-            [
-                'nombre' => $datos['nombre'],
-                'apellido' => $datos['apellido'],
-                'genero' => $datos['genero'],
-                'email' => $datos['email'],
-                'telefono' => $datos['telefono'] ?? null,
-            ]
-        );
+        return Competidor::create($data);
     }
 
-    public function obtenerAreaNivel($nombreArea, $nombreNivel, $idOlimpiada)
+    public function getAllCompetidores()
     {
-        $area = Area::where('nombre', 'like', '%' . trim($nombreArea) . '%')->first();
-        if (!$area) {
-            return null;
-        }
+        return Competidor::with(['persona', 'institucion', 'areaNivel.area', 'areaNivel.nivel', 'archivoCsv'])
+            ->get();
+    }
 
-        $nivel = Nivel::where('nombre', 'like', '%' . trim($nombreNivel) . '%')->first();
-        if (!$nivel) {
-            return null;
-        }
+    public function findPersonasDuplicadas(string $ci, string $email, ?string $telefono = null)
+    {
+        return Persona::where(function($query) use ($ci, $email, $telefono) {
+                $query->where('ci', $ci)
+                      ->orWhere('email', $email);
+                
+                if ($telefono) {
+                    $query->orWhere('telefono', $telefono);
+                }
+            })
+            ->with(['competidor.archivoCsv.olimpiada'])
+            ->get();
+    }
 
-        return AreaNivel::where('id_area', $area->id_area)
-            ->where('id_nivel', $nivel->id_nivel)
-            ->where('id_olimpiada', $idOlimpiada)
-            ->where('activo', true)
+    public function existePersona(string $ci, string $email, ?string $telefono = null): bool
+    {
+        return Persona::where('ci', $ci)
+            ->orWhere('email', $email)
+            ->orWhere('telefono', $telefono)
+            ->exists();
+    }
+
+    public function getCompetidoresByArchivoCsv($archivoCsvId)
+    {
+        return Competidor::with(['persona', 'institucion', 'areaNivel'])
+            ->where('id_archivo_csv', $archivoCsvId)
+            ->get();
+    }
+
+    public function findAreaOlimpiada($areaId, $olimpiadaId)
+    {
+        return AreaOlimpiada::where('id_area', $areaId)
+            ->where('id_olimpiada', $olimpiadaId)
             ->first();
     }
 
-    public function crearArchivoCsv($nombreArchivo, $idOlimpiada)
+    public function findAreaNivel($areaId, $nivelId, $olimpiadaId)
     {
-        return ArchivoCsv::create([
-            'nombre' => $nombreArchivo,
-            'fecha' => now()->toDateString(),
-            'id_olimpiada' => $idOlimpiada,
-        ]);
+        return AreaNivel::where('id_area', $areaId)
+            ->where('id_nivel', $nivelId)
+            ->where('id_olimpiada', $olimpiadaId)
+            ->first();
     }
-
-    public function crearCompetidor($datos, $idInstitucion, $idAreaNivel, $idArchivoCsv, $idPersona)
-    {
-        return Competidor::create([
-            'grado_escolar' => $datos['grado_escolar'],
-            'departamento' => $datos['departamento'],
-            'contacto_tutor' => $datos['contacto_tutor'] ?? null,
-            'id_institucion' => $idInstitucion,
-            'id_area_nivel' => $idAreaNivel,
-            'id_archivo_csv' => $idArchivoCsv,
-            'id_persona' => $idPersona,
-        ]);
-    }
-
-    public function competidorExiste($ci, $idAreaNivel)
-    {
-        return Competidor::whereHas('persona', function($query) use ($ci) {
-            $query->where('ci', $ci);
-        })->where('id_area_nivel', $idAreaNivel)->exists();
-    }
-
-    public function procesarTransaccion(callable $callback)
-    {
-        return DB::transaction($callback);
-    }
-
-    public function findWithRelations($id) {
-        return Competidor::with(['persona', 'institucion'])->find($id);
-    }
-
-    public function getAllCompetidores(){
-        return Competidor::all();
-    }
-
-    public function getCompetidoresByAreaIds(array $areaIds)
-    {
-        return Competidor::with([
-                'persona', 
-                'institucion', 
-                'areaNivel.area', 
-                'areaNivel.nivel'
-            ])->whereIn('id_area', $areaIds)->get();
-    }
-
-    public function obtenerAreasNivelesPorCombinaciones(array $combinaciones, int $idOlimpiada): array
-{
-    $areasNiveles = [];
-    
-    foreach ($combinaciones as $combinacion) {
-        $area = Area::where('nombre', 'like', '%' . $combinacion['area'] . '%')->first();
-        $nivel = Nivel::where('nombre', 'like', '%' . $combinacion['nivel'] . '%')->first();
-        
-        if ($area && $nivel) {
-            $areaNivel = AreaNivel::where('id_area', $area->id_area)
-                ->where('id_nivel', $nivel->id_nivel)
-                ->where('id_olimpiada', $idOlimpiada)
-                ->where('activo', true)
-                ->first();
-                
-            if ($areaNivel) {
-                $areasNiveles[$combinacion['area'] . '|' . $combinacion['nivel']] = $areaNivel;
-            }
-        }
-    }
-    
-    return $areasNiveles;
-}
 }

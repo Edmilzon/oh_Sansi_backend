@@ -10,7 +10,7 @@ use App\Http\Controllers\AreaOlimpiadaController;
 use App\Http\Controllers\EvaluadorController;
 // use App\Http\Controllers\ResponsableController;
 // use App\Http\Controllers\Responsable\CompetidorController as ResponsableCompetidorController;
-use App\Http\Controllers\CompetidorImportController;
+use App\Http\Controllers\ImportarcsvController;
 use App\Http\Controllers\ParametroController;
 use App\Http\Controllers\AreaNivelController;
 use App\Http\Controllers\ListaResponsableAreaController;
@@ -82,7 +82,7 @@ Route::get('/area', [AreaController::class, 'index']);
 Route::post('/area', [AreaController::class, 'store']);
 
 //Importar csv
-Route::post('competidores/importar',[CompetidorImportController::class,'importar']);
+Route::post('importar/{gestion}',[ImportarcsvController::class,'importar']);
 
 // Rutas comentadas temporalmente hasta que se creen los controladores
 /*
