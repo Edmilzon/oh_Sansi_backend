@@ -105,6 +105,8 @@ class ParametroRepository
         ->orderBy('area.nombre')
         ->orderBy('nivel.nombre')
         ->get();
+
+        
     }
 
     public function getParametrosByAreaNiveles(array $idsAreaNivel): Collection

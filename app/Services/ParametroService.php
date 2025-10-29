@@ -4,19 +4,23 @@ namespace App\Services;
 
 use App\Repositories\ParametroRepository;
 use App\Repositories\AreaNivelRepository;
+use App\Services\OlimpiadaService;
 use Illuminate\Database\Eloquent\Collection;
 
 class ParametroService
 {
     protected $parametroRepository;
     protected $areaNivelRepository;
+    protected $olimpiadaService;
 
     public function __construct(
         ParametroRepository $parametroRepository,
-        AreaNivelRepository $areaNivelRepository
+        AreaNivelRepository $areaNivelRepository,
+        OlimpiadaService $olimpiadaService
     ) {
         $this->parametroRepository = $parametroRepository;
         $this->areaNivelRepository = $areaNivelRepository;
+        $this->olimpiadaService = $olimpiadaService;
     }
 
     public function getAllParametros(): array
@@ -120,12 +124,20 @@ public function getAllParametrosByGestiones(): array
 {
     $parametros = $this->parametroRepository->getAllParametrosByGestiones();
 
+
+    $olimpiadaActual = $this->olimpiadaService->obtenerOlimpiadaActual();
+    $gestionActual = $olimpiadaActual->gestion;
+
     $parametrosPorGestion = $parametros->groupBy('id_olimpiada');
 
     $resultado = [];
 
     foreach ($parametrosPorGestion as $idOlimpiada => $parametrosGestion) {
         $gestion = $parametrosGestion->first()->gestion;
+
+        if ($gestion == $gestionActual) {
+            continue;
+        }
 
         $parametrosFormateados = $parametrosGestion->map(function($parametro) {
             return [
@@ -153,11 +165,9 @@ public function getAllParametrosByGestiones(): array
     return [
         'gestiones' => $resultado,
         'total_gestiones' => count($resultado),
-        'message' => 'Parámetros de todas las gestiones obtenidos exitosamente'
+        'message' => 'Parámetros de todas las gestiones obtenidos exitosamente (excluyendo la gestión actual)'
     ];
-}
-
-    private function formatParametro($parametro): array
+}    private function formatParametro($parametro): array
     {
         return [
             'id_parametro' => $parametro->id_parametro,
