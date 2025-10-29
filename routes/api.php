@@ -70,6 +70,8 @@ Route::prefix('evaluadores')->group(function () {
     Route::get('/', [EvaluadorController::class, 'index']);
     Route::get('/{id}', [EvaluadorController::class, 'show']);
     Route::put('/ci/{ci}', [EvaluadorController::class, 'updateByCi']);
+    Route::get('/ci/{ci}/gestiones', [EvaluadorController::class, 'getGestionesByCi']);
+    Route::get('/ci/{ci}/gestion/{gestion}/areas', [EvaluadorController::class, 'getAreasByCiAndGestion']);
 });
 
 Route::get('olimpiadas/{identifier}/areas', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);

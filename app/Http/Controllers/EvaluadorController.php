@@ -127,6 +127,62 @@ class EvaluadorController extends Controller
     }
 
     /**
+     * Obtiene las gestiones en las que ha trabajado un evaluador por su CI.
+     *
+     * @param string $ci
+     * @return JsonResponse
+     */
+    public function getGestionesByCi(string $ci): JsonResponse
+    {
+        try {
+            $gestiones = $this->evaluadorService->getGestionesByCi($ci);
+
+            if (empty($gestiones)) {
+                return response()->json([
+                    'message' => 'No se encontraron gestiones para el evaluador con el CI proporcionado o el usuario no es un evaluador.',
+                    'data' => []
+                ]);
+            }
+
+            return response()->json($gestiones);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener las gestiones del evaluador.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Obtiene las áreas asignadas a un evaluador para una gestión específica.
+     *
+     * @param string $ci
+     * @param string $gestion
+     * @return JsonResponse
+     */
+    public function getAreasByCiAndGestion(string $ci, string $gestion): JsonResponse
+    {
+        try {
+            $areas = $this->evaluadorService->getAreasByCiAndGestion($ci, $gestion);
+
+            if (empty($areas)) {
+                return response()->json([
+                    'message' => 'No se encontraron áreas asignadas para el evaluador con el CI y la gestión proporcionados.',
+                    'data' => []
+                ]);
+            }
+
+            return response()->json($areas);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener las áreas del evaluador.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Actualiza un evaluador existente por su CI.
      *
      * @param Request $request

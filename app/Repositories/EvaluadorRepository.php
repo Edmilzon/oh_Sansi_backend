@@ -33,7 +33,7 @@ class EvaluadorRepository
     }
 
     /**
-     * Asigna el rol de "Responsable Area" al usuario.
+     * Asigna el rol de "Evaluador" al usuario.
      *
      * @param Usuario $usuario
      * @param int $olimpiadaId
@@ -307,4 +307,110 @@ class EvaluadorRepository
     {
         return Usuario::where('ci', $ci)->first();
     }
+
+
+     /**
+     * Encuentra las gestiones (olimpiadas) en las que un responsable ha trabajado, buscado por CI.
+     *
+     * @param string $ci
+     * @return array
+     */
+    public function findGestionesByCi(string $ci): array
+    {
+        $usuario = Usuario::where('ci', $ci)
+            ->whereHas('roles', function ($query) {
+                $query->where('nombre', 'Evaluador');
+            })
+            ->with('roles')
+            ->first();
+
+        if (!$usuario) {
+            return [];
+        }
+
+        $olimpiadaIds = $usuario->roles->pluck('pivot.id_olimpiada')->unique()->values();
+
+        $olimpiadas = \App\Model\Olimpiada::whereIn('id_olimpiada', $olimpiadaIds)
+            ->get(['id_olimpiada', 'gestion']);
+
+        return $olimpiadas->map(function ($olimpiada) {
+            return [
+                'Id_olimpiada' => $olimpiada->id_olimpiada,
+                'gestion' => $olimpiada->gestion,
+            ];
+        })->toArray();
+    }
+
+    /**
+      * Encuentra las áreas asignadas a un evaluador por su CI y una gestión específica.
+     *
+     * @param string $ci
+     * @param string $gestion
+     * @return array
+     */
+    public function findAreasByCiAndGestion(string $ci, string $gestion): array
+    {
+        $usuario = Usuario::where('ci', $ci)
+            ->whereHas('roles', function ($query) use ($gestion) {
+                $query->where('nombre', 'Evaluador');
+                $query->whereIn('usuario_rol.id_olimpiada', function ($subquery) use ($gestion) {
+                    $subquery->select('id_olimpiada')->from('olimpiada')->where('gestion', $gestion);
+                });
+            })
+            ->with(['evaluadorAn.areaOlimpiada.olimpiada', 'evaluadorAn.area'])
+            ->first();
+
+        if (!$usuario) {
+            return [];
+        }
+
+        // Filtrar las áreas para que coincidan solo con la gestión solicitada
+        $areasDeLaGestion = $usuario->evaluadorAn->filter(function ($evaluadorAn) use ($gestion) {
+            return $evaluadorAn->areaOlimpiada && $evaluadorAn->areaOlimpiada->olimpiada->gestion == $gestion;
+        });
+
+        // Formatear la salida como se solicitó
+        return $areasDeLaGestion->map(function ($evaluadorAn) {
+            return [
+                'id_evaluador_area' => $evaluadorAn->id_evaluadorAN,
+                'Area' => [
+                    'Id_area' => $evaluadorAn->area->id_area,
+                    'Nombre' => $evaluadorAn->area->nombre,
+                ]
+            ];
+        })->values()->toArray();
+    }
+
+    /**
+     * Formatea los datos de un usuario responsable.
+     *
+     * @param Usuario $usuario
+     * @param bool $includeOlimpiadas
+     * @return array
+     */
+    private function formatEvaludorData(Usuario $usuario, bool $includeOlimpiadas = true): array
+    {
+        $data = [
+            'id_usuario' => $usuario->id_usuario,
+            'nombre' => $usuario->nombre,
+            'apellido' => $usuario->apellido,
+            'ci' => $usuario->ci,
+            'email' => $usuario->email,
+            'telefono' => $usuario->telefono,
+            'areas_asignadas' => $usuario->evaluadorAn->map(function ($ra) {
+                return $ra->area ? ['id_area' => $ra->area->id_area, 'nombre_area' => $ra->area->nombre] : null;
+            })->filter()->values(),
+            'created_at' => $usuario->created_at,
+            'updated_at' => $usuario->updated_at,
+        ];
+
+        if ($includeOlimpiadas) {
+            $data['olimpiadas'] = $usuario->roles->map(function ($role) {
+                return ['id_olimpiada' => $role->pivot->id_olimpiada, 'rol' => $role->nombre];
+            });
+        }
+
+        return $data;
+    }
+
 }

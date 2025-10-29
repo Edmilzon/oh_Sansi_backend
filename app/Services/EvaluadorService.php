@@ -104,6 +104,31 @@ class EvaluadorService
     }
 
     /**
+     * Obtiene las gestiones (olimpiadas) en las que ha trabajado un evaluador.
+     *
+     * @param string $ci
+     * @return array
+     */
+    public function getGestionesByCi(string $ci): array
+    {
+        return $this->evaluadorRepository->findGestionesByCi($ci);
+    }
+
+    /**
+     * Obtiene las áreas asignadas a un evaluador para una gestión específica.
+     *
+     * @param string $ci
+     * @param string $gestion
+     * @return array
+     */
+    public function getAreasByCiAndGestion(string $ci, string $gestion): array
+    {
+        return $this->evaluadorRepository->findAreasByCiAndGestion($ci, $gestion);
+    }
+
+
+
+    /**
      * Actualiza un evaluador existente.
      *
      * @param int $id
