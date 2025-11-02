@@ -184,8 +184,6 @@ return new class extends Migration
             $table->date('fecha_fin');
             $table->string('estado');
             $table->unsignedBigInteger('id_responsableArea')->nullable();
-            $table->unsignedBigInteger('id_evaluadorAN')->nullable();
-            $table->unsignedBigInteger('id_competidor')->nullable();
             $table->unsignedBigInteger('id_fase')->nullable();
             $table->unsignedBigInteger('id_parametro')->nullable();
             $table->unsignedBigInteger('id_evaluacion')->nullable();
@@ -202,10 +200,7 @@ return new class extends Migration
         Schema::create('grupo', function (Blueprint $table) {
             $table->id('id_grupo');
             $table->string('nombre');
-            $table->unsignedBigInteger('id_fase');
             $table->timestamps();
-
-            $table->foreign('id_fase')->references('id_fase')->on('fase')->onDelete('cascade');
         });
 
         Schema::create('grupo_competidor', function (Blueprint $table) {
@@ -217,7 +212,7 @@ return new class extends Migration
             $table->foreign('id_grupo')->references('id_grupo')->on('grupo')->onDelete('cascade');
             $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('cascade');
         });
-
+        // Parece que toca modificar id_competencia a id_olimpiada o considerar incluir mas id's
         Schema::create('aval', function (Blueprint $table) {
             $table->id('id_aval');
             $table->date('fecha_aval');

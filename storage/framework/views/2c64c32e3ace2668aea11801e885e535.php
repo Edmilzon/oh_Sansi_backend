@@ -14,7 +14,7 @@
 <body>
     <div class="container">
         <p class="header">¡Hola, <?php echo e($nombreUsuario); ?>!</p>
-        <p>Te damos la bienvenida a la plataforma. Se ha creado una cuenta para ti.</p>
+        <p>Te damos la bienvenida a la plataforma. Se ha creado una cuenta para ti con el rol de <strong><?php echo e($rol); ?></strong>.</p>
         <p>A continuación, encontrarás tus credenciales para acceder al sistema.</p>
         
         <div class="credentials">
