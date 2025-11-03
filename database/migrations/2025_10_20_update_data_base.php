@@ -190,8 +190,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('id_responsableArea')->references('id_responsableArea')->on('responsable_area')->onDelete('set null');
-            $table->foreign('id_evaluadorAN')->references('id_evaluadorAN')->on('evaluador_an')->onDelete('set null');
-            $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('set null');
             $table->foreign('id_fase')->references('id_fase')->on('fase')->onDelete('set null');
             $table->foreign('id_parametro')->references('id_parametro')->on('parametro')->onDelete('set null');
             $table->foreign('id_evaluacion')->references('id_evaluacion')->on('evaluacion')->onDelete('set null');

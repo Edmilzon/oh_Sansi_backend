@@ -197,7 +197,6 @@ class Olimpiadas2024Seeder extends Seeder
             // 12. Crear grupo final y asignar competidores
             $grupoFinal = Grupo::create([
                 'nombre' => 'Grupo Finalistas Química',
-                'id_fase' => $faseFinalQuimica->id_fase
             ]);
 
             // Asignar competidores al grupo usando la tabla pivote

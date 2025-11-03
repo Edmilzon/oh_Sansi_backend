@@ -275,7 +275,6 @@ class Olimpiada2023Seeder extends Seeder
             // 15. Crear Grupos y asignar competidores clasificados
             $grupoFinal = Grupo::create([
                 'nombre' => 'Grupo Finalistas', 
-                'id_fase' => $faseFinal->id_fase
             ]);
             
             // Asignar competidores al grupo usando la tabla pivote
