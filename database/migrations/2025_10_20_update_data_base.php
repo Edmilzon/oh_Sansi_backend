@@ -27,6 +27,12 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('grado_escolaridad', function (Blueprint $table) {
+            $table->id('id_grado_escolaridad');
+            $table->string('nombre');
+            $table->timestamps();
+        });
+
         Schema::create('persona',function (Blueprint $table){
             $table ->id('id_persona');
             $table ->string('nombre');
@@ -52,6 +58,7 @@ return new class extends Migration
             $table->id('id_area_nivel');
             $table->unsignedBigInteger('id_area');
             $table->unsignedBigInteger('id_nivel');
+            $table->unsignedBigInteger('id_grado_escolaridad');
             $table->unsignedBigInteger('id_olimpiada');
             $table->boolean('activo')->default(true);
             $table->timestamps();
@@ -59,6 +66,7 @@ return new class extends Migration
             $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
             $table->foreign('id_nivel')->references('id_nivel')->on('nivel')->onDelete('cascade');
             $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiada')->onDelete('cascade');
+            $table->foreign('id_grado_escolaridad')->references('id_grado_escolaridad')->on('grado_escolaridad')->onDelete('cascade');
         });
 
         Schema::create('usuario', function (Blueprint $table) {
@@ -149,9 +157,9 @@ return new class extends Migration
 
         Schema::create('competidor', function (Blueprint $table) {
             $table->id('id_competidor');
-            $table->string('grado_escolar');
             $table->string('departamento');
             $table->string('contacto_tutor')->nullable();
+            $table->unsignedBigInteger('id_grado_escolaridad');
             $table->unsignedBigInteger('id_institucion');
             $table->unsignedBigInteger('id_area_nivel');
             $table->unsignedBigInteger('id_archivo_csv')->nullable();
@@ -162,6 +170,7 @@ return new class extends Migration
             $table->foreign('id_area_nivel')->references('id_area_nivel')->on('area_nivel')->onDelete('cascade');
             $table->foreign('id_archivo_csv')->references('id_archivo_csv')->on('archivo_csv')->onDelete('set null');
             $table->foreign('id_persona')->references('id_persona')->on('persona')->onDelete('cascade');
+            $table->foreign('id_grado_escolaridad')->references('id_grado_escolaridad')->on('grado_escolaridad')->onDelete('cascade');
         });
 
         Schema::create('evaluacion', function (Blueprint $table) {
@@ -275,5 +284,6 @@ return new class extends Migration
         Schema::dropIfExists('area');
         Schema::dropIfExists('area_olimpiada');
         Schema::dropIfExists('persona');
+        Schema::dropIfExists('grado_escolaridad');
     }
 };
