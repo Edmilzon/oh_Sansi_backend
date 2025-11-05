@@ -14,6 +14,7 @@ use App\Http\Controllers\ImportarcsvController;
 use App\Http\Controllers\ParametroController;
 use App\Http\Controllers\AreaNivelController;
 use App\Http\Controllers\ListaResponsableAreaController;
+use App\Http\Controllers\GradoEscolaridadController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -82,6 +83,15 @@ Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);
 //area mostrar y insertar
 Route::get('/area', [AreaController::class, 'index']);
 Route::post('/area', [AreaController::class, 'store']);
+Route::get('/area/{id_olimpiada}', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);//Probado y funcionando
+
+//Niveles
+Route::get('/niveles', [NivelController::class, 'index']);
+Route::get('/niveles/{id_nivel}', [NivelController::class, 'show']);
+
+// Grados de escolaridad
+Route::get('/grados-escolaridad', [GradoEscolaridadController::class, 'index']);
+Route::get('/grados-escolaridad/{id_grado_escolaridad}', [GradoEscolaridadController::class, 'show']);
 
 //Importar csv
 Route::post('importar/{gestion}',[ImportarcsvController::class,'importar']);
@@ -119,6 +129,8 @@ Route::get('/areas-con-niveles', [AreaNivelController::class, 'getAreasConNivele
 Route::get('/area-nivel', [AreaNivelController::class, 'getAreasConNivelesSimplificado']);
 Route::get('/area-nivel/{id_olimpiada}', [AreaNivelController::class, 'getAreasConNivelesPorOlimpiada']);
 Route::get('/area-nivel/gestion/{gestion}', [AreaNivelController::class, 'getAreasConNivelesPorGestion']);
+Route::get('/area-nivel/detalle', [AreaNivelController::class, 'getAllWithDetails']);
+Route::post('/area-nivel/por-gestion', [AreaNivelController::class, 'getByGestionAndAreas']);
 
 //Rutas Parametros de clasificación
 Route::get('/areas-olimpiada/{id_olimpiada}', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);

@@ -13,4 +13,8 @@ class NivelRepository {
     public function createNivel(array $data){
         return Nivel::create($data);
     }
+
+    public function findById(int $id) : ?Nivel {
+        return Nivel::find($id);
+    }
 }

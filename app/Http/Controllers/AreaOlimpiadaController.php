@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\AreaOlimpiadaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use Illuminate\Http\Request;
 
 class AreaOlimpiadaController extends Controller
 {
@@ -45,9 +46,7 @@ class AreaOlimpiadaController extends Controller
             
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'areas' => $areas
-                ]
+                'data' => $areas
             ]);
             
         } catch (\Exception $e) {
@@ -65,9 +64,7 @@ class AreaOlimpiadaController extends Controller
             
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'nombres_areas' => $nombresAreas
-                ]
+                'data' => $nombresAreas
             ]);
             
         } catch (\Exception $e) {

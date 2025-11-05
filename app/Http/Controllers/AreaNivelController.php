@@ -7,6 +7,7 @@ use App\Services\AreaNivelService;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class AreaNivelController extends Controller
 {
@@ -36,25 +37,14 @@ class AreaNivelController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
-            \Log::info('[CONTROLLER] Request recibido en store:', [
-                'full_url' => $request->fullUrl(),
-                'method' => $request->method(),
-                'content_type' => $request->header('Content-Type'),
-                'all_data' => $request->all(),
-                'data_count' => count($request->all()),
-                'json_data' => $request->getContent()
-            ]);
+            Log::info('[CONTROLLER] Request recibido en store:', $request->all());
 
+            // Validación que incluye id_grado_escolaridad
             $validatedData = $request->validate([
-                '*.id_area' => 'required|integer',
-                '*.id_nivel' => 'required|integer',
+                '*.id_area' => 'required|integer|exists:area,id_area',
+                '*.id_nivel' => 'required|integer|exists:nivel,id_nivel',
+                '*.id_grado_escolaridad' => 'required|integer|exists:grado_escolaridad,id_grado_escolaridad',
                 '*.activo' => 'required|boolean'
-            ]);
-
-            \Log::info('[CONTROLLER] Datos validados:', [
-                'validated_data' => $validatedData, 
-                'validated_count' => count($validatedData),
-                'validated_structure' => $validatedData[0] ?? 'no first element'
             ]);
 
             $result = $this->areaNivelService->createMultipleAreaNivel($validatedData);
@@ -73,15 +63,14 @@ class AreaNivelController extends Controller
                 $response['error_count'] = $result['error_count'];
             }
 
-            \Log::info('[CONTROLLER] Response enviado:', $response);
+            if (!empty($result['distribucion'])) {
+                $response['distribucion'] = $result['distribucion'];
+            }
+
             return response()->json($response, 201);
             
         } catch (ValidationException $e) {
-            \Log::error('[CONTROLLER] Error de validación:', [
-                'validation_errors' => $e->errors(),
-                'request_data' => $request->all(),
-                'request_count' => count($request->all())
-            ]);
+            Log::error('[CONTROLLER] Error de validación:', $e->errors());
             
             return response()->json([
                 'success' => false,
@@ -90,11 +79,7 @@ class AreaNivelController extends Controller
             ], 422);
             
         } catch (\Exception $e) {
-            \Log::error('[CONTROLLER] Error general en store:', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'request_data' => $request->all()
-            ]);
+            Log::error('[CONTROLLER] Error general en store:', $e->getMessage());
             
             return response()->json([
                 'success' => false,
@@ -158,60 +143,60 @@ class AreaNivelController extends Controller
     public function getAreasConNivelesSimplificado(): JsonResponse
     {
         try {
-        $result = $this->areaNivelService->getAreasConNivelesSimplificado();
+            $result = $this->areaNivelService->getAreasConNivelesSimplificado();
 
-        return response()->json([
-            'success' => true,
-            'data' => $result['areas'],
-            'olimpiada_actual' => $result['olimpiada_actual'],
-            'message' => $result['message']
-        ]);
+            return response()->json([
+                'success' => true,
+                'data' => $result['areas'],
+                'olimpiada_actual' => $result['olimpiada_actual'],
+                'message' => $result['message']
+            ]);
 
         } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Error al obtener áreas con niveles: ' . $e->getMessage()
-        ], 500);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener áreas con niveles: ' . $e->getMessage()
+            ], 500);
         }
     }
 
     public function getAreasConNivelesPorOlimpiada(int $id_olimpiada): JsonResponse
     {
         try {
-        $result = $this->areaNivelService->getAreasConNivelesPorOlimpiada($id_olimpiada);
+            $result = $this->areaNivelService->getAreasConNivelesPorOlimpiada($id_olimpiada);
 
-        return response()->json([
-            'success' => true,
-            'data' => $result['areas'],
-            'olimpiada' => $result['olimpiada'],
-            'message' => $result['message']
-        ]);
+            return response()->json([
+                'success' => true,
+                'data' => $result['areas'],
+                'olimpiada' => $result['olimpiada'],
+                'message' => $result['message']
+            ]);
 
         } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Error al obtener áreas con niveles: ' . $e->getMessage()
-        ], 500);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener áreas con niveles: ' . $e->getMessage()
+            ], 500);
         }
     }
 
     public function getAreasConNivelesPorGestion(string $gestion): JsonResponse
     {
         try {
-        $result = $this->areaNivelService->getAreasConNivelesPorGestion($gestion);
+            $result = $this->areaNivelService->getAreasConNivelesPorGestion($gestion);
 
-        return response()->json([
-            'success' => true,
-            'data' => $result['areas'],
-            'olimpiada' => $result['olimpiada'],
-            'message' => $result['message']
-        ]);
+            return response()->json([
+                'success' => true,
+                'data' => $result['areas'],
+                'olimpiada' => $result['olimpiada'],
+                'message' => $result['message']
+            ]);
 
         } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Error al obtener áreas con niveles: ' . $e->getMessage()
-        ], 500);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener áreas con niveles: ' . $e->getMessage()
+            ], 500);
         }
     }
 
@@ -245,6 +230,7 @@ class AreaNivelController extends Controller
         try {
             $validatedData = $request->validate([
                 '*.id_nivel' => 'required|integer|exists:nivel,id_nivel',
+                '*.id_grado_escolaridad' => 'required|integer|exists:grado_escolaridad,id_grado_escolaridad',
                 '*.activo' => 'required|boolean'
             ]);
 
@@ -270,6 +256,7 @@ class AreaNivelController extends Controller
             $validatedData = $request->validate([
                 'id_area' => 'sometimes|required|integer|exists:area,id_area',
                 'id_nivel' => 'sometimes|required|integer|exists:nivel,id_nivel',
+                'id_grado_escolaridad' => 'sometimes|required|integer|exists:grado_escolaridad,id_grado_escolaridad',
                 'activo' => 'sometimes|required|boolean'
             ]);
 
@@ -303,5 +290,51 @@ class AreaNivelController extends Controller
                 'message' => 'Error al eliminar la relación área-nivel: ' . $e->getMessage()
             ], 400);
         }
+    }
+
+    public function getAllWithDetails(): JsonResponse
+    {
+    try {
+        $result = $this->areaNivelService->getAllAreaNivelWithDetails();
+
+        return response()->json([
+            'success' => true,
+            'data' => $result['area_niveles'],
+            'message' => $result['message']
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al obtener las relaciones área-nivel: ' . $e->getMessage()
+        ], 500);
+    }
+    }
+
+    public function getByGestionAndAreas(Request $request): JsonResponse
+    {
+    try {
+        $request->validate([
+            'gestion' => 'required|string',
+            'id_areas' => 'required|array',
+            'id_areas.*' => 'integer|exists:area,id_area'
+        ]);
+
+        $gestion = $request->input('gestion');
+        $idAreas = $request->input('id_areas');
+
+        $result = $this->areaNivelService->getAreaNivelByGestionAndAreas($gestion, $idAreas);
+
+        return response()->json([
+            'success' => true,
+            'data' => $result['area_niveles'],
+            'olimpiada' => $result['olimpiada'],
+            'message' => $result['message']
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al obtener las relaciones área-nivel: ' . $e->getMessage()
+        ], 500);
+    }
     }
 }

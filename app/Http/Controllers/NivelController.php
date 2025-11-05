@@ -7,6 +7,7 @@ use App\Model\Nivel;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\JsonResponse;
 
 class NivelController extends Controller {
     protected $nivelService;
@@ -41,5 +42,29 @@ class NivelController extends Controller {
                 'nivel' => $nivel
             ], 201);
         });
+    }
+
+     public function show($id): JsonResponse
+    {
+        try {
+            $nivel = $this->nivelService->findById($id);
+
+            if (!$nivel) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nivel no encontrado'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $nivel
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener el nivel: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

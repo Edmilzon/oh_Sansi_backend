@@ -15,6 +15,7 @@ class AreaNivel extends Model
     protected $fillable = [
         'id_area',
         'id_nivel',
+        'id_grado_escolaridad',
         'id_olimpiada',
         'activo',
     ];
@@ -36,6 +37,11 @@ class AreaNivel extends Model
     public function olimpiada()
     {
         return $this->belongsTo(Olimpiada::class, 'id_olimpiada', 'id_olimpiada');
+    }
+
+    public function gradoEscolaridad()
+    {
+        return $this->belongsTo(GradoEscolaridad::class, 'id_grado_escolaridad', 'id_grado_escolaridad');
     }
 
     public function responsablesArea()
