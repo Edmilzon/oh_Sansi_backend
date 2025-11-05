@@ -29,9 +29,9 @@ class ListaResponsableAreaService
         return $this->listaResponsableAreaRepository->getAreaPorResponsable($idResponsable);
     }
    
-   public function listarPorAreaYNivel($idResponsable, $idArea, $idNivel)
+   public function listarPorAreaYNivel($idResponsable, $idArea, $idNivel, $grado)
 {
-    $competidores = $this->listaResponsableAreaRepository->listarPorAreaYNivel((int)$idResponsable,(int)$idArea, (int)$idNivel);
+    $competidores = $this->listaResponsableAreaRepository->listarPorAreaYNivel((int)$idResponsable,(int)$idArea, (int)$idNivel, (int)$grado);
     return response()->json($competidores);
 }
 }
