@@ -58,7 +58,7 @@ return new class extends Migration
             $table->id('id_area_nivel');
             $table->unsignedBigInteger('id_area');
             $table->unsignedBigInteger('id_nivel');
-            $table->unsignedBigInteger('id_grado_escolaridad');
+            $table->unsignedBigInteger('id_grado_escolaridad')->nullable();
             $table->unsignedBigInteger('id_olimpiada');
             $table->boolean('activo')->default(true);
             $table->timestamps();

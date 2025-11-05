@@ -44,7 +44,17 @@ class ListaResponsableAreaRepository
             ->distinct()
             ->get();
     }
-   
+    
+    public function getGradosEscolaridad(int $idNivel): Collection
+    {
+       return GradoEscolaridad ::where('area_nivel.id_nivel', $idNivel)
+        ->join('grado_escolaridad', 'area_nivel.id_grado_escolaridad', '=', 'grado_escolaridad.id_grado_escolaridad')
+        ->select('grado_escolaridad.id_grado_escolaridad', 'grado_escolaridad.nombre')
+        ->distinct()
+        ->orderBy('grado_escolaridad.id_grado_escolaridad')
+        ->get();
+    }
+
  public function ListarPorAreaYNivel(int $idResponsable, int $idArea, int $idNivel, int $idGrado): Collection
 {
     $olimpiadaActual = DB::table('olimpiada')
