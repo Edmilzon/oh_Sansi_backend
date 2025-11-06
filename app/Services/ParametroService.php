@@ -70,7 +70,6 @@ class ParametroService
                 $parametro = $this->parametroRepository->updateOrCreateByAreaNivel(
                     $areaNivelData['id_area_nivel'],
                     [
-                        'nota_max_clasif' => $areaNivelData['nota_max_clasif'],
                         'nota_min_clasif' => $areaNivelData['nota_min_clasif'],
                         'cantidad_max_apro' => $areaNivelData['cantidad_max_apro']
                     ]
@@ -108,7 +107,6 @@ class ParametroService
         $parametro = $this->parametroRepository->updateOrCreateByAreaNivel(
             $data['id_area_nivel'],
             [
-                'nota_max_clasif' => $data['nota_max_clasif'],
                 'nota_min_clasif' => $data['nota_min_clasif'],
                 'cantidad_max_apro' => $data['cantidad_max_apro']
             ]
@@ -145,7 +143,6 @@ public function getAllParametrosByGestiones(): array
                 'nombre_area' => $parametro->nombre_area,
                 'nombre_nivel' => $parametro->nombre_nivel,
                 'nota_minima' => $parametro->nota_minima,
-                'nota_maxima' => $parametro->nota_maxima,
                 'cant_max_clasificados' => $parametro->cant_max_clasificados
             ];
         });
@@ -171,7 +168,6 @@ public function getAllParametrosByGestiones(): array
     {
         return [
             'id_parametro' => $parametro->id_parametro,
-            'nota_max_clasif' => $parametro->nota_max_clasif,
             'nota_min_clasif' => $parametro->nota_min_clasif,
             'cantidad_max_apro' => $parametro->cantidad_max_apro,
             'area_nivel' => [
@@ -218,7 +214,6 @@ public function getAllParametrosByGestiones(): array
                 'id_olimpiada' => $parametro->id_olimpiada,
                 'gestion' => $parametro->gestion,
                 'nota_minima' => $parametro->nota_minima,
-                'nota_maxima' => $parametro->nota_maxima,
                 'cant_max_clasificados' => $parametro->cant_max_clasificados
             ];
         });

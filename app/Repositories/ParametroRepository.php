@@ -98,7 +98,6 @@ class ParametroRepository
             'area.nombre as nombre_area',
             'nivel.nombre as nombre_nivel',
             'parametro.nota_min_clasif as nota_minima',
-            'parametro.nota_max_clasif as nota_maxima',
             'parametro.cantidad_max_apro as cant_max_clasificados'
         ])
         ->orderBy('olimpiada.gestion', 'desc')
@@ -123,7 +122,6 @@ class ParametroRepository
             'area.nombre as nombre_area',
             'nivel.nombre as nombre_nivel',
             'parametro.nota_min_clasif as nota_minima',
-            'parametro.nota_max_clasif as nota_maxima',
             'parametro.cantidad_max_apro as cant_max_clasificados'
         ])
         ->orderBy('area_nivel.id_area_nivel')

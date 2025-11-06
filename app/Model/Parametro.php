@@ -13,14 +13,12 @@ class Parametro extends Model
     protected $primaryKey = 'id_parametro';
 
     protected $fillable = [
-        'nota_max_clasif',
         'nota_min_clasif',
         'cantidad_max_apro',
         'id_area_nivel',
     ];
 
     protected $casts = [
-        'nota_max_clasif' => 'double',
         'nota_min_clasif' => 'double',
     ];
 

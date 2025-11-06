@@ -211,7 +211,6 @@ class Olimpiada2023Seeder extends Seeder
             ]);
 
             $parametro = Parametro::create([
-                'nota_max_clasif' => 100,
                 'nota_min_clasif' => 51,
                 'cantidad_max_apro' => 10,
                 'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_1ro']->id_area_nivel

@@ -85,7 +85,6 @@ class Olimpiadas2024Seeder extends Seeder
             ]);
 
             $paramQuimica = Parametro::create([
-                'nota_max_clasif' => 100,
                 'nota_min_clasif' => 60,
                 'cantidad_max_apro' => 15,
                 'id_area_nivel' => $areaNivelQuimica1ro->id_area_nivel
