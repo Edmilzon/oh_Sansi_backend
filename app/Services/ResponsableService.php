@@ -172,6 +172,30 @@ class ResponsableService
         });
     }
 
+    /**
+     * Añade nuevas áreas a un responsable existente por su CI.
+     *
+     * @param string $ci
+     * @param array $data
+     * @return array|null
+     */
+    public function addAreasToResponsableByCi(string $ci, array $data): ?array
+    {
+        $usuario = $this->responsableRepository->findUsuarioByCi($ci);
+
+        if (!$usuario) {
+            return null;
+        }
+
+        return DB::transaction(function () use ($usuario, $data) {
+            $this->responsableRepository->addResponsableAreaRelations(
+                $usuario,
+                $data['areas'],
+                $data['id_olimpiada']
+            );
+            return $this->getResponsableData($usuario->fresh());
+        });
+    }
 
     /**
      * Elimina un responsable.
@@ -186,13 +210,7 @@ class ResponsableService
         });
     }
 
-    /**
-     * Valida que las áreas existan.
-     *
-     * @param array $areaIds
-     * @return void
-     * @throws ValidationException
-     */
+
     public function validateAreas(array $areaIds): void
     {
         $existingAreas = Area::whereIn('id_area', $areaIds)->pluck('id_area')->toArray();
@@ -214,8 +232,9 @@ class ResponsableService
      */
     private function getResponsableData(Usuario $usuario, ?array $responsableAreas = null): array
     {
-        if (!$responsableAreas) {
-            $responsableAreas = $usuario->responsableArea()->with('area')->get()->toArray();
+        $usuario->loadMissing('responsableArea.area');
+        if ($responsableAreas === null) {
+            $responsableAreas = $usuario->responsableArea->toArray();
         }
 
         return [

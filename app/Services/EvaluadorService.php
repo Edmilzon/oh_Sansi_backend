@@ -43,7 +43,7 @@ class EvaluadorService
             // Crear relaciones con las áreas
             $evaluadorAreas = $this->evaluadorRepository->createEvaluadorAreaRelations(
                 $usuario,
-                $data['areas'],
+                $data['area_nivel_ids'],
                 $data['id_olimpiada']
             );
 
@@ -175,6 +175,31 @@ class EvaluadorService
     }
 
     /**
+     * Añade nuevas áreas a un evaluador existente por su CI.
+     *
+     * @param string $ci
+     * @param array $data
+     * @return array|null
+     */
+    public function addAreasToEvaluadorByCi(string $ci, array $data): ?array
+    {
+        $usuario = $this->evaluadorRepository->findUsuarioByCi($ci);
+
+        if (!$usuario) {
+            return null;
+        }
+
+        return DB::transaction(function () use ($usuario, $data) {
+            $this->evaluadorRepository->addEvaluadorAreaRelations(
+                $usuario,
+                $data['areas'],
+                $data['id_olimpiada']
+            );
+            return $this->getEvaluadorData($usuario->fresh());
+        });
+    }
+
+    /**
      * Elimina un evaluador.
      *
      * @param int $id
@@ -215,8 +240,9 @@ class EvaluadorService
      */
     private function getEvaluadorData(Usuario $usuario, ?array $evaluadorAreas = null): array
     {
+        $usuario->loadMissing('evaluadorAn.areaNivel.area', 'evaluadorAn.areaNivel.nivel');
         if (!$evaluadorAreas) {
-            $evaluadorAreas = $usuario->evaluadorAn()->with('area')->get()->toArray();
+            $evaluadorAreas = $usuario->evaluadorAn;
         }
 
         return [
@@ -225,12 +251,12 @@ class EvaluadorService
             'apellido' => $usuario->apellido,
             'ci' => $usuario->ci,
             'email' => $usuario->email,
-            'telefono' => $usuario->telefono,
+            'telefono' => $usuario->telefono ?? null,
             'rol' => 'Evaluador',
-            'areas_asignadas' => array_map(function ($ra) {
+            'asignaciones' => collect($evaluadorAreas)->map(function ($ea) {
                 return [
-                    'id_area' => $ra['area']['id_area'],
-                    'nombre_area' => $ra['area']['nombre']
+                    'area' => $ea->areaNivel->area->nombre,
+                    'nivel' => $ea->areaNivel->nivel->nombre,
                 ];
             }, $evaluadorAreas),
             'created_at' => $usuario->created_at,

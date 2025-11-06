@@ -81,6 +81,34 @@ class ResponsableRepository
         return $responsableAreas;
     }
 
+
+    public function addResponsableAreaRelations(Usuario $usuario, array $areaIds, int $olimpiadaId): void
+    {
+        foreach ($areaIds as $areaId) {
+            $areaOlimpiada = AreaOlimpiada::where('id_area', $areaId)
+                                          ->where('id_olimpiada', $olimpiadaId)
+                                          ->first();
+
+            if (!$areaOlimpiada) {
+                throw new \Exception("La combinación del área ID {$areaId} y la olimpiada ID {$olimpiadaId} no existe.");
+            }
+
+            // Usamos firstOrCreate para no crear duplicados si la relación ya existe.
+            // Esto hace la operación idempotente.
+            ResponsableArea::firstOrCreate(
+                [
+                    'id_usuario' => $usuario->id_usuario,
+                    'id_area_olimpiada' => $areaOlimpiada->id_area_olimpiada,
+                ]
+            );
+        }
+
+        // Asigna el rol si el usuario no lo tiene para esta olimpiada
+        if (!$usuario->tieneRol('Responsable Area', $olimpiadaId)) {
+            $this->assignResponsableRole($usuario, $olimpiadaId);
+        }
+    }
+
     /**
      * Obtiene todos los responsables con sus áreas asignadas.
      *
@@ -92,7 +120,7 @@ class ResponsableRepository
             $query->where('nombre', 'Responsable Area');
         })
         ->with(['responsableArea.area', 'roles'])->get();
-        return $responsables->map(fn($usuario) => $this->formatResponsableData($usuario))->toArray();
+        return $responsables->map(fn($usuario) => $this->formatResponsableData($usuario, true))->toArray();
     }
 
     /**
@@ -111,7 +139,7 @@ class ResponsableRepository
         if (!$usuario) {
             return null;
         }
-        return $this->formatResponsableData($usuario);
+        return $this->formatResponsableData($usuario, true);
     }
 
     /**
@@ -296,7 +324,7 @@ class ResponsableRepository
             'apellido' => $usuario->apellido,
             'ci' => $usuario->ci,
             'email' => $usuario->email,
-            'telefono' => $usuario->telefono,
+            'telefono' => $usuario->telefono ?? null,
             'areas_asignadas' => $usuario->responsableArea->map(function ($ra) {
                 return $ra->area ? ['id_area' => $ra->area->id_area, 'nombre_area' => $ra->area->nombre] : null;
             })->filter()->values(),

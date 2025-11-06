@@ -62,6 +62,7 @@ Route::prefix('responsables')->group(function () {
     Route::get('/{id}', [ResponsableController::class, 'show']);
     Route::get('/ci/{ci}/gestiones', [ResponsableController::class, 'getGestionesByCi']);
     Route::put('/ci/{ci}', [ResponsableController::class, 'updateByCi']);
+    Route::post('/ci/{ci}/areas', [ResponsableController::class, 'addAreasByCi']);
     Route::get('/ci/{ci}/gestion/{gestion}/areas', [ResponsableController::class, 'getAreasByCiAndGestion']);
 });
 
@@ -71,6 +72,7 @@ Route::prefix('evaluadores')->group(function () {
     Route::get('/', [EvaluadorController::class, 'index']);
     Route::get('/{id}', [EvaluadorController::class, 'show']);
     Route::put('/ci/{ci}', [EvaluadorController::class, 'updateByCi']);
+    Route::post('/ci/{ci}/areas', [EvaluadorController::class, 'addAreasByCi']);
     Route::get('/ci/{ci}/gestiones', [EvaluadorController::class, 'getGestionesByCi']);
     Route::get('/ci/{ci}/gestion/{gestion}/areas', [EvaluadorController::class, 'getAreasByCiAndGestion']);
 });
@@ -145,4 +147,5 @@ Route::post('/parametros', [ParametroController::class, 'store']);
 //lista de competidores
 Route::get('/responsable/{idResponsable}', [ListaResponsableAreaController::class, 'getAreaPorResponsable']);
 Route::get('/niveles/{idArea}', [ListaResponsableAreaController::class, 'getNivelesPorArea']);
-Route::get('/listaCompleta/{idResponsable}/{idArea}/{idNivel}', [ListaResponsableAreaController::class, 'listarPorAreaYNivel']);
+Route::get('/grado', [ListaResponsableAreaController::class, 'getGrado']);
+Route::get('/listaCompleta/{idResponsable}/{idArea}/{idNivel}/{idGrado}', [ListaResponsableAreaController::class, 'listarPorAreaYNivel']);
