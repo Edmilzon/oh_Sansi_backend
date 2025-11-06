@@ -133,17 +133,7 @@ class Olimpiada2023Seeder extends Seeder
                 'id_area_olimpiada' => $areaOlimpiadaIds['Física'],
             ]);
             
-            $evaluadorAn = EvaluadorAn::create([
-                'id_usuario' => $evaluadorUser->id_usuario,
-                'id_area_olimpiada' => $areaOlimpiadaIds['Matemáticas'],
-            ]);
-            $this->command->info('Usuarios asignados como responsables de área.');
-
-            // 8. Crear Instituciones
-            $institucion1 = Institucion::create(['nombre' => 'Colegio Don Bosco']);
-            $institucion2 = Institucion::create(['nombre' => 'Colegio La Salle']);
-
-            // 9. Crear Personas para competidores
+            // 8. Crear Personas para competidores
             $personasCompetidoresData = [
                 ['nombre' => 'Ana', 'apellido' => 'Vaca', 'ci' => '1234567', 'email' => 'ana.vaca@test.com', 'genero' => 'F', 'telefono' => '77711111'],
                 ['nombre' => 'Juan', 'apellido' => 'Angel', 'ci' => '2345678', 'email' => 'juan.angel@test.com', 'genero' => 'M', 'telefono' => '77711112'],
@@ -160,7 +150,11 @@ class Olimpiada2023Seeder extends Seeder
                 $personasCompetidores[] = Persona::create($data);
             }
 
-            // 10. Crear AreaNivel para Matemáticas y Física (con grados de escolaridad)
+            // 9. Crear Instituciones
+            $institucion1 = Institucion::create(['nombre' => 'Colegio Don Bosco']);
+            $institucion2 = Institucion::create(['nombre' => 'Colegio La Salle']);
+
+            // 10. Crear AreaNivel para Matemáticas y Física
             $areaMatematicas = $areas->firstWhere('nombre', 'Matemáticas');
             $areaNivelesMatematicas = [];
 
@@ -194,6 +188,14 @@ class Olimpiada2023Seeder extends Seeder
                     'activo' => true,
                 ]);
             }
+
+            // 10.1 Asignar el evaluador a Matemáticas ahora que AreaNivel existe
+            $evaluadorAn = EvaluadorAn::create([
+                'id_usuario' => $evaluadorUser->id_usuario,
+                'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_1ro']->id_area_nivel,
+            ]);
+
+            $this->command->info('Usuarios asignados como responsables de área y evaluadores.');
 
             // 11. Crear Fases y Parámetros para Matemáticas (primer nivel, 1ro de secundaria)
             $faseClasificatoria = Fase::create([

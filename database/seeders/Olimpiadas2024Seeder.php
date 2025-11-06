@@ -148,7 +148,7 @@ class Olimpiadas2024Seeder extends Seeder
 
             $evaluadorQuimica = EvaluadorAn::create([
                 'id_usuario' => $evaluadorUser->id_usuario,
-                'id_area_olimpiada' => $areaOlimpiadaQuimica->id_area_olimpiada
+                'id_area_nivel' => $areaNivelQuimica1ro->id_area_nivel
             ]);
 
             $this->command->info('Responsable y evaluador asignados a Química.');
