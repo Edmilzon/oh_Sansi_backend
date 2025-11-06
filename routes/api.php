@@ -86,6 +86,7 @@ Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);
 Route::get('/area', [AreaController::class, 'index']);
 Route::post('/area', [AreaController::class, 'store']);
 Route::get('/area/{id_olimpiada}', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);//Probado y funcionando
+Route::get('/area/gestion/{gestion}', [AreaOlimpiadaController::class, 'getAreasByGestion']);
 
 //Niveles
 Route::get('/niveles', [NivelController::class, 'index']);
@@ -125,6 +126,7 @@ Route::get('/responsables/{id_persona}/competidores', [ResponsableCompetidorCont
 /*Route::apiResource('nivel',NivelController::class)->only(['index']);*/
 Route::post('area-niveles', [AreaNivelController::class, 'store']);
 Route::post('/area-nivel/por-gestion', [AreaNivelController::class, 'getByGestionAndAreas']);
+Route::post('/area-nivel/gestion/{gestion}/areas', [AreaNivelController::class, 'getNivelesGradosByAreasAndGestion']);
 Route::get('/area-nivel/detalle', [AreaNivelController::class, 'getAllWithDetails']);
 Route::get('area-niveles/{id_area}', [AreaNivelController::class, 'getByAreaAll']);
 Route::get('/areas-con-niveles', [AreaNivelController::class, 'getAreasConNiveles']);

@@ -74,4 +74,23 @@ class AreaOlimpiadaController extends Controller
             ], 500);
         }
     }
+    
+    public function getAreasByGestion(string $gestion): JsonResponse
+    {
+        try {
+            $areas = $this->areaOlimpiadaService->getAreasByGestion($gestion);
+
+            return response()->json([
+                'success' => true,
+                'message' => "Áreas obtenidas exitosamente para la gestión {$gestion}",
+                'data' => $areas
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => "Error al obtener las áreas para la gestión {$gestion}",
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
