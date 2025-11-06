@@ -131,25 +131,77 @@ class AuthRepository
      */
     public function getLoginUserData(Usuario $user): array
     {
-        $userWithRoles = $this->getUserWithRoles($user);
+        return $this->formatDetailedUserData($user);
+    }
+
+    /**
+     * Formatea la información detallada de un usuario, incluyendo roles y asignaciones.
+     *
+     * @param Usuario $user
+     * @return array
+     */
+    private function formatDetailedUserData(Usuario $user): array
+    {
+        $user->load([
+            'roles.olimpiada', 
+            'responsableArea.areaOlimpiada.olimpiada', 'responsableArea.area',
+            'evaluadorAn.areaNivel.olimpiada', 'evaluadorAn.areaNivel.area', 'evaluadorAn.areaNivel.nivel'
+        ]);
+
         $olimpiadas = $this->getUserOlimpiadas($user);
 
         return [
             'user' => [
-                'id' => $userWithRoles->id_usuario,
-                'nombre' => $userWithRoles->nombre,
-                'apellido' => $userWithRoles->apellido,
-                'ci' => $userWithRoles->ci,
-                'email' => $userWithRoles->email,
-                'telefono' => $userWithRoles->telefono,
+                'id' => $user->id_usuario,
+                'nombre' => $user->nombre,
+                'apellido' => $user->apellido,
+                'ci' => $user->ci,
+                'email' => $user->email,
+                'telefono' => $user->telefono,
             ],
-            'roles' => $userWithRoles->roles->map(function ($role) {
+            'roles' => $user->roles->map(function ($role) {
                 return [
                     'id' => $role->id_rol,
                     'nombre' => $role->nombre,
                     'olimpiada_id' => $role->pivot->id_olimpiada,
                 ];
             }),
+            'detalles_roles' => $user->roles->map(function ($role) use ($user) {
+                $detalles = [];
+                switch ($role->nombre) {
+                    case 'Responsable Area':
+                        $areasResponsable = $user->responsableArea
+                            ->where('areaOlimpiada.id_olimpiada', $role->pivot->id_olimpiada)
+                            ->map(function ($ra) {
+                                return [
+                                    'id_area' => $ra->area->id_area,
+                                    'nombre_area' => $ra->area->nombre,
+                                ];
+                            })->values();
+
+                        $detalles['areas_responsable'] = $areasResponsable;
+                        break;
+
+                    case 'Evaluador':
+                        $asignacionesEvaluador = $user->evaluadorAn
+                            ->where('areaNivel.id_olimpiada', $role->pivot->id_olimpiada)
+                            ->map(function ($ea) {
+                                return [
+                                    'area' => $ea->areaNivel->area->nombre,
+                                    'nivel' => $ea->areaNivel->nivel->nombre,
+                                ];
+                            })->values();
+                        $detalles['asignaciones_evaluador'] = $asignacionesEvaluador;
+                        break;
+                }
+
+                return [
+                    'rol' => $role->nombre,
+                    'olimpiada_id' => $role->pivot->id_olimpiada,
+                    'gestion' => $role->olimpiada->gestion,
+                    'detalles' => $detalles,
+                ];
+            })->filter(fn($role) => !empty($role['detalles'])), // Opcional: quitar roles sin detalles
             'olimpiadas' => $olimpiadas->map(function ($olimpiada) {
                 return [
                     'id' => $olimpiada->id_olimpiada,

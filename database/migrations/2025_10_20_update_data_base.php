@@ -58,7 +58,6 @@ return new class extends Migration
             $table->id('id_area_nivel');
             $table->unsignedBigInteger('id_area');
             $table->unsignedBigInteger('id_nivel');
-            $table->unsignedBigInteger('id_grado_escolaridad')->nullable();
             $table->unsignedBigInteger('id_olimpiada');
             $table->boolean('activo')->default(true);
             $table->timestamps();
@@ -138,11 +137,11 @@ return new class extends Migration
         Schema::create('evaluador_an', function (Blueprint $table) {
             $table->id('id_evaluadorAN');
             $table->unsignedBigInteger('id_usuario');
-            $table->unsignedBigInteger('id_area_olimpiada');
+            $table->unsignedBigInteger('id_area_nivel');
             $table->timestamps();
 
             $table->foreign('id_usuario')->references('id_usuario')->on('usuario')->onDelete('cascade');
-            $table->foreign('id_area_olimpiada')->references('id_area_olimpiada')->on('area_olimpiada')->onDelete('cascade');
+            $table->foreign('id_area_nivel')->references('id_area_nivel')->on('area_nivel')->onDelete('cascade');
         });
 
         Schema::create('archivo_csv', function (Blueprint $table) {

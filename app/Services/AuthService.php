@@ -198,20 +198,6 @@ class AuthService
             return null;
         }
 
-        // Obtener el primer rol del usuario (asumiendo que tiene al menos uno)
-        $firstRole = $user->roles()->first();
-        
-        return [
-            'Id_usuario' => $user->id_usuario,
-            'Nombres' => $user->nombre,
-            'Apellidos' => $user->apellido,
-            'Correo' => $user->email,
-            'Ci' => $user->ci,
-            'Teléfono' => $user->telefono,
-            'Rol' => $firstRole ? [
-                'Id_rol' => $firstRole->id_rol,
-                'Nombre_rol' => $firstRole->nombre
-            ] : null
-        ];
+        return $this->authRepository->getLoginUserData($user);
     }
 }

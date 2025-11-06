@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Model\Usuario;
 use App\Model\EvaluadorAn;
 use App\Model\Rol;
+use App\Model\AreaNivel;
 use App\Model\Area;
 use App\Model\AreaOlimpiada;
 use Illuminate\Support\Facades\Hash;
@@ -54,34 +55,49 @@ class EvaluadorRepository
      * Crea las relaciones entre el evaluador y las áreas.
      *
      * @param Usuario $usuario
-     * @param array $areaIds
+     * @param array $areaNivelIds
      * @param int $olimpiadaId
      * @return array
      */
-    public function createEvaluadorAreaRelations(Usuario $usuario, array $areaIds, int $olimpiadaId): array
+    public function createEvaluadorAreaRelations(Usuario $usuario, array $areaNivelIds, int $olimpiadaId): array
     {
         $evaluadorAreas = [];
 
-        foreach ($areaIds as $areaId) {
-            // Buscar el id_area_olimpiada correspondiente
-            $areaOlimpiada = AreaOlimpiada::where('id_area', $areaId)
-                                          ->where('id_olimpiada', $olimpiadaId)
-                                          ->first();
-
-            if (!$areaOlimpiada) {
-                // Si no se encuentra, lanza una excepción para detener la transacción.
-                throw new \Exception("La combinación del área ID {$areaId} y la olimpiada ID {$olimpiadaId} no existe.");
-            }
-
+        foreach ($areaNivelIds as $areaNivelId) {
             $evaluadorArea = EvaluadorAn::create([
                 'id_usuario' => $usuario->id_usuario,
-                'id_area_olimpiada' => $areaOlimpiada->id_area_olimpiada,
+                'id_area_nivel' => $areaNivelId,
             ]);
 
-            $evaluadorAreas[] = $evaluadorArea->load('area');
+            $evaluadorAreas[] = $evaluadorArea->load('areaNivel.area', 'areaNivel.nivel');
         }
 
         return $evaluadorAreas;
+    }
+
+    /**
+     * Añade nuevas relaciones entre el evaluador y las áreas, evitando duplicados.
+     *
+     * @param Usuario $usuario
+     * @param array $areaNivelIds
+     * @param int $olimpiadaId
+     * @return void
+     */
+    public function addEvaluadorAreaRelations(Usuario $usuario, array $areaNivelIds, int $olimpiadaId): void
+    {
+        foreach ($areaNivelIds as $areaNivelId) {
+            // Usamos firstOrCreate para no crear duplicados si la relación ya existe.
+            EvaluadorAn::firstOrCreate(
+                [
+                    'id_usuario' => $usuario->id_usuario,
+                    'id_area_nivel' => $areaNivelId,
+                ]
+            );
+        }
+
+        if (!$usuario->tieneRol('Evaluador', $olimpiadaId)) {
+            $this->assignEvaluadorRole($usuario, $olimpiadaId);
+        }
     }
 
     /**

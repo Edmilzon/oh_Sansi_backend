@@ -34,28 +34,22 @@ class EvaluadorController extends Controller
             'password' => 'required|string|min:8',
             'telefono' => 'nullable|string|max:20',
             'id_olimpiada' => 'required|integer|exists:olimpiada,id_olimpiada',
-            'areas' => 'required|array|min:1',
-            'areas.*' => 'integer|exists:area,id_area',
-        ], [
-            'areas.*.exists' => 'Una o más de las áreas proporcionadas no son válidas.'
-        ]);
-
-        // Validación personalizada para la combinación de área y olimpiada
-        $request->validate([
-            'areas.*' => [function ($attribute, $value, $fail) use ($request) {
-                if (!DB::table('area_olimpiada')->where('id_area', $value)->where('id_olimpiada', $request->id_olimpiada)->exists()) {
-                    $fail("El área con ID {$value} no está asociada a la olimpiada con ID {$request->id_olimpiada}.");
+            'area_nivel_ids' => 'required|array|min:1',
+            'area_nivel_ids.*' => ['integer', 'exists:area_nivel,id_area_nivel', function ($attribute, $value, $fail) use ($request) {
+                // Validar que el id_area_nivel pertenezca a la olimpiada proporcionada
+                if (!DB::table('area_nivel')->where('id_area_nivel', $value)->where('id_olimpiada', $request->id_olimpiada)->exists()) {
+                    $fail("La asignación con ID {$value} no pertenece a la olimpiada con ID {$request->id_olimpiada}.");
                 }
             }],
         ]);
 
         try {
-            $responsableData = $request->only([
+            $evaluadorData = $request->only([
                 'nombre', 'apellido', 'ci', 'email', 'password', 
-                'telefono', 'id_olimpiada', 'areas'
+                'telefono', 'id_olimpiada', 'area_nivel_ids'
             ]);
 
-            $result = $this->evaluadorService->createEvaluador($responsableData);
+            $result = $this->evaluadorService->createEvaluador($evaluadorData);
 
             return response()->json([
                 'message' => 'Evaluador registrado exitosamente',
@@ -230,6 +224,48 @@ class EvaluadorController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al actualizar el evaluador',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Añade nuevas áreas a un evaluador existente por su CI.
+     *
+     * @param Request $request
+     * @param string $ci
+     * @return JsonResponse
+     */
+    public function addAreasByCi(Request $request, string $ci): JsonResponse
+    {
+        $request->validate([
+            'id_olimpiada' => 'required|integer|exists:olimpiada,id_olimpiada',
+            'areas' => 'required|array|min:1',
+            'areas.*' => ['integer', 'exists:area,id_area', function ($attribute, $value, $fail) use ($request) {
+                if (!DB::table('area_olimpiada')->where('id_area', $value)->where('id_olimpiada', $request->id_olimpiada)->exists()) {
+                    $fail("El área con ID {$value} no está asociada a la olimpiada con ID {$request->id_olimpiada}.");
+                }
+            }],
+        ]);
+
+        try {
+            $data = $request->only(['id_olimpiada', 'areas']);
+            $result = $this->evaluadorService->addAreasToEvaluadorByCi($ci, $data);
+
+            if (!$result) {
+                return response()->json([
+                    'message' => 'Evaluador no encontrado con el CI proporcionado.'
+                ], 404);
+            }
+
+            return response()->json([
+                'message' => 'Áreas añadidas exitosamente al evaluador',
+                'data' => $result
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al añadir áreas al evaluador',
                 'error' => $e->getMessage()
             ], 500);
         }

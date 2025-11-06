@@ -38,11 +38,20 @@ class ResponsableController extends Controller
             'areas.*' => 'integer|exists:area,id_area',
         ]);
 
-        // Validación personalizada para la combinación de área y olimpiada
         $request->validate([
             'areas.*' => [function ($attribute, $value, $fail) use ($request) {
                 if (!DB::table('area_olimpiada')->where('id_area', $value)->where('id_olimpiada', $request->id_olimpiada)->exists()) {
                     $fail("El área con ID {$value} no está asociada a la olimpiada con ID {$request->id_olimpiada}.");
+                }
+
+                $areaOlimpiadaId = DB::table('area_olimpiada')
+                    ->where('id_area', $value)
+                    ->where('id_olimpiada', $request->id_olimpiada)
+                    ->value('id_area_olimpiada');
+
+                if ($areaOlimpiadaId && DB::table('responsable_area')->where('id_area_olimpiada', $areaOlimpiadaId)->exists()) {
+                    $areaNombre = DB::table('area')->where('id_area', $value)->value('nombre');
+                    $fail("El área '{$areaNombre}' (ID: {$value}) ya tiene un responsable asignado para esta olimpiada.");
                 }
             }],
         ]);
@@ -189,16 +198,10 @@ class ResponsableController extends Controller
      */
     public function updateByCi(Request $request, string $ci): JsonResponse
     {
-        $usuario = DB::table('usuario')->where('ci', $ci)->first();
-
-        if (!$usuario) {
-            return response()->json(['message' => 'Responsable no encontrado con el CI proporcionado.'], 404);
-        }
-
         $request->validate([
             'nombre' => 'sometimes|required|string|max:255',
             'apellido' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:usuario,email,' . $usuario->id_usuario . ',id_usuario',
+            'email' => 'sometimes|required|email|unique:usuario,email,' . $request->route('ci') . ',ci',
             'password' => 'sometimes|required|string|min:8',
             'telefono' => 'nullable|string|max:20',
             'id_olimpiada' => 'sometimes|required|integer|exists:olimpiada,id_olimpiada',
@@ -218,6 +221,12 @@ class ResponsableController extends Controller
 
             $result = $this->responsableService->updateResponsableByCi($ci, $data);
 
+            if (!$result) {
+                return response()->json([
+                    'message' => 'Responsable no encontrado con el CI proporcionado.'
+                ], 404);
+            }
+
             return response()->json([
                 'message' => 'Responsable actualizado exitosamente',
                 'data' => $result
@@ -232,4 +241,62 @@ class ResponsableController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Añade nuevas áreas a un responsable existente por su CI.
+     *
+     * @param Request $request
+     * @param string $ci
+     * @return JsonResponse
+     */
+    public function addAreasByCi(Request $request, string $ci): JsonResponse
+    {
+        $request->validate([
+            'id_olimpiada' => 'required|integer|exists:olimpiada,id_olimpiada',
+            'areas' => 'required|array|min:1',
+            'areas.*' => ['integer', 'exists:area,id_area', function ($attribute, $value, $fail) use ($request) {
+                if (!DB::table('area_olimpiada')->where('id_area', $value)->where('id_olimpiada', $request->id_olimpiada)->exists()) {
+                    $fail("El área con ID {$value} no está asociada a la olimpiada con ID {$request->id_olimpiada}.");
+                }
+
+                // Nueva validación: Verificar si el área ya tiene un responsable en esta olimpiada.
+                $areaOlimpiadaId = DB::table('area_olimpiada')
+                    ->where('id_area', $value)
+                    ->where('id_olimpiada', $request->id_olimpiada)
+                    ->value('id_area_olimpiada');
+
+                // Ignoramos la validación si el responsable ya está asignado a esa área (para evitar errores al añadir otras áreas).
+                $responsableActualId = DB::table('usuario')->where('ci', $ci)->value('id_usuario');
+                if ($areaOlimpiadaId && DB::table('responsable_area')->where('id_area_olimpiada', $areaOlimpiadaId)->where('id_usuario', '!=', $responsableActualId)->exists()) {
+                    $areaNombre = DB::table('area')->where('id_area', $value)->value('nombre');
+                    $fail("El área '{$areaNombre}' (ID: {$value}) ya tiene un responsable asignado para esta olimpiada.");
+                }
+            }],
+        ]);
+
+        try {
+            $data = $request->only(['id_olimpiada', 'areas']);
+            $result = $this->responsableService->addAreasToResponsableByCi($ci, $data);
+
+            if (!$result) {
+                return response()->json([
+                    'message' => 'Responsable no encontrado con el CI proporcionado.'
+                ], 404);
+            }
+
+            return response()->json([
+                'message' => 'Áreas añadidas exitosamente al responsable',
+                'data' => $result
+            ]);
+
+        } catch (ValidationException $e) {
+            return response()->json(['message' => 'Error de validación', 'errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al añadir áreas al responsable',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
+    

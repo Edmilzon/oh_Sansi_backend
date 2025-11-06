@@ -39,6 +39,25 @@ class AuthController extends Controller
     }
 
     /**
+     * Obtiene la información del usuario autenticado.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function me(Request $request): JsonResponse
+    {
+        try {
+            $userData = $this->authService->getUserWithRoles($request->user());
+            return response()->json([
+                'message' => 'Información del usuario obtenida exitosamente',
+                'data' => $userData
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al obtener la información del usuario', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
      * Cierra la sesión del usuario.
      *
      * @param Request $request

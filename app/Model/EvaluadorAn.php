@@ -14,7 +14,7 @@ class EvaluadorAn extends Model
 
     protected $fillable = [
         'id_usuario',
-        'id_area_olimpiada',
+        'id_area_nivel',
     ];
 
     public function usuario()
@@ -22,13 +22,8 @@ class EvaluadorAn extends Model
         return $this->belongsTo(Usuario::class, 'id_usuario', 'id_usuario');
     }
 
-    public function areaOlimpiada()
+    public function areaNivel()
     {
-        return $this->belongsTo(AreaOlimpiada::class, 'id_area_olimpiada', 'id_area_olimpiada');
-    }
-
-    public function area()
-    {
-        return $this->hasOneThrough(Area::class, AreaOlimpiada::class, 'id_area_olimpiada', 'id_area', 'id_area_olimpiada', 'id_area');
+        return $this->belongsTo(AreaNivel::class, 'id_area_nivel', 'id_area_nivel');
     }
 }
