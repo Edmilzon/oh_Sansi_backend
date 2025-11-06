@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ResponsableController;
+use App\Http\Controllers\OlimpiadaController;
 // use App\Http\Controllers\EvaluadorController;
 use App\Http\Controllers\NivelController;
 // use App\Http\Controllers\ProductController;
@@ -71,6 +72,11 @@ Route::prefix('evaluadores')->group(function () {
 });
 
 Route::get('olimpiadas/{identifier}/areas', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);
+
+//Rutas Olimpiada
+Route::get('/olimpiadas/anteriores', [OlimpiadaController::class, 'olimpiadasAnteriores']);
+Route::get('/olimpiadas/actual', [OlimpiadaController::class, 'olimpiadaActual']);
+
 
 //Rutas para la gestión de niveles
 Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);

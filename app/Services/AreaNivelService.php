@@ -214,32 +214,21 @@ class AreaNivelService
             }
 
             $message = '';
-            if (count($inserted) > 0) {
-                $message = "✅ " . count($inserted) . " de {$totalRelations} relaciones creadas exitosamente para {$olimpiadaActual->gestion}";
-                
-                $distribucion = [];
-                foreach ($inserted as $relacion) {
-                    $key = "Área {$relacion->id_area} - Nivel {$relacion->id_nivel}";
-                    if (!isset($distribucion[$key])) {
-                        $distribucion[$key] = 0;
-                    }
-                    $distribucion[$key]++;
-                }
-                
-                $message .= ". Distribución: " . implode(', ', array_map(
-                    fn($k, $v) => "$k ($v grados)", 
-                    array_keys($distribucion), 
-                    array_values($distribucion)
-                ));
-            }
+        if (count($inserted) > 0) {
+            $areaId = $inserted[0]->id_area;
+            $area = Area::find($areaId);
+            $nombreArea = $area ? $area->nombre : 'el área seleccionada';
             
-            if (count($errors) > 0) {
-                if (count($inserted) > 0) {
-                    $message .= ". ⚠️ " . count($errors) . " relaciones con errores";
-                } else {
-                    $message = "❌ Ninguna de las {$totalRelations} relaciones pudo ser procesada.";
-                }
+            $message = "Los niveles fueron asignados correctamente al área {$nombreArea}";
+        }
+        
+        if (count($errors) > 0) {
+            if (count($inserted) > 0) {
+                $message .= ". Se encontraron algunos errores en " . count($errors) . " relaciones.";
+            } else {
+                $message = "❌ Ninguna de las {$totalRelations} relaciones pudo ser procesada.";
             }
+        }
 
             $result = [
                 'area_niveles' => $inserted,

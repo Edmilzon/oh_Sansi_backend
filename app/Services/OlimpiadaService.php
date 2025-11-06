@@ -3,9 +3,18 @@
 namespace App\Services;
 
 use App\Model\Olimpiada;
+use Illuminate\Database\Eloquent\Collection;
+use App\Repositories\OlimpiadaRepository;
 
 class OlimpiadaService
 {
+    protected $OlimpiadaRepository;
+
+    public function __construct(OlimpiadaRepository $OlimpiadaRepository)
+    {
+        $this->OlimpiadaRepository = $OlimpiadaRepository;
+    }
+
     public function obtenerOlimpiadaActual(): Olimpiada
     {
         $gestionActual = date('Y');
@@ -33,5 +42,9 @@ class OlimpiadaService
         return Olimpiada::where('gestion', $gestionActual)->exists();
     }
 
-    
+    public function obtenerOlimpiadasAnteriores(): Collection
+    {
+        $gestionActual = date('Y');
+        return $this->OlimpiadaRepository->obtenerOlimpiadasAnteriores($gestionActual);
+    }
 }
