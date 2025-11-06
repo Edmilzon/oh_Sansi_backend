@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             UsusariosSeeder::class,
             Olimpiada2023Seeder::class,
             Olimpiadas2024Seeder::class,
+            DepartamentoSeeder::class,
         ]);
     }
 }

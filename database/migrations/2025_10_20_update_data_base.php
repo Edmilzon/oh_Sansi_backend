@@ -257,8 +257,13 @@ return new class extends Migration
             $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('cascade');
             $table->foreign('id_competencia')->references('id_competencia')->on('competencia')->onDelete('cascade');
         });
+        Schema::create('departamento', function (Blueprint $table) {
+            $table->id('id_departamento');
+            $table->string('nombre');
+              $table->timestamps();
+        });
     }
-
+    
     public function down(): void
     {
         Schema::dropIfExists('medallero');
