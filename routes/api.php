@@ -122,15 +122,15 @@ Route::get('/responsables/{id_persona}/competidores', [ResponsableCompetidorCont
 //Rutas asociacion area - nivel
 /*Route::apiResource('nivel',NivelController::class)->only(['index']);*/
 Route::post('area-niveles', [AreaNivelController::class, 'store']);
-/*Route::get('area-niveles/{id_area}', [AreaNivelController::class, 'getByArea']);
-Route::put('area-niveles/{id_area}', [AreaNivelController::class, 'updateByArea']);*/
+Route::post('/area-nivel/por-gestion', [AreaNivelController::class, 'getByGestionAndAreas']);
+Route::get('/area-nivel/detalle', [AreaNivelController::class, 'getAllWithDetails']);
 Route::get('area-niveles/{id_area}', [AreaNivelController::class, 'getByAreaAll']);
 Route::get('/areas-con-niveles', [AreaNivelController::class, 'getAreasConNiveles']);
 Route::get('/area-nivel', [AreaNivelController::class, 'getAreasConNivelesSimplificado']);
+Route::get('/area-nivel/gestion/{gestion}/area/{id_area}', [AreaNivelController::class, 'getNivelesGradosByAreaAndGestion']);
 Route::get('/area-nivel/{id_olimpiada}', [AreaNivelController::class, 'getAreasConNivelesPorOlimpiada']);
 Route::get('/area-nivel/gestion/{gestion}', [AreaNivelController::class, 'getAreasConNivelesPorGestion']);
-Route::get('/area-nivel/detalle', [AreaNivelController::class, 'getAllWithDetails']);
-Route::post('/area-nivel/por-gestion', [AreaNivelController::class, 'getByGestionAndAreas']);
+
 
 //Rutas Parametros de clasificación
 Route::get('/areas-olimpiada/{id_olimpiada}', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);

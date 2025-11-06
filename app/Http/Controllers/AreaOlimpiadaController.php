@@ -22,7 +22,7 @@ class AreaOlimpiadaController extends Controller
      * @param int|string $identifier
      * @return JsonResponse
      */
-    public function getAreasByOlimpiada(int|string $identifier): JsonResponse
+    public function getAreasByOlimpiada(int $identifier): JsonResponse
     {
         try {
             $areas = $this->areaOlimpiadaService->getAreasByOlimpiada($identifier);

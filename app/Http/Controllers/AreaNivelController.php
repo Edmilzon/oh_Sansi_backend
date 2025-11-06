@@ -337,4 +337,66 @@ class AreaNivelController extends Controller
         ], 500);
     }
     }
+
+     public function getNivelesGradosByAreaAndGestion(string $gestion, int $id_area): JsonResponse
+    {
+        try {
+            $result = $this->areaNivelService->getNivelesGradosByAreaAndGestion($id_area, $gestion);
+
+            $status = $result['success'] ? 200 : 404;
+
+            return response()->json($result, $status);
+
+        } catch (\Exception $e) {
+            Log::error('[CONTROLLER] Error en getNivelesGradosByAreaAndGestion:', [
+                'gestion' => $gestion,
+                'id_area' => $id_area,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => 'Error al obtener los niveles y grados: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getNivelesGradosByAreasAndGestion(Request $request, string $gestion): JsonResponse
+    {
+        try {
+            $validatedData = $request->validate([
+                'id_areas' => 'required|array',
+                'id_areas.*' => 'integer|exists:area,id_area'
+            ]);
+
+            $result = $this->areaNivelService->getNivelesGradosByAreasAndGestion(
+                $validatedData['id_areas'],
+                $gestion
+            );
+
+            $status = $result['success'] ? 200 : 404;
+
+            return response()->json($result, $status);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('[CONTROLLER] Error en getNivelesGradosByAreasAndGestion:', [
+                'gestion' => $gestion,
+                'id_areas' => $request->input('id_areas', []),
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => 'Error al obtener los niveles y grados: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
