@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ResponsableController;
 // use App\Http\Controllers\EvaluadorController;
 use App\Http\Controllers\NivelController;
@@ -43,17 +44,9 @@ Route::get('/', function () {
 
 // Rutas de autenticación
 Route::prefix('auth')->group(function () {
-    Route::post('login', [AuthController::class, 'login']);
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::post('logout', [AuthController::class, 'logout']);
-        Route::get('me', [AuthController::class, 'me']);
-    });
+    Route::post('login', [UsuarioController::class, 'login']);
 });
 
-// Rutas para usuarios
-Route::prefix('usuarios')->group(function () {
-    Route::get('ci/{ci}', [AuthController::class, 'getUserByCi']);
-});
 
 // Rutas para responsables de área
 Route::prefix('responsables')->group(function () {

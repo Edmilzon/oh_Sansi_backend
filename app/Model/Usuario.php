@@ -7,9 +7,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
-use App\Model\Rol;
-use App\Model\ResponsableArea; 
-use App\Model\EvaluadorAn; 
 
 class Usuario extends Authenticatable
 {
@@ -33,19 +30,20 @@ class Usuario extends Authenticatable
     
     public function roles()
     {
-        return $this->belongsToMany(Rol::class, 'usuario_rol', 'id_usuario', 'id_rol', 'id_usuario', 'id_rol')
+        return $this->belongsToMany(\App\Model\Rol::class, 'usuario_rol', 'id_usuario', 'id_rol', 'id_usuario', 'id_rol')
                     ->withPivot('id_olimpiada')
+                    ->using(\App\Model\UsuarioRol::class)
                     ->withTimestamps();
     }
 
     public function responsableArea()
     {
-        return $this->hasMany(ResponsableArea::class, 'id_usuario', 'id_usuario');
+        return $this->hasMany(\App\Model\ResponsableArea::class, 'id_usuario', 'id_usuario');
     }
 
     public function evaluadorAn()
     {
-        return $this->hasMany(EvaluadorAn::class, 'id_usuario', 'id_usuario');
+        return $this->hasMany(\App\Model\EvaluadorAn::class, 'id_usuario', 'id_usuario');
     }
 
     public function asignarRol(string $nombreRol, int $idOlimpiada)
@@ -61,10 +59,4 @@ class Usuario extends Authenticatable
                 return $query->where('usuario_rol.id_olimpiada', $idOlimpiada);
             })->exists();
     }
-
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = Hash::make($value);
-    }
-
 }

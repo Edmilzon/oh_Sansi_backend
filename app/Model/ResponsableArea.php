@@ -19,12 +19,12 @@ class ResponsableArea extends Model
 
     public function usuario()
     {
-        return $this->belongsTo(Usuario::class, 'id_usuario', 'id_usuario');
+        return $this->belongsTo(\App\Models\Usuario::class, 'id_usuario', 'id_usuario');
     }
 
     public function areaOlimpiada()
     {
-        return $this->belongsTo(AreaOlimpiada::class, 'id_area_olimpiada', 'id_area_olimpiada');
+        return $this->belongsTo(\App\Models\AreaOlimpiada::class, 'id_area_olimpiada', 'id_area_olimpiada');
     }
 
     public function area()

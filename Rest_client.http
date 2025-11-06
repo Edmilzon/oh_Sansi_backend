@@ -1,0 +1,9 @@
+@hostname = http://localhost:8000
+@api_prefix = /api
+@token = 
+
+### Login de usuario
+# @name loginRequest
+POST {{hostname}}{{api_prefix}}/auth/login
+Content-Type: application/json
+Accept: application/json
