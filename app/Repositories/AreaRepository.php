@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\Area;
+use App\Model\Area;
 
 class AreaRepository{
 
