@@ -39,37 +39,38 @@ class ListaResponsableAreaController extends Controller
         ], 200);
     }
 
-    public function listarPorAreaYNivel(Request $request, $idResponsable, $idArea, $idNivel, $grado): JsonResponse
-    {
-        $idResponsable = (int) $idResponsable;
-        $idArea = (int) $idArea;
-        $idNivel = (int) $idNivel;
-        $grado = (int) $grado;
+ public function listarPorAreaYNivel(
+    Request $request,
+    $idResponsable,
+    $idArea,
+    $idNivel,
+    $grado,
+    $genero = null,
+    $departamento = null
+): JsonResponse {
+    try {
+        $competidores = $this->listaResponsableAreaService->listarPorAreaYNivel(
+            (int)$idResponsable,
+            (int)$idArea,
+            (int)$idNivel,
+            (int)$grado,
+            $genero,
+            $departamento
+        );
 
-        try {
-            $competidores = $this->listaResponsableAreaService->listarPorAreaYNivel(
-                $idResponsable,
-                $idArea,
-                $idNivel,
-                $grado
-            );
-
-            return response()->json([
-                'success' => true,
-                'data' => ['competidores' => $competidores]
-            ], 200);
-        } catch (InvalidArgumentException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 422);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al listar competidores: ' . $e->getMessage()
-            ], 500);
-        }
+        return response()->json([
+            'success' => true,
+            'data' => ['competidores' => $competidores]
+        ], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al listar competidores: ' . $e->getMessage()
+        ], 500);
     }
+}
+
+
 
     public function getGrado(): JsonResponse
     {

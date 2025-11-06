@@ -32,15 +32,25 @@ class ListaResponsableAreaService
         return $this->listaResponsableAreaRepository->getAreaPorResponsable($idResponsable);
     }
 
-    public function listarPorAreaYNivel(int $idResponsable, ?int $idArea, ?int $idNivel, ?int $idGrado): Collection
-    {
-        return $this->listaResponsableAreaRepository->listarPorAreaYNivel(
-            $idResponsable,
-            $idArea,
-            $idNivel,
-            $idGrado
-        );
-    }
+  public function listarPorAreaYNivel(
+    int $idResponsable,
+    ?int $idArea,
+    ?int $idNivel,
+    ?int $idGrado,
+    ?string $genero = null,
+    ?string $departamento = null
+): Collection {
+    return $this->listaResponsableAreaRepository->listarPorAreaYNivel(
+        $idResponsable,
+        $idArea,
+        $idNivel,
+        $idGrado,
+        $genero,
+        $departamento
+    );
+}
+
+
     public function getListaGrados(){
         return $this->listaResponsableAreaRepository->getListaGrados();
     } 
