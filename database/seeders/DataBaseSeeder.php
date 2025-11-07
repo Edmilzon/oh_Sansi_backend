@@ -5,8 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use App\Model\Usuario;
-use App\Model\Olimpiada;
+use App\Models\Usuario;
+use App\Models\Olimpiada;
 
 class DatabaseSeeder extends Seeder
 {

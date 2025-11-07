@@ -6,6 +6,7 @@ use App\Model\Olimpiada;
 use App\Model\Usuario;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UsusariosSeeder extends Seeder{
     
@@ -25,7 +26,7 @@ class UsusariosSeeder extends Seeder{
                 'apellido' => 'Sistema',
                 'ci' => '12345678',
                 'email' => 'admin@ohsansi.com',
-                'password' => 'admin123',
+                'password' => Hash::make('admin123'),
                 'telefono' => '12345678',
             ],
             [
@@ -33,7 +34,7 @@ class UsusariosSeeder extends Seeder{
                 'apellido' => 'Responsable',
                 'ci' => '87654321',
                 'email' => 'responsable@ohsansi.com',
-                'password' => 'responsable123',
+                'password' => Hash::make('responsable123'),
                 'telefono' => '87654321',
             ],
             [
@@ -41,7 +42,7 @@ class UsusariosSeeder extends Seeder{
                 'apellido' => 'Evaluadora',
                 'ci' => '11223344',
                 'email' => 'evaluador@ohsansi.com',
-                'password' => 'evaluador123',
+                'password' => Hash::make('evaluador123'),
                 'telefono' => '11223344',
             ],
         ];
