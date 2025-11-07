@@ -8,11 +8,11 @@ use App\Repositories\OlimpiadaRepository;
 
 class OlimpiadaService
 {
-    protected $OlimpiadaRepository;
+    protected $oimpiadaRepository;
 
-    public function __construct(OlimpiadaRepository $OlimpiadaRepository)
+    public function __construct(OlimpiadaRepository $oimpiadaRepository)
     {
-        $this->OlimpiadaRepository = $OlimpiadaRepository;
+        $this->OlimpiadaRepository = $oimpiadaRepository;
     }
 
     public function obtenerOlimpiadaActual(): Olimpiada

@@ -29,11 +29,25 @@ class ParametroRepository
 
     public function getByOlimpiada(int $idOlimpiada): Collection
     {
-        return Parametro::with(['areaNivel', 'areaNivel.area', 'areaNivel.nivel', 'areaNivel.olimpiada'])
-            ->whereHas('areaNivel', function($query) use ($idOlimpiada) {
-                $query->where('id_olimpiada', $idOlimpiada);
-            })
-            ->get();
+    \Log::info('ParametroRepository - Buscando parámetros para olimpiada:', ['id_olimpiada' => $idOlimpiada]);
+    
+    $parametros = Parametro::with([
+            'areaNivel', 
+            'areaNivel.area', 
+            'areaNivel.nivel', 
+            'areaNivel.olimpiada'
+        ])
+        ->whereHas('areaNivel', function($query) use ($idOlimpiada) {
+            $query->where('id_olimpiada', $idOlimpiada);
+        })
+        ->get();
+
+    \Log::info('ParametroRepository - Resultados encontrados:', [
+        'total' => $parametros->count(),
+        'parametros_ids' => $parametros->pluck('id_parametro')->toArray()
+    ]);
+
+    return $parametros;
     }
 
     public function create(array $data): Parametro
