@@ -250,18 +250,16 @@ class ResponsableController extends Controller
         $request->validate([
             'id_olimpiada' => 'required|integer|exists:olimpiada,id_olimpiada',
             'areas' => 'required|array|min:1',
-            'areas.*' => ['integer', 'exists:area,id_area', function ($attribute, $value, $fail) use ($request) {
+            'areas.*' => ['integer', 'exists:area,id_area', function ($attribute, $value, $fail) use ($request, $ci) {
                 if (!DB::table('area_olimpiada')->where('id_area', $value)->where('id_olimpiada', $request->id_olimpiada)->exists()) {
                     $fail("El área con ID {$value} no está asociada a la olimpiada con ID {$request->id_olimpiada}.");
                 }
 
-                // Nueva validación: Verificar si el área ya tiene un responsable en esta olimpiada.
                 $areaOlimpiadaId = DB::table('area_olimpiada')
                     ->where('id_area', $value)
                     ->where('id_olimpiada', $request->id_olimpiada)
                     ->value('id_area_olimpiada');
 
-                // Ignoramos la validación si el responsable ya está asignado a esa área (para evitar errores al añadir otras áreas).
                 $responsableActualId = DB::table('usuario')->where('ci', $ci)->value('id_usuario');
                 if ($areaOlimpiadaId && DB::table('responsable_area')->where('id_area_olimpiada', $areaOlimpiadaId)->where('id_usuario', '!=', $responsableActualId)->exists()) {
                     $areaNombre = DB::table('area')->where('id_area', $value)->value('nombre');
