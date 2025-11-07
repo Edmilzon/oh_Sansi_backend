@@ -24,4 +24,5 @@ class AreaOlimpiada extends Model
     public function olimpiada() {
         return $this->belongsTo(\App\Model\Olimpiada::class, 'id_olimpiada');
     }
+
 }

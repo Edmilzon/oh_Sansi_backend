@@ -34,4 +34,14 @@ class AreaNivel extends Model
     {
         return $this->belongsTo(\App\Model\GradoEscolaridad::class, 'id_grado_escolaridad');
     }
+
+    public function olimpiada()
+    {
+        return $this->belongsTo(\App\Model\Olimpiada::class, 'id_olimpiada');
+    }
+
+    public function parametro()
+    {
+        return $this->hasOne(\App\Model\Parametro::class, 'id_area_nivel');
+    }
 }
