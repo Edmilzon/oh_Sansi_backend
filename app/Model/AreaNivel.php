@@ -34,23 +34,4 @@ class AreaNivel extends Model
     {
         return $this->belongsTo(\App\Model\GradoEscolaridad::class, 'id_grado_escolaridad');
     }
-<<<<<<< HEAD
 }
-=======
-
-    public function responsablesArea()
-    {
-        return $this->hasMany(ResponsableArea::class, 'id_area_nivel', 'id_area_nivel');
-    }
-
-    public function evaluadoresAn()
-    {
-        return $this->hasMany(EvaluadorAn::class, 'id_area_nivel', 'id_area_nivel');
-    }
-
-    public function parametros()
-    {
-        return $this->hasMany(Parametro::class, 'id_area_nivel', 'id_area_nivel');
-    }
-}
->>>>>>> 3460f4866543e1a4671ce141dc24312a53b2db1b
