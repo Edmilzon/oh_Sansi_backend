@@ -20,16 +20,14 @@ class ResponsableRepository
      */
     public function createUsuario(array $data): Usuario
     {
-        $usuarioData = [
+        return Usuario::create([
             'nombre' => $data['nombre'],
             'apellido' => $data['apellido'],
             'ci' => $data['ci'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']), 
             'telefono' => $data['telefono'] ?? null,
-        ];
-
-        return Usuario::create($usuarioData);
+        ]);
     }
 
     /**

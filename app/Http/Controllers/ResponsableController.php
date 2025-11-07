@@ -26,37 +26,33 @@ class ResponsableController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'apellido' => 'required|string|max:255',
-            'ci' => 'required|string|unique:usuario,ci',
-            'email' => 'required|email|unique:usuario,email',
-            'password' => 'required|string|min:8',
-            'telefono' => 'nullable|string|max:20',
-            'id_olimpiada' => 'required|integer|exists:olimpiada,id_olimpiada',
-            'areas' => 'required|array|min:1',
-            'areas.*' => 'integer|exists:area,id_area',
-        ]);
-
-        $request->validate([
-            'areas.*' => [function ($attribute, $value, $fail) use ($request) {
-                if (!DB::table('area_olimpiada')->where('id_area', $value)->where('id_olimpiada', $request->id_olimpiada)->exists()) {
-                    $fail("El área con ID {$value} no está asociada a la olimpiada con ID {$request->id_olimpiada}.");
-                }
-
-                $areaOlimpiadaId = DB::table('area_olimpiada')
-                    ->where('id_area', $value)
-                    ->where('id_olimpiada', $request->id_olimpiada)
-                    ->value('id_area_olimpiada');
-
-                if ($areaOlimpiadaId && DB::table('responsable_area')->where('id_area_olimpiada', $areaOlimpiadaId)->exists()) {
-                    $areaNombre = DB::table('area')->where('id_area', $value)->value('nombre');
-                    $fail("El área '{$areaNombre}' (ID: {$value}) ya tiene un responsable asignado para esta olimpiada.");
-                }
-            }],
-        ]);
-
         try {
+            $request->validate([
+                'nombre' => 'required|string|max:255',
+                'apellido' => 'required|string|max:255',
+                'ci' => 'required|string|unique:usuario,ci',
+                'email' => 'required|email|unique:usuario,email',
+                'password' => 'required|string|min:8',
+                'telefono' => 'nullable|string|max:20',
+                'id_olimpiada' => 'required|integer|exists:olimpiada,id_olimpiada',
+                'areas' => 'required|array|min:1',
+                'areas.*' => ['integer', 'exists:area,id_area', function ($attribute, $value, $fail) use ($request) {
+                    if (!DB::table('area_olimpiada')->where('id_area', $value)->where('id_olimpiada', $request->id_olimpiada)->exists()) {
+                        $fail("El área con ID {$value} no está asociada a la olimpiada con ID {$request->id_olimpiada}.");
+                    }
+    
+                    $areaOlimpiadaId = DB::table('area_olimpiada')
+                        ->where('id_area', $value)
+                        ->where('id_olimpiada', $request->id_olimpiada)
+                        ->value('id_area_olimpiada');
+    
+                    if ($areaOlimpiadaId && DB::table('responsable_area')->where('id_area_olimpiada', $areaOlimpiadaId)->exists()) {
+                        $areaNombre = DB::table('area')->where('id_area', $value)->value('nombre');
+                        $fail("El área '{$areaNombre}' (ID: {$value}) ya tiene un responsable asignado para esta olimpiada.");
+                    }
+                }],
+            ]);
+
             $responsableData = $request->only([
                 'nombre', 'apellido', 'ci', 'email', 'password', 
                 'telefono', 'id_olimpiada', 'areas'
