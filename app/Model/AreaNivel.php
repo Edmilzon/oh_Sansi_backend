@@ -53,4 +53,9 @@ class AreaNivel extends Model
     {
         return $this->hasMany(EvaluadorAn::class, 'id_area_nivel', 'id_area_nivel');
     }
+
+    public function parametros()
+    {
+        return $this->hasMany(Parametro::class, 'id_area_nivel', 'id_area_nivel');
+    }
 }
