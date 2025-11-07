@@ -86,10 +86,7 @@ class ParametroController extends Controller
     public function getParametrosGestionActual(): JsonResponse
     {
         try {
-            $gestionActual = date('Y');
-            
-            $olimpiadaService = app(\App\Services\OlimpiadaService::class);
-            $olimpiadaActual = $olimpiadaService->obtenerOlimpiadaActual();
+            $olimpiadaActual = $this->olimpiadaService->obtenerOlimpiadaActual();
             
             $result = $this->parametroService->getParametrosByOlimpiada($olimpiadaActual->id_olimpiada);
 
@@ -97,7 +94,11 @@ class ParametroController extends Controller
                 'success' => true,
                 'data' => $result['parametros'],
                 'total' => $result['total'],
-                'olimpiada_actual' => $olimpiadaActual->gestion,
+                'olimpiada_actual' => [
+                    'id_olimpiada' => $olimpiadaActual->id_olimpiada,
+                    'gestion' => $olimpiadaActual->gestion,
+                    'nombre' => $olimpiadaActual->nombre
+                ],
                 'message' => $result['message']
             ]);
 
