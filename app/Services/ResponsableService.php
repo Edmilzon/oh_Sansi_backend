@@ -30,23 +30,18 @@ class ResponsableService
     public function createResponsable(array $data): array
     {
         return DB::transaction(function () use ($data) {
-            // Guardar la contraseña en texto plano para el correo
             $plainPassword = $data['password'];
 
-            // Crear el usuario
             $usuario = $this->responsableRepository->createUsuario($data);
 
-            // Asignar rol de "Responsable Area"
             $this->responsableRepository->assignResponsableRole($usuario, $data['id_olimpiada']);
 
-            // Crear relaciones con las áreas
             $responsableAreas = $this->responsableRepository->createResponsableAreaRelations(
                 $usuario, 
                 $data['areas'],
                 $data['id_olimpiada']
             );
 
-            // Enviar correo con las credenciales
             Mail::to($usuario->email)->send(new UserCredentialsMail(
                 $usuario->nombre,
                 $usuario->email,
@@ -54,7 +49,6 @@ class ResponsableService
                 'Responsable de Área'
             ));
 
-            // Obtener información completa del responsable creado
             return $this->getResponsableData($usuario, $responsableAreas);
         });
     }
@@ -157,13 +151,12 @@ class ResponsableService
         $usuario = $this->responsableRepository->findUsuarioByCi($ci);
 
         if (!$usuario) {
-            return null; // O lanzar una excepción si se prefiere
+            return null;
         }
 
         return DB::transaction(function () use ($usuario, $data) {
             $usuarioActualizado = $this->responsableRepository->updateUsuario($usuario->id_usuario, $data);
 
-            // Solo actualiza las áreas si se proporcionan tanto 'areas' como 'id_olimpiada'
             if (isset($data['areas']) && isset($data['id_olimpiada'])) {
                 $this->responsableRepository->updateResponsableAreaRelations($usuarioActualizado, $data['areas'], $data['id_olimpiada']);
             }

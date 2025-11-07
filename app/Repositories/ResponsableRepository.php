@@ -20,16 +20,14 @@ class ResponsableRepository
      */
     public function createUsuario(array $data): Usuario
     {
-        $usuarioData = [
+        return Usuario::create([
             'nombre' => $data['nombre'],
             'apellido' => $data['apellido'],
             'ci' => $data['ci'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']), 
             'telefono' => $data['telefono'] ?? null,
-        ];
-
-        return Usuario::create($usuarioData);
+        ]);
     }
 
     /**
@@ -93,8 +91,6 @@ class ResponsableRepository
                 throw new \Exception("La combinación del área ID {$areaId} y la olimpiada ID {$olimpiadaId} no existe.");
             }
 
-            // Usamos firstOrCreate para no crear duplicados si la relación ya existe.
-            // Esto hace la operación idempotente.
             ResponsableArea::firstOrCreate(
                 [
                     'id_usuario' => $usuario->id_usuario,
@@ -103,7 +99,6 @@ class ResponsableRepository
             );
         }
 
-        // Asigna el rol si el usuario no lo tiene para esta olimpiada
         if (!$usuario->tieneRol('Responsable Area', $olimpiadaId)) {
             $this->assignResponsableRole($usuario, $olimpiadaId);
         }
@@ -229,12 +224,10 @@ class ResponsableRepository
             return [];
         }
 
-        // Filtrar las áreas para que coincidan solo con la gestión solicitada
         $areasDeLaGestion = $usuario->responsableArea->filter(function ($responsableArea) use ($gestion) {
             return $responsableArea->areaOlimpiada && $responsableArea->areaOlimpiada->olimpiada->gestion == $gestion;
         });
 
-        // Formatear la salida como se solicitó
         return $areasDeLaGestion->map(function ($responsableArea) {
             return [
                 'id_responsable_area' => $responsableArea->id_responsableArea,
@@ -279,9 +272,7 @@ class ResponsableRepository
      */
     public function updateResponsableAreaRelations(Usuario $usuario, array $areaIds, int $olimpiadaId): void
     {
-        // Eliminar relaciones existentes
         ResponsableArea::where('id_usuario', $usuario->id_usuario)->delete();
-        // Crear nuevas relaciones
         $this->createResponsableAreaRelations($usuario, $areaIds, $olimpiadaId);
     }
 
@@ -299,13 +290,10 @@ class ResponsableRepository
             return false;
         }
 
-        // Eliminar relaciones con áreas
         ResponsableArea::where('id_usuario', $id)->delete();
 
-        // Eliminar relaciones con roles
         $usuario->roles()->detach();
 
-        // Eliminar usuario
         return $usuario->delete();
     }
 

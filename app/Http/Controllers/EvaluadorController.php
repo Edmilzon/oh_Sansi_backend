@@ -26,24 +26,24 @@ class EvaluadorController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'apellido' => 'required|string|max:255',
-            'ci' => 'required|string|unique:usuario,ci',
-            'email' => 'required|email|unique:usuario,email',
-            'password' => 'required|string|min:8',
-            'telefono' => 'nullable|string|max:20',
-            'id_olimpiada' => 'required|integer|exists:olimpiada,id_olimpiada',
-            'area_nivel_ids' => 'required|array|min:1',
-            'area_nivel_ids.*' => ['integer', 'exists:area_nivel,id_area_nivel', function ($attribute, $value, $fail) use ($request) {
-                // Validar que el id_area_nivel pertenezca a la olimpiada proporcionada
-                if (!DB::table('area_nivel')->where('id_area_nivel', $value)->where('id_olimpiada', $request->id_olimpiada)->exists()) {
-                    $fail("La asignación con ID {$value} no pertenece a la olimpiada con ID {$request->id_olimpiada}.");
-                }
-            }],
-        ]);
-
         try {
+            $request->validate([
+                'nombre' => 'required|string|max:255',
+                'apellido' => 'required|string|max:255',
+                'ci' => 'required|string|unique:usuario,ci',
+                'email' => 'required|email|unique:usuario,email',
+                'password' => 'required|string|min:8',
+                'telefono' => 'nullable|string|max:20',
+                'id_olimpiada' => 'required|integer|exists:olimpiada,id_olimpiada',
+                'area_nivel_ids' => 'required|array|min:1',
+                'area_nivel_ids.*' => ['integer', 'exists:area_nivel,id_area_nivel', function ($attribute, $value, $fail) use ($request) {
+                    // Validar que el id_area_nivel pertenezca a la olimpiada proporcionada
+                    if (!DB::table('area_nivel')->where('id_area_nivel', $value)->where('id_olimpiada', $request->id_olimpiada)->exists()) {
+                        $fail("La asignación con ID {$value} no pertenece a la olimpiada con ID {$request->id_olimpiada}.");
+                    }
+                }],
+            ]);
+
             $evaluadorData = $request->only([
                 'nombre', 'apellido', 'ci', 'email', 'password', 
                 'telefono', 'id_olimpiada', 'area_nivel_ids'
@@ -266,6 +266,50 @@ class EvaluadorController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al añadir áreas al evaluador',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Añade nuevas asignaciones de área/nivel a un evaluador por su CI.
+     *
+     * @param Request $request
+     * @param string $ci
+     * @return JsonResponse
+     */
+    public function addAsignacionesByCi(Request $request, string $ci): JsonResponse
+    {
+        try {
+            $request->validate([
+                'id_olimpiada' => 'required|integer|exists:olimpiada,id_olimpiada',
+                'area_nivel_ids' => 'required|array|min:1',
+                'area_nivel_ids.*' => ['integer', 'exists:area_nivel,id_area_nivel', function ($attribute, $value, $fail) use ($request) {
+                    if (!DB::table('area_nivel')->where('id_area_nivel', $value)->where('id_olimpiada', $request->id_olimpiada)->exists()) {
+                        $fail("La asignación con ID {$value} no pertenece a la olimpiada con ID {$request->id_olimpiada}.");
+                    }
+                }],
+            ]);
+
+            $data = $request->only(['id_olimpiada', 'area_nivel_ids']);
+            $result = $this->evaluadorService->addAsignacionesToEvaluadorByCi($ci, $data);
+
+            if (!$result) {
+                return response()->json([
+                    'message' => 'Evaluador no encontrado con el CI proporcionado.'
+                ], 404);
+            }
+
+            return response()->json([
+                'message' => 'Asignaciones añadidas exitosamente al evaluador',
+                'data' => $result
+            ]);
+
+        } catch (ValidationException $e) {
+            return response()->json(['message' => 'Error de validación', 'errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al añadir asignaciones al evaluador',
                 'error' => $e->getMessage()
             ], 500);
         }
