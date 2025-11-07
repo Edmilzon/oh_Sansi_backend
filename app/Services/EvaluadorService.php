@@ -200,6 +200,31 @@ class EvaluadorService
     }
 
     /**
+     * Añade nuevas asignaciones de área/nivel a un evaluador existente por su CI.
+     *
+     * @param string $ci
+     * @param array $data
+     * @return array|null
+     */
+    public function addAsignacionesToEvaluadorByCi(string $ci, array $data): ?array
+    {
+        $usuario = $this->evaluadorRepository->findUsuarioByCi($ci);
+
+        if (!$usuario) {
+            return null;
+        }
+
+        return DB::transaction(function () use ($usuario, $data) {
+            $this->evaluadorRepository->addEvaluadorAreaNivelRelations(
+                $usuario,
+                $data['area_nivel_ids'],
+                $data['id_olimpiada']
+            );
+            return $this->getEvaluadorData($usuario->fresh());
+        });
+    }
+
+    /**
      * Elimina un evaluador.
      *
      * @param int $id
@@ -255,10 +280,14 @@ class EvaluadorService
             'rol' => 'Evaluador',
             'asignaciones' => collect($evaluadorAreas)->map(function ($ea) {
                 return [
-                    'area' => $ea->areaNivel->area->nombre,
-                    'nivel' => $ea->areaNivel->nivel->nombre,
+                    'area' => $ea->areaNivel->area->nombre ?? null,
+                    'nivel' => $ea->areaNivel->nivel->nombre ?? null,
                 ];
-            }, $evaluadorAreas),
+            })->filter(function ($value) {
+                // Asegurarse de que tanto el área como el nivel no sean nulos
+                return !is_null($value['area']) && !is_null($value['nivel']);
+            })->values()
+            ->toArray(),
             'created_at' => $usuario->created_at,
             'updated_at' => $usuario->updated_at
         ];

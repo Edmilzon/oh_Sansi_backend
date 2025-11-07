@@ -101,6 +101,29 @@ class EvaluadorRepository
     }
 
     /**
+     * Añade nuevas relaciones entre el evaluador y las asignaciones de área/nivel, evitando duplicados.
+     *
+     * @param Usuario $usuario
+     * @param array $areaNivelIds
+     * @param int $olimpiadaId
+     * @return void
+     */
+    public function addEvaluadorAreaNivelRelations(Usuario $usuario, array $areaNivelIds, int $olimpiadaId): void
+    {
+        foreach ($areaNivelIds as $areaNivelId) {
+            EvaluadorAn::firstOrCreate(
+                [
+                    'id_usuario' => $usuario->id_usuario,
+                    'id_area_nivel' => $areaNivelId,
+                ]
+            );
+        }
+
+        if (!$usuario->tieneRol('Evaluador', $olimpiadaId)) {
+            $this->assignEvaluadorRole($usuario, $olimpiadaId);
+        }
+    }
+    /**
      * Obtiene todos los evaluadores con sus áreas asignadas.
      *
      * @return array
