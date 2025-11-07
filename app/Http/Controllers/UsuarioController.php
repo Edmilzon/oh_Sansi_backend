@@ -42,4 +42,26 @@ class UsuarioController extends Controller
 
         return response()->json($result);
     }
+
+    /**
+     * Muestra la información detallada de un usuario por su CI.
+     *
+     * @param string $ci
+     * @return JsonResponse
+     */
+    public function showByCi(string $ci): JsonResponse
+    {
+        $usuario = $this->usuarioService->getUsuarioDetalladoPorCi($ci);
+
+        if (!$usuario) {
+            return response()->json([
+                'message' => 'Usuario no encontrado con el CI proporcionado.'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Usuario obtenido exitosamente',
+            'data' => $usuario
+        ]);
+    }
 }

@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             Olimpiada2023Seeder::class,
             Olimpiadas2024Seeder::class,
             DepartamentoSeeder::class,
+            TestUserSeeder::class,
         ]);
     }
 }

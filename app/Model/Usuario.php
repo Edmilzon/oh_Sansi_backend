@@ -38,7 +38,7 @@ class Usuario extends Authenticatable
 
     public function responsableArea()
     {
-        return $this->hasMany(\App\Model\ResponsableArea::class, 'id_usuario', 'id_usuario');
+        return $this->hasMany(ResponsableArea::class, 'id_usuario', 'id_usuario');
     }
 
     public function evaluadorAn()

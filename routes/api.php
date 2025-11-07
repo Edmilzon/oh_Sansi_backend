@@ -48,6 +48,7 @@ Route::prefix('auth')->group(function () {
     Route::post('login', [UsuarioController::class, 'login']);
 });
 
+Route::get('/usuarios/ci/{ci}', [UsuarioController::class, 'showByCi']);
 
 // Rutas para responsables de área
 Route::prefix('responsables')->group(function () {

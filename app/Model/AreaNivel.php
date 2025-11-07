@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class AreaNivel extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'area_nivel';
     protected $primaryKey = 'id_area_nivel';
-    
+
     protected $fillable = [
         'id_area',
         'id_nivel',
@@ -20,37 +20,18 @@ class AreaNivel extends Model
         'activo',
     ];
 
-    protected $casts = [
-        'activo' => 'boolean',
-    ];
-
     public function area()
     {
-        return $this->belongsTo(Area::class, 'id_area', 'id_area');
+        return $this->belongsTo(\App\Model\Area::class, 'id_area');
     }
 
     public function nivel()
     {
-        return $this->belongsTo(Nivel::class, 'id_nivel', 'id_nivel');
-    }
-
-    public function olimpiada()
-    {
-        return $this->belongsTo(Olimpiada::class, 'id_olimpiada', 'id_olimpiada');
+        return $this->belongsTo(\App\Model\Nivel::class, 'id_nivel');
     }
 
     public function gradoEscolaridad()
     {
-        return $this->belongsTo(GradoEscolaridad::class, 'id_grado_escolaridad', 'id_grado_escolaridad');
-    }
-
-    public function responsablesArea()
-    {
-        return $this->hasMany(ResponsableArea::class, 'id_area_nivel', 'id_area_nivel');
-    }
-
-    public function evaluadoresAn()
-    {
-        return $this->hasMany(EvaluadorAn::class, 'id_area_nivel', 'id_area_nivel');
+        return $this->belongsTo(\App\Model\GradoEscolaridad::class, 'id_grado_escolaridad');
     }
 }

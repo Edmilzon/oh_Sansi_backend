@@ -12,12 +12,5 @@ class GradoEscolaridad extends Model
     protected $table = 'grado_escolaridad';
     protected $primaryKey = 'id_grado_escolaridad';
 
-    protected $fillable = [
-        'nombre',
-    ];
-
-    public function areaNiveles()
-    {
-        return $this->hasMany(AreaNivel::class, 'id_grado_escolaridad', 'id_grado_escolaridad');
-    }
+    protected $fillable = ['nombre'];
 }
