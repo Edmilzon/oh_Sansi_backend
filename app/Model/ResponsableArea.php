@@ -21,4 +21,9 @@ class ResponsableArea extends Model
     {
         return $this->belongsTo(\App\Model\AreaOlimpiada::class, 'id_area_olimpiada');
     }
+
+    public function area()
+    {
+        return $this->hasOneThrough(\App\Model\Area::class, \App\Model\AreaOlimpiada::class, 'id_area_olimpiada', 'id_area', 'id_area_olimpiada', 'id_area');
+    }
 }
