@@ -59,6 +59,7 @@ Route::prefix('responsables')->group(function () {
     Route::put('/ci/{ci}', [ResponsableController::class, 'updateByCi']);
     Route::post('/ci/{ci}/areas', [ResponsableController::class, 'addAreasByCi']);
     Route::get('/ci/{ci}/gestion/{gestion}/areas', [ResponsableController::class, 'getAreasByCiAndGestion']);
+    Route::get('/areas/ocupadas/gestion/actual', [ResponsableController::class, 'getOcupadasEnGestionActual']);
 });
 
 // Rutas para evaluadores

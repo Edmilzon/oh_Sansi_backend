@@ -2,8 +2,28 @@
 @api_prefix = /api
 @token = 
 
-### Login de usuario
-# @name loginRequest
-POST {{hostname}}{{api_prefix}}/auth/login
+
+####### RESPONSABLE DE AREA 
+### Resgistrar un nuevo resposanble 
+#@name registrarResponsableArea
+POST {{hostname}}{{api_prefix}}/responsables
 Content-Type: application/json
+Accept: application/json
+
+{
+    "nombre": "Ana",
+    "apellido": "García", 
+    "ci": "8765432",
+    "email": "ana.garcia@example.com",
+    "password": "unPasswordMuySeguro123",
+    "telefono": "65432100",
+    "id_olimpiada": 1,
+    "areas": [4]
+}
+
+###
+
+### Obtener áreas ocupadas por responsables en la gestión actual
+# @name getOcupadas
+GET {{hostname}}{{api_prefix}}/responsables/areas/ocupadas/gestion/actual
 Accept: application/json
