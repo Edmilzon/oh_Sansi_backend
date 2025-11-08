@@ -284,7 +284,6 @@ class EvaluadorService
                     'nivel' => $ea->areaNivel->nivel->nombre ?? null,
                 ];
             })->filter(function ($value) {
-                // Asegurarse de que tanto el área como el nivel no sean nulos
                 return !is_null($value['area']) && !is_null($value['nivel']);
             })->values()
             ->toArray(),

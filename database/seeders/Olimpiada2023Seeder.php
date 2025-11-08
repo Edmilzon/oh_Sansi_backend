@@ -294,28 +294,28 @@ class Olimpiada2023Seeder extends Seeder
                 Evaluacion::create([
                     'nota' => 95.50, 
                     'fecha_evaluacion' => '2023-10-15', 
-                    'estado' => 'finalizado', 
+                    'estado' => true, 
                     'id_evaluadorAN' => $evaluadorAn->id_evaluadorAN, 
                     'id_competidor' => $competidores[0]->id_competidor
                 ]),
                 Evaluacion::create([
                     'nota' => 88.00, 
                     'fecha_evaluacion' => '2023-10-15', 
-                    'estado' => 'finalizado', 
+                    'estado' => true, 
                     'id_evaluadorAN' => $evaluadorAn->id_evaluadorAN, 
                     'id_competidor' => $competidores[1]->id_competidor
                 ]),
                 Evaluacion::create([
-                    'nota' => 76.50, 
+                    'nota' => 75.00, 
                     'fecha_evaluacion' => '2023-10-15', 
-                    'estado' => 'finalizado', 
+                    'estado' => false, 
                     'id_evaluadorAN' => $evaluadorAn->id_evaluadorAN, 
                     'id_competidor' => $competidores[2]->id_competidor
                 ]),
                 Evaluacion::create([
                     'nota' => 45.00, 
                     'fecha_evaluacion' => '2023-10-15', 
-                    'estado' => 'finalizado', 
+                    'estado' => true, 
                     'id_evaluadorAN' => $evaluadorAn->id_evaluadorAN, 
                     'id_competidor' => $competidores[3]->id_competidor
                 ]),
@@ -381,7 +381,7 @@ class Olimpiada2023Seeder extends Seeder
             $evaluacionDescalificada = Evaluacion::create([
                 'nota' => 0, 
                 'fecha_evaluacion' => '2023-10-15', 
-                'estado' => 'anulado', 
+                'estado' => false, 
                 'id_evaluadorAN' => $evaluadorAn->id_evaluadorAN, 
                 'id_competidor' => $competidorDescalificado->id_competidor
             ]);

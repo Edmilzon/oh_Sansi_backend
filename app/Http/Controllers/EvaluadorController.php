@@ -42,6 +42,9 @@ class EvaluadorController extends Controller
                         $fail("La asignación con ID {$value} no pertenece a la olimpiada con ID {$request->id_olimpiada}.");
                     }
                 }],
+            ], [
+                'ci.unique' => 'Ya existe un Evaluador registrado con este C.I. y no se realiza el registro.',
+                'email.unique' => 'Ya existe un Evaluador registrado con este correo electrónico y no se realiza el registro.',
             ]);
 
             $evaluadorData = $request->only([

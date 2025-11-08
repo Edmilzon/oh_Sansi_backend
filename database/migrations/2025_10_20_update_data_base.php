@@ -177,7 +177,7 @@ return new class extends Migration
             $table->decimal('nota', 5, 2);
             $table->text('observaciones')->nullable();
             $table->date('fecha_evaluacion');
-            $table->string('estado')->default('pendiente');
+            $table->boolean('estado')->default(true);
             $table->unsignedBigInteger('id_evaluadorAN')->nullable();
             $table->unsignedBigInteger('id_competidor');
             $table->timestamps();
@@ -190,7 +190,7 @@ return new class extends Migration
             $table->id('id_competencia');
             $table->date('fecha_inicio');
             $table->date('fecha_fin');
-            $table->string('estado');
+            $table->string('estado')->default("Pendiente");
             $table->unsignedBigInteger('id_responsableArea')->nullable();
             $table->unsignedBigInteger('id_fase')->nullable();
             $table->unsignedBigInteger('id_parametro')->nullable();
