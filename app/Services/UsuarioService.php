@@ -41,6 +41,7 @@ class UsuarioService
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => [
+                'id_usuario' => $usuario->id_usuario,
                 'nombre' => $usuario->nombre,
                 'apellido' => $usuario->apellido,
                 'email' => $usuario->email,

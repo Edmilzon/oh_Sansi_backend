@@ -2,6 +2,16 @@
 @api_prefix = /api
 @token = 
 
+###login
+POST {{hostname}}{{api_prefix}}/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "admin@ohsansi.com",
+    "password": "admin123"
+}
+
 
 ####### RESPONSABLE DE AREA 
 ### Resgistrar un nuevo resposanble 
@@ -27,6 +37,8 @@ Accept: application/json
 # @name getOcupadas
 GET {{hostname}}{{api_prefix}}/responsables/areas/ocupadas/gestion/actual
 Accept: application/json
+
+
 
 ###
 ####### EVALUACION
