@@ -43,6 +43,8 @@ class EvaluadorTestSeeder extends Seeder
             $areaMatematicas = Area::firstOrCreate(['nombre' => 'Matemáticas']);
             $areaFisica = Area::firstOrCreate(['nombre' => 'Física']);
             $nivel1 = Nivel::firstOrCreate(['nombre' => 'Nivel 1']);
+            $nivel2 = Nivel::firstOrCreate(['nombre' => 'Nivel 2']);
+            $nivel3 = Nivel::firstOrCreate(['nombre' => 'Nivel 3']);
             $grado2do = GradoEscolaridad::firstOrCreate(['nombre' => '2do de Secundaria']);
             $grado3ro = GradoEscolaridad::firstOrCreate(['nombre' => '3ro de Secundaria']);
             $rolEvaluador = Rol::where('nombre', 'Evaluador')->first();
@@ -64,9 +66,20 @@ class EvaluadorTestSeeder extends Seeder
                 // Matemáticas
                 ['id_area' => $areaMatematicas->id_area, 'id_nivel' => $nivel1->id_nivel, 'id_grado_escolaridad' => $grado2do->id_grado_escolaridad],
                 ['id_area' => $areaMatematicas->id_area, 'id_nivel' => $nivel1->id_nivel, 'id_grado_escolaridad' => $grado3ro->id_grado_escolaridad],
+
+                ['id_area' => $areaMatematicas->id_area, 'id_nivel' => $nivel2->id_nivel, 'id_grado_escolaridad' => $grado2do->id_grado_escolaridad],
+                ['id_area' => $areaMatematicas->id_area, 'id_nivel' => $nivel2->id_nivel, 'id_grado_escolaridad' => $grado3ro->id_grado_escolaridad],
+
+                ['id_area' => $areaMatematicas->id_area, 'id_nivel' => $nivel3->id_nivel, 'id_grado_escolaridad' => $grado2do->id_grado_escolaridad],
+                ['id_area' => $areaMatematicas->id_area, 'id_nivel' => $nivel3->id_nivel, 'id_grado_escolaridad' => $grado3ro->id_grado_escolaridad],
                 // Física
                 ['id_area' => $areaFisica->id_area, 'id_nivel' => $nivel1->id_nivel, 'id_grado_escolaridad' => $grado2do->id_grado_escolaridad],
                 ['id_area' => $areaFisica->id_area, 'id_nivel' => $nivel1->id_nivel, 'id_grado_escolaridad' => $grado3ro->id_grado_escolaridad],
+                
+                ['id_area' => $areaFisica->id_area, 'id_nivel' => $nivel2->id_nivel, 'id_grado_escolaridad' => $grado2do->id_grado_escolaridad],
+                ['id_area' => $areaFisica->id_area, 'id_nivel' => $nivel2->id_nivel, 'id_grado_escolaridad' => $grado3ro->id_grado_escolaridad],
+
+                
             ];
 
             foreach ($asignaciones as $asignacion) {
