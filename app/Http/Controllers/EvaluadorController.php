@@ -317,4 +317,31 @@ class EvaluadorController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Obtiene las áreas y niveles asignados a un evaluador por su ID.
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function getAreasNivelesById(int $id): JsonResponse
+    {
+        try {
+            $areasNiveles = $this->evaluadorService->getAreasNivelesByEvaluadorId($id);
+
+            if (empty($areasNiveles)) {
+                return response()->json([
+                    'message' => 'No se encontraron áreas y niveles asignados para el evaluador con el ID proporcionado.',
+                    'data' => []
+                ], 404);
+            }
+
+            return response()->json($areasNiveles);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener las áreas y niveles del evaluador.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

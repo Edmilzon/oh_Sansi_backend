@@ -452,4 +452,54 @@ class EvaluadorRepository
         return $data;
     }
 
+    /**
+     * Encuentra las áreas y niveles asignados a un evaluador por su ID.
+     *
+     * @param int $evaluadorId
+     * @return array
+     */
+    public function findAreasNivelesByEvaluadorId(int $evaluadorId): array
+    {
+        $gestionActual = date('Y');
+
+        $usuario = Usuario::where('id_usuario', $evaluadorId)
+            ->whereHas('roles', function ($query) {
+                $query->where('nombre', 'Evaluador');
+            })
+            ->with([
+                'evaluadorAn' => function ($query) use ($gestionActual) {
+                    $query->whereHas('areaNivel.olimpiada', function ($subQuery) use ($gestionActual) {
+                        $subQuery->where('gestion', $gestionActual);
+                    });
+                },
+                'evaluadorAn.areaNivel.area', 'evaluadorAn.areaNivel.nivel'
+            ])
+            ->first();
+
+        if (!$usuario) {
+            return [];
+        }
+
+        $asignaciones = $usuario->evaluadorAn;
+
+        $areasAgrupadas = $asignaciones->groupBy('areaNivel.area.nombre')->map(function ($asignacionesPorArea, $nombreArea) {
+            $niveles = $asignacionesPorArea->map(function ($asignacion) {
+                return [
+                    'id_nivel' => $asignacion->areaNivel->nivel->id_nivel,
+                    'nombre' => $asignacion->areaNivel->nivel->nombre,
+                ];
+            })->unique('id_nivel')->values();
+
+            return [
+                'id_area' => $asignacionesPorArea->first()->areaNivel->area->id_area,
+                'nombre_area' => $nombreArea,
+                'niveles' => $niveles,
+            ];
+        });
+
+        return [
+            'evaluador' => ['id_usuario' => $usuario->id_usuario, 'nombre_completo' => $usuario->nombre . ' ' . $usuario->apellido],
+            'areas' => $areasAgrupadas->values()->all(),
+        ];
+    }
 }

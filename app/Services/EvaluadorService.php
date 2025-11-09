@@ -291,4 +291,15 @@ class EvaluadorService
             'updated_at' => $usuario->updated_at
         ];
     }
+
+    /**
+     * Obtiene las áreas y niveles asignados a un evaluador por su ID.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getAreasNivelesByEvaluadorId(int $id): array
+    {
+        return $this->evaluadorRepository->findAreasNivelesByEvaluadorId($id);
+    }
 }

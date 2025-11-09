@@ -3,5 +3,5 @@
 @token = 
 
 ###AreanivelDisponibles
-GET {{hostname}}{{api_prefix}}/área-nivel/actuales
+GET {{hostname}}{{api_prefix}}/area-nivel/actuales
 Accept: application/json

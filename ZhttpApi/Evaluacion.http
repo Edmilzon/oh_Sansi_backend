@@ -1,0 +1,7 @@
+@hostname = http://localhost:8000
+@api_prefix = /api
+@token = 
+
+###Evaluadro con sus areas y niveles actuales
+GET {{hostname}}{{api_prefix}}/evaluadores/9/areas-niveles
+Accept: application/json
