@@ -5,3 +5,20 @@
 ###Evaluador con sus areas y niveles actuales
 GET {{hostname}}{{api_prefix}}/evaluadores/9/areas-niveles
 Accept: application/json
+
+###lISTAR COMPETIDORES POR AREA Y NIVEL
+GET {{hostname}}{{api_prefix}}/competidores/area/1/nivel/7
+Accept: application/json
+
+### CALIFICAR UN COMPETIDOR
+POST {{hostname}}{{api_prefix}}/competencias/1/evaluacion
+Content-Type: application/json
+Accept: application/json
+
+{
+    "nota": 85.5,
+    "observaciones": "Buen desempeño, pero puede mejorar en la sección de algoritmos.",
+    "id_competidor": 1,
+    "id_evaluadorAN": 1,
+    "estado": false
+}
