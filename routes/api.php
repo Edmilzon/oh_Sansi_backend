@@ -18,6 +18,7 @@ use App\Http\Controllers\ParametroController;
 use App\Http\Controllers\AreaNivelController;
 use App\Http\Controllers\ListaResponsableAreaController;
 use App\Http\Controllers\GradoEscolaridadController;
+use App\Http\Controllers\MedalleroController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -161,3 +162,8 @@ Route::get('/listaCompleta/{idResponsable}/{idArea}/{idNivel}/{idGrado}/{genero?
 
 //Rutas para la calificación
 Route::post('/competencias/{id_competencia}/evaluacion', [EvaluacionController::class, 'store']);
+
+//Rutas para parametrizacion 
+Route::get('/responsableGestion/{idResponsable}', [MedalleroController::class, 'getAreaPorResponsable']);
+Route::get('/medallero/area/{idArea}/niveles', [MedalleroController::class, 'getNivelesPorArea']);
+Route::post('/medallero/configuracion', [MedalleroController::class, 'guardarConfiguracionMedallero']);
