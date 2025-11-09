@@ -1,0 +1,7 @@
+@hostname = http://localhost:8000
+@api_prefix = /api
+@token = 
+
+###AreanivelDisponibles
+GET {{hostname}}{{api_prefix}}/área-nivel/actuales
+Accept: application/json

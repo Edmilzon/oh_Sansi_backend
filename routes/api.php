@@ -131,6 +131,7 @@ Route::post('area-niveles', [AreaNivelController::class, 'store']);
 Route::post('/area-nivel/por-gestion', [AreaNivelController::class, 'getByGestionAndAreas']);
 Route::post('/area-nivel/gestion/{gestion}/areas', [AreaNivelController::class, 'getNivelesGradosByAreasAndGestion']);
 Route::get('/area-nivel/detalle', [AreaNivelController::class, 'getAllWithDetails']);
+Route::get('/area-nivel/actuales', [AreaNivelController::class, 'getActuales']);
 Route::get('area-niveles/{id_area}', [AreaNivelController::class, 'getByAreaAll']);
 Route::get('/areas-con-niveles', [AreaNivelController::class, 'getAreasConNiveles']);
 Route::get('/area-nivel', [AreaNivelController::class, 'getAreasConNivelesSimplificado']);
