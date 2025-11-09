@@ -159,6 +159,7 @@ Route::get('/grado', [ListaResponsableAreaController::class, 'getGrado']);
 Route::get('/departamento', [ListaResponsableAreaController::class, 'getDepartamento']);
 Route::get('/generos', [ListaResponsableAreaController::class, 'getGenero']);
 Route::get('/listaCompleta/{idResponsable}/{idArea}/{idNivel}/{idGrado}/{genero?}/{departamento?}', [ListaResponsableAreaController::class, 'listarPorAreaYNivel']);
+Route::get('/competidores/area/{idArea}/nivel/{idNivel}', [ListaResponsableAreaController::class, 'getCompetidoresPorAreaYNivel']);
 
 //Rutas para la calificación
 Route::post('/competencias/{id_competencia}/evaluacion', [EvaluacionController::class, 'store']);

@@ -121,4 +121,28 @@ class ListaResponsableAreaController extends Controller
     }
 }
 
+    public function getCompetidoresPorAreaYNivel(Request $request, int $idArea, int $idNivel): JsonResponse
+    {
+        try {
+            $competidores = $this->listaResponsableAreaService->getCompetidoresPorAreaYNivel($idArea, $idNivel);
+
+            if ($competidores->isEmpty()) {
+                return response()->json([
+                    'success' => true,
+                    'data' => ['competidores' => []],
+                    'message' => 'No se encontraron competidores para el área y nivel especificados.'
+                ], 200);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => ['competidores' => $competidores]
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al listar competidores: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

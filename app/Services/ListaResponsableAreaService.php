@@ -63,4 +63,9 @@ class ListaResponsableAreaService
     return $this->listaResponsableAreaRepository->getListaGeneros();
 }
 
+    public function getCompetidoresPorAreaYNivel(int $idArea, int $idNivel): Collection
+    {
+        return $this->listaResponsableAreaRepository->getCompetidoresPorAreaYNivel($idArea, $idNivel);
+    }
+
 }

@@ -115,6 +115,38 @@ class ListaResponsableAreaRepository
         ->get();
 }
 
+    public function getCompetidoresPorAreaYNivel(int $idArea, int $idNivel): Collection
+    {
+        $query = DB::table('competidor')
+            ->join('persona', 'competidor.id_persona', '=', 'persona.id_persona')
+            ->join('area_nivel', 'competidor.id_area_nivel', '=', 'area_nivel.id_area_nivel')
+            ->join('area', 'area_nivel.id_area', '=', 'area.id_area')
+            ->join('nivel', 'area_nivel.id_nivel', '=', 'nivel.id_nivel')
+            ->join('grado_escolaridad', 'competidor.id_grado_escolaridad', '=', 'grado_escolaridad.id_grado_escolaridad')
+            ->join('institucion', 'competidor.id_institucion', '=', 'institucion.id_institucion')
+            ->where('area.id_area', $idArea)
+            ->where('nivel.id_nivel', $idNivel);
+
+        return $query->select(
+                'persona.apellido',
+                'persona.nombre',
+                DB::raw("CASE 
+                            WHEN persona.genero = 'M' THEN 'Masculino'
+                            WHEN persona.genero = 'F' THEN 'Femenino'
+                            ELSE persona.genero
+                        END AS genero"),
+                'persona.ci',
+                'competidor.departamento',
+                'institucion.nombre as colegio',
+                'area.nombre as area',
+                'nivel.nombre as nivel',
+                'grado_escolaridad.nombre as grado'
+            )
+            ->orderBy('persona.apellido')
+            ->orderBy('persona.nombre')
+            ->get();
+    }
+
     public function getListaGrados(){
         return GradoEscolaridad::all();
     }
