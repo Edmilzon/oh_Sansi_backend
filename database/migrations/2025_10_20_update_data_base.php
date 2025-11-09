@@ -261,6 +261,18 @@ return new class extends Migration
             $table->string('nombre');
               $table->timestamps();
         });
+
+        Schema::create('param_medallero', function (Blueprint $table) {
+            $table->id('id_param_medallero');
+            $table->unsignedBigInteger('id_area_nivel'); 
+            $table->integer('oro')->default(0);
+            $table->integer('plata')->default(0);
+            $table->integer('bronce')->default(0);
+            $table->integer('menciones')->default(0);
+            $table->timestamps();
+
+            $table->foreign('id_area_nivel')->references('id_area_nivel')->on('area_nivel')->onDelete('cascade');
+        });
     }
     
     public function down(): void
@@ -289,5 +301,7 @@ return new class extends Migration
         Schema::dropIfExists('area_olimpiada');
         Schema::dropIfExists('persona');
         Schema::dropIfExists('grado_escolaridad');
+        Schema::dropIfExists('departamento');
+        Schema::dropIfExists('param_medallero');
     }
 };

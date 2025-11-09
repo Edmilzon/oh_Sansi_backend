@@ -21,12 +21,17 @@ class MedalleroService
         }
         return $this->medalleroRepository->getAreaPorResponsable($idResponsable);
     }
+
     public function getNivelesPorArea(int $idArea): Collection
-{
-    if ($idArea <= 0) {
-        return collect();
+    {
+        if ($idArea <= 0) {
+            return collect();
+        }
+        return $this->medalleroRepository->getNivelesPorArea($idArea);
     }
-    return $this->medalleroRepository->getNivelesPorArea($idArea);
+public function guardarMedallero(array $niveles): void
+{
+    $this->medalleroRepository->insertarMedallero($niveles);
 }
 
 }
