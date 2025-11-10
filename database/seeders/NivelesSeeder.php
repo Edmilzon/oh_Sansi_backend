@@ -21,6 +21,9 @@ class NivelesSeeder extends Seeder
             ['nombre' => '4to de Secundaria', 'created_at' => now(), 'updated_at' => now()],
             ['nombre' => '5to de Secundaria', 'created_at' => now(), 'updated_at' => now()],
             ['nombre' => '6to de Secundaria', 'created_at' => now(), 'updated_at' => now()],
+            ['nombre' => 'Guacamayo', 'created_at' => now(), 'updated_at' => now()],
+            ['nombre' => 'Tapir', 'created_at' => now(), 'updated_at' => now()],
+            ['nombre' => 'Cóndor', 'created_at' => now(), 'updated_at' => now()],
         ]);
 
         $this->command->info('Niveles base creados exitosamente.');

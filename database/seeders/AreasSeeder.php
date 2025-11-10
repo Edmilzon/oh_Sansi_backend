@@ -17,6 +17,12 @@ class AreasSeeder extends Seeder
             ['nombre' => 'Química'],
             ['nombre' => 'Biología'],
             ['nombre' => 'Informática'],
+            ['nombre' => 'Astronomía'],
+            ['nombre' => 'Geografía'],
+            ['nombre' => 'Historia'],
+            ['nombre' => 'Literatura'],
+            ['nombre' => 'Robótica'],
+            ['nombre' => 'Filosofía'],
         ];
 
         // 1. Insertar todas las áreas en un solo query.
