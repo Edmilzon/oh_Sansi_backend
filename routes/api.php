@@ -167,4 +167,4 @@ Route::post('/competencias/{id_competencia}/evaluacion', [EvaluacionController::
 //Rutas para parametrizacion 
 Route::get('/responsableGestion/{idResponsable}', [MedalleroController::class, 'getAreaPorResponsable']);
 Route::get('/medallero/area/{idArea}/niveles', [MedalleroController::class, 'getNivelesPorArea']);
-Route::post('/medallero/configuracion', [MedalleroController::class, 'guardarConfiguracionMedallero']);
+Route::post('/medallero/configuracion', [MedalleroController::class, 'guardarMedallero']);
