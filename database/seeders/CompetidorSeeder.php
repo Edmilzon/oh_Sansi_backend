@@ -20,14 +20,14 @@ class CompetidorSeeder extends Seeder
         // Departamentos de Bolivia
         $departamentos = [
             'La Paz', 'Cochabamba', 'Santa Cruz', 'Oruro', 
-            'Potosí', 'Tarija', 'Chuquisaca', 'Beni', 'Pando'
+            'Potosí', 'Tarija', 'Pando'
         ];
 
         // 1️⃣ Crear instituciones si no existen
         if (Institucion::count() == 0) {
             $institucionesDummy = [
-                'Colegio Nacional', 'Unidad Educativa Santa Cruz', 
-                'Instituto Simón Bolívar', 'Colegio Bolívar', 'Colegio La Paz'
+                'Colegio Nacional(Sucre)', 'Unidad Educativa Santa Cruz 2', 
+                'Instituto Simón Bolívar', 'Colegio Bolívar "B"', 'Colegio La Paz'
             ];
             foreach ($institucionesDummy as $nombre) {
                 Institucion::create(['nombre' => $nombre]);
@@ -71,9 +71,9 @@ class CompetidorSeeder extends Seeder
                 'email' => $faker->unique()->safeEmail,
             ]);
 
-            $departamento = $departamentos[$i % count($departamentos)]; // Ciclo sobre los departamentos
-            $area_nivel = $areasNiveles[$i % count($areasNiveles)];      // Ciclo sobre los area_nivel
-            $grado = $grados[$i % count($grados)];                        // Ciclo sobre los grados
+            $departamento = $departamentos[$i % count($departamentos)]; 
+            $area_nivel = $areasNiveles[$i % count($areasNiveles)];     
+            $grado = $grados[$i % count($grados)];                        
 
             Competidor::create([
                 'departamento' => $departamento,
@@ -86,6 +86,6 @@ class CompetidorSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('Seeder de 100 competidores ejecutado correctamente con distribución equilibrada.');
+        $this->command->info(' competidores ejecutado correctamente con distribución equilibrada.');
     }
 }
