@@ -11,22 +11,34 @@ class ListaResponsableAreaRepository
 {
     public function getNivelesByArea(int $idArea): Collection
     {
+        $gestionActual = date('Y');
+
         return DB::table('area_nivel')
             ->join('nivel', 'area_nivel.id_nivel', '=', 'nivel.id_nivel')
+            ->join('olimpiada', 'area_nivel.id_olimpiada', '=', 'olimpiada.id_olimpiada')
+            ->select(
+                'nivel.id_nivel',
+                'nivel.nombre as nombre_nivel',
+            )
             ->where('area_nivel.id_area', $idArea)
-            ->select('nivel.id_nivel', 'nivel.nombre')
-            ->distinct()
+            ->where('olimpiada.gestion', $gestionActual)
+            ->where('area_nivel.activo', true)
             ->orderBy('nivel.nombre')
+            ->distinct()
             ->get();
     }
 
     public function getAreaPorResponsable(int $idResponsable): Collection
     {
+        $gestionActual = date('Y');
+
         return DB::table('responsable_area')
             ->join('area_olimpiada', 'responsable_area.id_area_olimpiada', '=', 'area_olimpiada.id_area_olimpiada')
             ->join('area', 'area_olimpiada.id_area', '=', 'area.id_area')
+            ->join('olimpiada', 'area_olimpiada.id_olimpiada', '=', 'olimpiada.id_olimpiada')
             ->select('area.id_area', 'area.nombre')
             ->where('responsable_area.id_usuario', $idResponsable)
+            ->where('olimpiada.gestion', $gestionActual)
             ->distinct()
             ->orderBy('area.nombre')
             ->get();
@@ -56,7 +68,6 @@ class ListaResponsableAreaRepository
     }
 
     if ($genero && !in_array(strtolower($genero), ['m', 'f', 'masculino', 'femenino'])) {
-        // Es un departamento, no un género
         $departamento = $genero;
         $genero = null;
     }
@@ -70,6 +81,12 @@ class ListaResponsableAreaRepository
         ->join('institucion', 'competidor.id_institucion', '=', 'institucion.id_institucion')
         ->whereIn('area.id_area', $areasDelResponsable);
 
+    // 🧩 Filtro por olimpiada del año actual
+    $anioActual = date('Y');
+    $query->join('olimpiada', 'area_nivel.id_olimpiada', '=', 'olimpiada.id_olimpiada')
+          ->where('olimpiada.gestion', $anioActual);
+
+    // Filtros opcionales
     if ($idArea && $idArea !== 0) {
         $query->where('area.id_area', $idArea);
     }
@@ -108,12 +125,14 @@ class ListaResponsableAreaRepository
             'institucion.nombre as colegio',
             'area.nombre as area',
             'nivel.nombre as nivel',
-            'grado_escolaridad.nombre as grado'
+            'grado_escolaridad.nombre as grado',
+            'olimpiada.gestion as gestion'
         )
         ->orderBy('persona.apellido')
         ->orderBy('persona.nombre')
         ->get();
 }
+
 
     public function getCompetidoresPorAreaYNivel(int $idArea, int $idNivel): Collection
     {

@@ -3,11 +3,15 @@
 @token = 
 
 ###Evaluador con sus areas y niveles actuales
-GET {{hostname}}{{api_prefix}}/evaluadores/9/areas-niveles
+GET {{hostname}}{{api_prefix}}/evaluadores/5/areas-niveles
 Accept: application/json
 
 ###lISTAR COMPETIDORES POR AREA Y NIVEL
-GET {{hostname}}{{api_prefix}}/competidores/area/1/nivel/7
+##/area/1/nivel/9
+##/area/1/nivel/10
+##/area/1/nivel/11
+##/area/2/nivel/9
+GET {{hostname}}{{api_prefix}}/competidores/area/2/nivel/9
 Accept: application/json
 
 ### CALIFICAR UN COMPETIDOR
