@@ -22,6 +22,13 @@ class Evaluacion extends Model
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = ['estado' => 'boolean'];
+
+    /**
      * Get the evaluadorAn that owns the evaluacion.
      */
     public function evaluadorAn()
@@ -35,5 +42,13 @@ class Evaluacion extends Model
     public function competidor()
     {
         return $this->belongsTo(Competidor::class, 'id_competidor', 'id_competidor');
+    }
+
+    /**
+     * Get the competencia associated with the evaluacion.
+     */
+    public function competencia()
+    {
+        return $this->hasOne(Competencia::class, 'id_evaluacion', 'id_evaluacion');
     }
 }

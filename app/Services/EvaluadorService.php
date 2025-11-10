@@ -284,12 +284,22 @@ class EvaluadorService
                     'nivel' => $ea->areaNivel->nivel->nombre ?? null,
                 ];
             })->filter(function ($value) {
-                // Asegurarse de que tanto el área como el nivel no sean nulos
                 return !is_null($value['area']) && !is_null($value['nivel']);
             })->values()
             ->toArray(),
             'created_at' => $usuario->created_at,
             'updated_at' => $usuario->updated_at
         ];
+    }
+
+    /**
+     * Obtiene las áreas y niveles asignados a un evaluador por su ID.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getAreasNivelesByEvaluadorId(int $id): array
+    {
+        return $this->evaluadorRepository->findAreasNivelesByEvaluadorId($id);
     }
 }

@@ -51,6 +51,9 @@ class ResponsableController extends Controller
                         $fail("El área '{$areaNombre}' (ID: {$value}) ya tiene un responsable asignado para esta olimpiada.");
                     }
                 }],
+            ], [
+                'ci.unique' => 'Ya existe un responsable de área registrado con este C.I. y no se realiza el registro.',
+                'email.unique' => 'Ya existe un responsable de área  registrado con este correo electrónico y no se realiza el registro.',
             ]);
 
             $responsableData = $request->only([
@@ -61,7 +64,7 @@ class ResponsableController extends Controller
             $result = $this->responsableService->createResponsable($responsableData);
 
             return response()->json([
-                'message' => 'Responsable de área registrado exitosamente',
+                'message' => 'El responsable de área fue registrado y asignado a sus áreas. Se envió un correo electrónico con las credenciales para su inicio de sesión.',
                 'data' => $result
             ], 201);
 
@@ -279,7 +282,7 @@ class ResponsableController extends Controller
             }
 
             return response()->json([
-                'message' => 'Áreas añadidas exitosamente al responsable',
+                'message' => 'El responsable de área fue asignado a sus áreas.',
                 'data' => $result
             ]);
 
@@ -288,6 +291,28 @@ class ResponsableController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al añadir áreas al responsable',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Obtiene las áreas ocupadas por responsables en la gestión actual.
+     *
+     * @return JsonResponse
+     */
+    public function getOcupadasEnGestionActual(): JsonResponse
+    {
+        try {
+            $areasOcupadas = $this->responsableService->getAreasOcupadasEnGestionActual();
+            
+            return response()->json([
+                'message' => 'Áreas ocupadas en la gestión actual obtenidas exitosamente',
+                'data' => $areasOcupadas
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener las áreas ocupadas',
                 'error' => $e->getMessage()
             ], 500);
         }

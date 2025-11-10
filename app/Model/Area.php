@@ -33,4 +33,9 @@ class Area extends Model
     {
         return $this->hasMany(AreaNivel::class, 'id_area', 'id_area');
     }
+
+    public function areaOlimpiada()
+    {
+        return $this->hasMany(\App\Model\AreaOlimpiada::class, 'id_area');
+    }
 }

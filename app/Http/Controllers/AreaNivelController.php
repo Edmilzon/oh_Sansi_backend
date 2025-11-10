@@ -399,4 +399,21 @@ class AreaNivelController extends Controller
             ], 500);
         }
     }
+
+    public function getActuales(): JsonResponse
+    {
+        try {
+            $result = $this->areaNivelService->getAreaNivelActuales();
+
+            return response()->json($result);
+
+        } catch (\Exception $e) {
+            Log::error('[CONTROLLER] Error en getActuales:', [
+                'error' => $e->getMessage()
+            ]);
+            return response()->json([
+                'message' => 'Error al obtener las relaciones área-nivel actuales: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

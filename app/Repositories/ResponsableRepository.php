@@ -330,6 +330,31 @@ class ResponsableRepository
     }
 
     /**
+     * Obtiene las áreas que ya tienen un responsable asignado en la gestión actual.
+     *
+     * @param string $gestion
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAreasOcupadasPorGestion(string $gestion)
+    {
+        return Area::whereHas('areaOlimpiada', function ($query) use ($gestion) {
+            $query->whereHas('olimpiada', function ($q) use ($gestion) {
+                $q->where('gestion', $gestion);
+            });
+            $query->whereHas('responsableArea');
+        })
+        ->select('id_area', 'nombre')
+        ->distinct()
+        ->get();
+    }
+
+
+
+
+
+
+
+    /**
      * Busca un usuario por su CI.
      *
      * @param string $ci

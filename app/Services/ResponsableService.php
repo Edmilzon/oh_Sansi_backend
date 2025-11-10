@@ -203,6 +203,17 @@ class ResponsableService
         });
     }
 
+    /**
+     * Obtiene las áreas ocupadas por responsables en la gestión actual.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAreasOcupadasEnGestionActual()
+    {
+        $gestionActual = date('Y'); // Obtiene el año actual, ej: "2025"
+        return $this->responsableRepository->getAreasOcupadasPorGestion($gestionActual);
+    }
+
 
     public function validateAreas(array $areaIds): void
     {

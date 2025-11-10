@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EvaluacionController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ResponsableController;
 use App\Http\Controllers\OlimpiadaController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\ParametroController;
 use App\Http\Controllers\AreaNivelController;
 use App\Http\Controllers\ListaResponsableAreaController;
 use App\Http\Controllers\GradoEscolaridadController;
+use App\Http\Controllers\MedalleroController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -59,6 +61,7 @@ Route::prefix('responsables')->group(function () {
     Route::put('/ci/{ci}', [ResponsableController::class, 'updateByCi']);
     Route::post('/ci/{ci}/areas', [ResponsableController::class, 'addAreasByCi']);
     Route::get('/ci/{ci}/gestion/{gestion}/areas', [ResponsableController::class, 'getAreasByCiAndGestion']);
+    Route::get('/areas/ocupadas/gestion/actual', [ResponsableController::class, 'getOcupadasEnGestionActual']);
 });
 
 // Rutas para evaluadores
@@ -67,6 +70,7 @@ Route::prefix('evaluadores')->group(function () {
     Route::get('/', [EvaluadorController::class, 'index']);
     Route::get('/{id}', [EvaluadorController::class, 'show']);
     Route::put('/ci/{ci}', [EvaluadorController::class, 'updateByCi']);
+    Route::get('/{id}/areas-niveles', [EvaluadorController::class, 'getAreasNivelesById']);
     Route::post('/ci/{ci}/areas', [EvaluadorController::class, 'addAreasByCi']);
     Route::get('/ci/{ci}/gestiones', [EvaluadorController::class, 'getGestionesByCi']);
     Route::post('/ci/{ci}/asignaciones', [EvaluadorController::class, 'addAsignacionesByCi']);
@@ -129,6 +133,7 @@ Route::post('area-niveles', [AreaNivelController::class, 'store']);
 Route::post('/area-nivel/por-gestion', [AreaNivelController::class, 'getByGestionAndAreas']);
 Route::post('/area-nivel/gestion/{gestion}/areas', [AreaNivelController::class, 'getNivelesGradosByAreasAndGestion']);
 Route::get('/area-nivel/detalle', [AreaNivelController::class, 'getAllWithDetails']);
+Route::get('/area-nivel/actuales', [AreaNivelController::class, 'getActuales']);
 Route::get('area-niveles/{id_area}', [AreaNivelController::class, 'getByAreaAll']);
 Route::get('/areas-con-niveles', [AreaNivelController::class, 'getAreasConNiveles']);
 Route::get('/area-nivel', [AreaNivelController::class, 'getAreasConNivelesSimplificado']);
@@ -149,8 +154,17 @@ Route::post('/parametros', [ParametroController::class, 'store']);
 
 //lista de competidores
 Route::get('/responsable/{idResponsable}', [ListaResponsableAreaController::class, 'getAreaPorResponsable']);
-Route::get('/niveles/{idArea}', [ListaResponsableAreaController::class, 'getNivelesPorArea']);
+Route::get('/niveles/{idArea}/area', [ListaResponsableAreaController::class, 'getNivelesPorArea']);
 Route::get('/grado', [ListaResponsableAreaController::class, 'getGrado']);
 Route::get('/departamento', [ListaResponsableAreaController::class, 'getDepartamento']);
 Route::get('/generos', [ListaResponsableAreaController::class, 'getGenero']);
 Route::get('/listaCompleta/{idResponsable}/{idArea}/{idNivel}/{idGrado}/{genero?}/{departamento?}', [ListaResponsableAreaController::class, 'listarPorAreaYNivel']);
+Route::get('/competidores/area/{idArea}/nivel/{idNivel}', [ListaResponsableAreaController::class, 'getCompetidoresPorAreaYNivel']);
+
+//Rutas para la calificación
+Route::post('/competencias/{id_competencia}/evaluacion', [EvaluacionController::class, 'store']);
+
+//Rutas para parametrizacion 
+Route::get('/responsableGestion/{idResponsable}', [MedalleroController::class, 'getAreaPorResponsable']);
+Route::get('/medallero/area/{idArea}/niveles', [MedalleroController::class, 'getNivelesPorArea']);
+Route::post('/medallero/configuracion', [MedalleroController::class, 'guardarMedallero']);

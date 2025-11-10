@@ -177,7 +177,7 @@ return new class extends Migration
             $table->decimal('nota', 5, 2);
             $table->text('observaciones')->nullable();
             $table->date('fecha_evaluacion');
-            $table->string('estado')->default('pendiente');
+            $table->boolean('estado')->default(true);
             $table->unsignedBigInteger('id_evaluadorAN')->nullable();
             $table->unsignedBigInteger('id_competidor');
             $table->timestamps();
@@ -190,7 +190,7 @@ return new class extends Migration
             $table->id('id_competencia');
             $table->date('fecha_inicio');
             $table->date('fecha_fin');
-            $table->string('estado');
+            $table->string('estado')->default("Pendiente");
             $table->unsignedBigInteger('id_responsableArea')->nullable();
             $table->unsignedBigInteger('id_fase')->nullable();
             $table->unsignedBigInteger('id_parametro')->nullable();
@@ -261,6 +261,18 @@ return new class extends Migration
             $table->string('nombre');
               $table->timestamps();
         });
+
+        Schema::create('param_medallero', function (Blueprint $table) {
+            $table->id('id_param_medallero');
+            $table->unsignedBigInteger('id_area_nivel'); 
+            $table->integer('oro')->default(0);
+            $table->integer('plata')->default(0);
+            $table->integer('bronce')->default(0);
+            $table->integer('menciones')->default(0);
+            $table->timestamps();
+
+            $table->foreign('id_area_nivel')->references('id_area_nivel')->on('area_nivel')->onDelete('cascade');
+        });
     }
     
     public function down(): void
@@ -289,5 +301,7 @@ return new class extends Migration
         Schema::dropIfExists('area_olimpiada');
         Schema::dropIfExists('persona');
         Schema::dropIfExists('grado_escolaridad');
+        Schema::dropIfExists('departamento');
+        Schema::dropIfExists('param_medallero');
     }
 };

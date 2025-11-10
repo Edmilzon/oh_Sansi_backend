@@ -25,4 +25,9 @@ class AreaOlimpiada extends Model
         return $this->belongsTo(\App\Model\Olimpiada::class, 'id_olimpiada');
     }
 
+    public function responsableArea()
+    {
+        return $this->hasOne(\App\Model\ResponsableArea::class, 'id_area_olimpiada');
+    }
+
 }

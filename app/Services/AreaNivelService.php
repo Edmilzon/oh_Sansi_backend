@@ -623,4 +623,30 @@ class AreaNivelService
         }
     }
 
+    public function getAreaNivelActuales(): array
+    {
+        $olimpiadaActual = $this->obtenerOlimpiadaActual();
+        $areas = $this->areaNivelRepository->getActualesByOlimpiada($olimpiadaActual->id_olimpiada);
+
+        $resultado = $areas->map(function($area) {
+            $niveles = $area->areaNiveles->map(function($areaNivel) {
+                return [
+                    'id_area_nivel' => $areaNivel->id_area_nivel,
+                    'id_nivel' => $areaNivel->id_nivel,
+                    'nombre' => $areaNivel->nivel->nombre
+                ];
+            });
+
+            return [
+                'id_area' => $area->id_area,
+                'area' => $area->nombre,
+                'niveles' => $niveles->values()
+            ];
+        });
+
+        return $resultado->values()->all();
+    }
+
+
+
 }

@@ -189,7 +189,7 @@ class Olimpiadas2024Seeder extends Seeder
                 $evaluaciones[] = Evaluacion::create([
                     'nota' => [90, 85][$index] ?? 0,
                     'fecha_evaluacion' => '2024-10-15',
-                    'estado' => 'finalizado',
+                    'estado' => false,
                     'id_evaluadorAN' => $evaluadorQuimica->id_evaluadorAN,
                     'id_competidor' => $comp->id_competidor,
                 ]);

@@ -107,4 +107,20 @@ class AreaNivelRepository
     ->get(['id_area', 'nombre']);
 }
 
+    public function getActualesByOlimpiada(int $idOlimpiada): Collection
+    {
+        return Area::with([
+            'areaNiveles' => function($query) use ($idOlimpiada) {
+                $query->where('id_olimpiada', $idOlimpiada)
+                      ->where('activo', true);
+            },
+            'areaNiveles.nivel:id_nivel,nombre'
+        ])
+        ->whereHas('areaNiveles', function($query) use ($idOlimpiada) {
+            $query->where('id_olimpiada', $idOlimpiada)
+                  ->where('activo', true);
+        })
+        ->get(['id_area', 'nombre']);
+    }
+
 }

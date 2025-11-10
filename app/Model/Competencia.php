@@ -17,8 +17,6 @@ class Competencia extends Model
         'fecha_fin',
         'estado',
         'id_responsableArea',
-        'id_evaluadorAN',
-        'id_competidor',
         'id_fase',
         'id_parametro',
         'id_evaluacion',

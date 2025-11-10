@@ -42,6 +42,9 @@ class EvaluadorController extends Controller
                         $fail("La asignación con ID {$value} no pertenece a la olimpiada con ID {$request->id_olimpiada}.");
                     }
                 }],
+            ], [
+                'ci.unique' => 'Ya existe un Evaluador registrado con este C.I. y no se realiza el registro.',
+                'email.unique' => 'Ya existe un Evaluador registrado con este correo electrónico y no se realiza el registro.',
             ]);
 
             $evaluadorData = $request->only([
@@ -310,6 +313,33 @@ class EvaluadorController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al añadir asignaciones al evaluador',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Obtiene las áreas y niveles asignados a un evaluador por su ID.
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function getAreasNivelesById(int $id): JsonResponse
+    {
+        try {
+            $areasNiveles = $this->evaluadorService->getAreasNivelesByEvaluadorId($id);
+
+            if (empty($areasNiveles)) {
+                return response()->json([
+                    'message' => 'No se encontraron áreas y niveles asignados para el evaluador con el ID proporcionado.',
+                    'data' => []
+                ], 404);
+            }
+
+            return response()->json($areasNiveles);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener las áreas y niveles del evaluador.',
                 'error' => $e->getMessage()
             ], 500);
         }
