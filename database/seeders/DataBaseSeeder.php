@@ -24,8 +24,11 @@ class DatabaseSeeder extends Seeder
             //Olimpiada2023Seeder::class,
             //Olimpiadas2024Seeder::class,
             DepartamentoSeeder::class,
-            TestUserSeeder::class,
-            EvaluadorTestSeeder::class,
+           // TestUserSeeder::class,
+           // EvaluadorTestSeeder::class,
+            GradoEscolaridadSeeder::class,
+            AreasEvaluadoresSeeder::class,
+            CompetidorSeeder::class,
         ]);
     }
 }
