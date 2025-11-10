@@ -219,7 +219,7 @@ class AreaNivelService
             $area = Area::find($areaId);
             $nombreArea = $area ? $area->nombre : 'el área seleccionada';
             
-            $message = "Los niveles fueron asignados correctamente al área {$nombreArea}";
+            $message = "Los niveles y grados fueron asignados correctamente al área {$nombreArea}";
         }
         
         if (count($errors) > 0) {
