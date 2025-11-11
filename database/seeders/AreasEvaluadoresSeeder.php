@@ -74,7 +74,6 @@ class AreasEvaluadoresSeeder extends Seeder
             }
         }
         DB::table('area_nivel')->insert($areaNivelData);
-
         $this->command->info("✅ Area_nivel creada según la distribución solicitada.");
 
         // 6️⃣ Roles
@@ -128,6 +127,9 @@ class AreasEvaluadoresSeeder extends Seeder
 
             // 8️⃣ Crear evaluadores por área_nivel
             foreach ($resp['areas'] as $id_area) {
+                $areaObj = $areas->where('id_area', $id_area)->first();
+                $nombreArea = strtolower(str_replace(' ', '_', $areaObj->nombre));
+
                 $areaNiveles = DB::table('area_nivel')
                     ->where('id_area',$id_area)
                     ->where('id_olimpiada',$olimpiada->id_olimpiada)
@@ -146,13 +148,14 @@ class AreasEvaluadoresSeeder extends Seeder
 
                     for ($i=0;$i<$cantidad;$i++){
                         $eval = Usuario::create([
-                            'nombre'=>"Eval{$contadorEval}_A{$id_area}_N{$an->id_nivel}",
+                            'nombre'=>"Eval{$contadorEval}_{$nombreArea}_N{$an->id_nivel}",
                             'apellido'=>'Tester',
                             'ci'=>rand(1000000,9999999),
-                            'email'=>strtolower("eval{$contadorEval}_A{$id_area}_N{$an->id_nivel}@ohsansi.com"),
+                            'email'=>"eval_{$nombreArea}_n{$an->id_nivel}_{$contadorEval}@ohsansi.com",
                             'password'=>Hash::make('evaluador123'),
                             'telefono'=>'6'.rand(1000000,9999999),
                         ]);
+
                         DB::table('usuario_rol')->insert([
                             'id_usuario'=>$eval->id_usuario,
                             'id_rol'=>$rolEval->id_rol,
@@ -167,6 +170,7 @@ class AreasEvaluadoresSeeder extends Seeder
                             'created_at'=>$now,
                             'updated_at'=>$now,
                         ]);
+
                         $contadorEval++;
                     }
                 }
