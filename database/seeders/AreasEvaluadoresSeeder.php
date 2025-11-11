@@ -125,33 +125,36 @@ class AreasEvaluadoresSeeder extends Seeder
                 ]);
             }
 
-            // 8️⃣ Crear evaluadores por área_nivel
+            // 8️⃣ Crear evaluadores por área_nivel con emails sin acentos
             foreach ($resp['areas'] as $id_area) {
                 $areaObj = $areas->where('id_area', $id_area)->first();
                 $nombreArea = strtolower(str_replace(' ', '_', $areaObj->nombre));
 
+                // Normalizar nombre del área para email (sin acentos ni caracteres especiales)
+                $nombreAreaEmail = iconv('UTF-8', 'ASCII//TRANSLIT', $nombreArea);
+                $nombreAreaEmail = preg_replace('/[^A-Za-z0-9_]/', '', $nombreAreaEmail);
+
                 $areaNiveles = DB::table('area_nivel')
-                    ->where('id_area',$id_area)
-                    ->where('id_olimpiada',$olimpiada->id_olimpiada)
+                    ->where('id_area', $id_area)
+                    ->where('id_olimpiada', $olimpiada->id_olimpiada)
                     ->get();
 
                 foreach ($areaNiveles as $an) {
-                    // Distribución de evaluadores por área y nivel según lo que definiste
-                    $cantidad = match($id_area){
-                        1 => 1, // Área1 → 1 evaluador por nivel
-                        2 => ($an->id_nivel==1 ? 2 : 2), // Área2 → 2 + 2
-                        3 => ($an->id_nivel==1 ? 2 : 1), // Área3 → 2 + 1
-                        4 => 2, // Área4 → 2 evaluadores
-                        5 => 1, // Área5 → 1 evaluador
+                    $cantidad = match($id_area) {
+                        1 => 1,
+                        2 => ($an->id_nivel==1 ? 2 : 2),
+                        3 => ($an->id_nivel==1 ? 2 : 1),
+                        4 => 2,
+                        5 => 1,
                         default => 1,
                     };
 
-                    for ($i=0;$i<$cantidad;$i++){
+                    for ($i=0; $i<$cantidad; $i++) {
                         $eval = Usuario::create([
                             'nombre'=>"Eval{$contadorEval}_{$nombreArea}_N{$an->id_nivel}",
                             'apellido'=>'Tester',
                             'ci'=>rand(1000000,9999999),
-                            'email'=>"eval_{$nombreArea}_n{$an->id_nivel}_{$contadorEval}@ohsansi.com",
+                            'email'=>"eval_{$nombreAreaEmail}_n{$an->id_nivel}_{$contadorEval}@ohsansi.com",
                             'password'=>Hash::make('evaluador123'),
                             'telefono'=>'6'.rand(1000000,9999999),
                         ]);
