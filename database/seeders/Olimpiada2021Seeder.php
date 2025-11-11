@@ -33,7 +33,7 @@ class Olimpiada2021Seeder extends Seeder
         DB::transaction(function () {
             $this->command->info('Iniciando seeder para la Olimpiada 2021...');
 
-            // 1. Crear Grados de Escolaridad primero
+            // 1. Crear Grados de Escolaridad
             $gradosEscolaridad = [
                 ['nombre' => '1ro Básico'],
                 ['nombre' => '2do Básico'],
@@ -74,9 +74,9 @@ class Olimpiada2021Seeder extends Seeder
             $this->command->info("Olimpiada '{$olimpiada->nombre}' creada.");
 
             // 3. Obtener Areas y Niveles
-            $areas = Area::whereIn('nombre', ['Matemáticas', 'Física', 'Informática'])->get();
+            $areas = Area::whereIn('nombre', ['Matemáticas', 'Física', 'Informática', 'Química', 'Biología', 'Astronomía', 'Geografía', 'Historia', 'Literatura', 'Robótica', 'Filosofía'])->get();
             if ($areas->isEmpty()) {
-                $this->command->error('No se encontraron áreas base. Ejecuta AreasSeeder primero.');
+                $this->command->error('No se encontraron áreas. Crea algunas áreas primero.');
                 return;
             }
             $niveles = Nivel::all();
