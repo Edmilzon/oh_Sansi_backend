@@ -49,12 +49,14 @@ class MedalleroController extends Controller
         'niveles.*.menciones' => 'required|integer',
     ]);
 
-    $this->medalleroService->guardarMedallero($data['niveles']);
+    $resultados = $this->medalleroService->guardarMedallero($data['niveles']);
 
     return response()->json([
         'success' => true,
-        'message' => 'Medallero guardado correctamente'
-    ], 200);
+        'message' => 'Operación realizada correctamente',
+        'resultados' => $resultados
+    ]);
 }
+
 
 }

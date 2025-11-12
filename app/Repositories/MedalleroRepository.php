@@ -25,40 +25,83 @@ class MedalleroRepository
     }
 
     public function getNivelesPorArea(int $idArea): Collection
-    {
-        $gestionActual = date('Y');
-
-        return DB::table('area_nivel')
-            ->join('nivel', 'area_nivel.id_nivel', '=', 'nivel.id_nivel')
-            ->join('olimpiada', 'area_nivel.id_olimpiada', '=', 'olimpiada.id_olimpiada')
-            ->select(
-                'area_nivel.id_area_nivel',
-                'nivel.id_nivel',
-                'nivel.nombre as nombre_nivel',
-                'olimpiada.gestion'
-            )
-            ->where('area_nivel.id_area', $idArea)
-            ->where('olimpiada.gestion', $gestionActual)
-            ->where('area_nivel.activo', true)
-            ->orderBy('nivel.nombre')
-            ->distinct()
-            ->get();
-    }
-    public function insertarMedallero(array $niveles): void
 {
-    foreach ($niveles as $nivel) {
-        DB::table('param_medallero')->updateOrInsert(
-            ['id_area_nivel' => $nivel['id_area_nivel']],
-            [
+    $gestionActual = date('Y');
+
+    $niveles = DB::table('area_nivel')
+        ->join('nivel', 'area_nivel.id_nivel', '=', 'nivel.id_nivel')
+        ->join('olimpiada', 'area_nivel.id_olimpiada', '=', 'olimpiada.id_olimpiada')
+        ->leftJoin('param_medallero', 'area_nivel.id_area_nivel', '=', 'param_medallero.id_area_nivel')
+        ->select(
+            'area_nivel.id_area_nivel',
+            'nivel.id_nivel',
+            'nivel.nombre as nombre_nivel',
+            'olimpiada.gestion',
+            'param_medallero.oro',
+            'param_medallero.plata',
+            'param_medallero.bronce',
+            'param_medallero.menciones'
+        )
+        ->where('area_nivel.id_area', $idArea)
+        ->where('olimpiada.gestion', $gestionActual)
+        ->where('area_nivel.activo', true)
+        ->orderBy('nivel.id_nivel')
+        ->get();
+
+    return $niveles->map(function($nivel) {
+        if ($nivel->oro === null) {
+            unset($nivel->oro, $nivel->plata, $nivel->bronce, $nivel->menciones);
+        }
+        return $nivel;
+    });
+}
+
+
+
+    public function insertarMedallero(array $niveles): array
+    {
+        $resultados = [];
+
+        foreach ($niveles as $nivel) {
+            $infoNivel = DB::table('area_nivel')
+                ->join('nivel', 'area_nivel.id_nivel', '=', 'nivel.id_nivel')
+                ->select('nivel.nombre as nombre_nivel')
+                ->where('area_nivel.id_area_nivel', $nivel['id_area_nivel'])
+                ->first();
+
+            $nombreNivel = $infoNivel->nombre_nivel ?? 'Desconocido';
+
+            $existente = DB::table('param_medallero')
+                ->where('id_area_nivel', $nivel['id_area_nivel'])
+                ->first();
+
+            if ($existente) {
+                $totalExistente = $existente->oro + $existente->plata + $existente->bronce + $existente->menciones;
+
+                $resultados[] = sprintf(
+                    "Nivel %s ya tiene registrado medallas para la gestion 2025 Oro: %d, Plata: %d, Bronce: %d, Menciones: %d",
+                    $nombreNivel,
+                    $existente->oro,
+                    $existente->plata,
+                    $existente->bronce,
+                    $existente->menciones
+                );
+
+                continue; 
+            }
+            DB::table('param_medallero')->insert([
+                'id_area_nivel' => $nivel['id_area_nivel'],
                 'oro' => $nivel['oro'],
                 'plata' => $nivel['plata'],
                 'bronce' => $nivel['bronce'],
                 'menciones' => $nivel['menciones'],
+                'created_at' => now(),
                 'updated_at' => now(),
-                'created_at' => now()
-            ]
-        );
-    }
-}
+            ]);
 
+            $resultados[] = "Nivel {$nombreNivel} insertado correctamente.";
+        }
+
+        return $resultados;
+    }
 }

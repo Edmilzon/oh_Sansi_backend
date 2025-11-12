@@ -74,7 +74,7 @@ class Olimpiada2021Seeder extends Seeder
             $this->command->info("Olimpiada '{$olimpiada->nombre}' creada.");
 
             // 3. Obtener Areas y Niveles
-            $areas = Area::whereIn('nombre', ['Matemáticas', 'Física', 'Informática', 'Química', 'Biología', 'Astronomía', 'Geografía', 'Historia', 'Literatura', 'Robótica', 'Filosofía'])->get();
+            $areas = Area::whereIn('nombre', ['Matemáticas', 'Física', 'Informática', 'Química', 'Biología'])->get();
             if ($areas->isEmpty()) {
                 $this->command->error('No se encontraron áreas. Crea algunas áreas primero.');
                 return;
@@ -160,7 +160,117 @@ class Olimpiada2021Seeder extends Seeder
                 ['nombre' => 'Pedro', 'apellido' => 'Costas', 'ci' => '8901111', 'email' => 'pedro.costas@test.com', 'genero' => 'M', 'telefono' => '77681924'],
                 ['nombre' => 'Fabiola', 'apellido' => 'Luna', 'ci' => '3456711', 'email' => 'fabila.luna@test.com', 'genero' => 'F', 'telefono' => '77919100'],
                 ['nombre' => 'Raiza ', 'apellido' => 'Rodriguez', 'ci' => '4786823', 'email' => 'raiza.rodriguez@test.com', 'genero' => 'F', 'telefono' => '71818123'],
-            ];
+
+                ['nombre' => 'Ana', 'apellido' => 'Vaca', 'ci' => '1000001', 'email' => 'ana.vaca@test.com', 'genero' => 'F', 'telefono' => '77711101'],
+                ['nombre' => 'Juan', 'apellido' => 'Angel', 'ci' => '1000002', 'email' => 'juan.angel@test.com', 'genero' => 'M', 'telefono' => '77711102'],
+                ['nombre' => 'Sofia', 'apellido' => 'Rios', 'ci' => '1000003', 'email' => 'sofia.rios@test.com', 'genero' => 'F', 'telefono' => '77711103'],
+                ['nombre' => 'Mateo', 'apellido' => 'Choque', 'ci' => '1000004', 'email' => 'mateo.choque@test.com', 'genero' => 'M', 'telefono' => '77711104'],
+                ['nombre' => 'Lucas', 'apellido' => 'Vaca', 'ci' => '1000005', 'email' => 'lucas.vaca@test.com', 'genero' => 'M', 'telefono' => '77711105'],
+                ['nombre' => 'Fiorilo', 'apellido' => 'Angel', 'ci' => '1000006', 'email' => 'fiorilo.angel@test.com', 'genero' => 'M', 'telefono' => '77711106'],
+                ['nombre' => 'Pedro', 'apellido' => 'Lopez', 'ci' => '1000007', 'email' => 'pedro.lopez@test.com', 'genero' => 'M', 'telefono' => '77711107'],
+                ['nombre' => 'Maria', 'apellido' => 'Gutierrez', 'ci' => '1000008', 'email' => 'maria.gutierrez@test.com', 'genero' => 'F', 'telefono' => '77711108'],
+                ['nombre' => 'Carlos', 'apellido' => 'Mendoza', 'ci' => '1000009', 'email' => 'carlos.mendoza@test.com', 'genero' => 'M', 'telefono' => '77711109'],
+                ['nombre' => 'Elena', 'apellido' => 'Paredes', 'ci' => '1000010', 'email' => 'elena.paredes@test.com', 'genero' => 'F', 'telefono' => '77711110'],
+                ['nombre' => 'Roberto', 'apellido' => 'Salazar', 'ci' => '1000011', 'email' => 'roberto.salazar@test.com', 'genero' => 'M', 'telefono' => '77711111'],
+                ['nombre' => 'Laura', 'apellido' => 'Torrez', 'ci' => '1000012', 'email' => 'laura.torrez@test.com', 'genero' => 'F', 'telefono' => '77711112'],
+                ['nombre' => 'Diego', 'apellido' => 'Castro', 'ci' => '1000013', 'email' => 'diego.castro@test.com', 'genero' => 'M', 'telefono' => '77711113'],
+                ['nombre' => 'Gabriela', 'apellido' => 'Rojas', 'ci' => '1000014', 'email' => 'gabriela.rojas@test.com', 'genero' => 'F', 'telefono' => '77711114'],
+                ['nombre' => 'Fernando', 'apellido' => 'Vargas', 'ci' => '1000015', 'email' => 'fernando.vargas@test.com', 'genero' => 'M', 'telefono' => '77711115'],
+                ['nombre' => 'Isabel', 'apellido' => 'Morales', 'ci' => '1000016', 'email' => 'isabel.morales@test.com', 'genero' => 'F', 'telefono' => '77711116'],
+                ['nombre' => 'Ricardo', 'apellido' => 'Suarez', 'ci' => '1000017', 'email' => 'ricardo.suarez@test.com', 'genero' => 'M', 'telefono' => '77711117'],
+                ['nombre' => 'Patricia', 'apellido' => 'Cruz', 'ci' => '1000018', 'email' => 'patricia.cruz@test.com', 'genero' => 'F', 'telefono' => '77711118'],
+                ['nombre' => 'Javier', 'apellido' => 'Ortega', 'ci' => '1000019', 'email' => 'javier.ortega@test.com', 'genero' => 'M', 'telefono' => '77711119'],
+                ['nombre' => 'Carmen', 'apellido' => 'Navarro', 'ci' => '1000020', 'email' => 'carmen.navarro@test.com', 'genero' => 'F', 'telefono' => '77711120'],
+                ['nombre' => 'Alejandro', 'apellido' => 'Romero', 'ci' => '1000021', 'email' => 'alejandro.romero@test.com', 'genero' => 'M', 'telefono' => '77711121'],
+                ['nombre' => 'Raquel', 'apellido' => 'Aguilar', 'ci' => '1000022', 'email' => 'raquel.aguilar@test.com', 'genero' => 'F', 'telefono' => '77711122'],
+                ['nombre' => 'Mauricio', 'apellido' => 'Santos', 'ci' => '1000023', 'email' => 'mauricio.santos@test.com', 'genero' => 'M', 'telefono' => '77711123'],
+                ['nombre' => 'Daniela', 'apellido' => 'Cordova', 'ci' => '1000024', 'email' => 'daniela.cordova@test.com', 'genero' => 'F', 'telefono' => '77711124'],
+                ['nombre' => 'Oscar', 'apellido' => 'Ponce', 'ci' => '1000025', 'email' => 'oscar.ponce@test.com', 'genero' => 'M', 'telefono' => '77711125'],
+                ['nombre' => 'Veronica', 'apellido' => 'Velasco', 'ci' => '1000026', 'email' => 'veronica.velasco@test.com', 'genero' => 'F', 'telefono' => '77711126'],
+                ['nombre' => 'Hector', 'apellido' => 'Zambrana', 'ci' => '1000027', 'email' => 'hector.zambrana@test.com', 'genero' => 'M', 'telefono' => '77711127'],
+                ['nombre' => 'Natalia', 'apellido' => 'Quiroga', 'ci' => '1000028', 'email' => 'natalia.quiroga@test.com', 'genero' => 'F', 'telefono' => '77711128'],
+                ['nombre' => 'Pablo', 'apellido' => 'Salinas', 'ci' => '1000029', 'email' => 'pablo.salinas@test.com', 'genero' => 'M', 'telefono' => '77711129'],
+                ['nombre' => 'Adriana', 'apellido' => 'Perez', 'ci' => '1000030', 'email' => 'adriana.perez@test.com', 'genero' => 'F', 'telefono' => '77711130'],
+
+    // Segundo bloque - Física (25 estudiantes)
+    ['nombre' => 'Luis', 'apellido' => 'Fernandez', 'ci' => '1000031', 'email' => 'luis.fernandez@test.com', 'genero' => 'M', 'telefono' => '77711131'],
+    ['nombre' => 'Monica', 'apellido' => 'Garcia', 'ci' => '1000032', 'email' => 'monica.garcia@test.com', 'genero' => 'F', 'telefono' => '77711132'],
+    ['nombre' => 'Raul', 'apellido' => 'Diaz', 'ci' => '1000033', 'email' => 'raul.diaz@test.com', 'genero' => 'M', 'telefono' => '77711133'],
+    ['nombre' => 'Silvia', 'apellido' => 'Martinez', 'ci' => '1000034', 'email' => 'silvia.martinez@test.com', 'genero' => 'F', 'telefono' => '77711134'],
+    ['nombre' => 'Alberto', 'apellido' => 'Gomez', 'ci' => '1000035', 'email' => 'alberto.gomez@test.com', 'genero' => 'M', 'telefono' => '77711135'],
+    ['nombre' => 'Claudia', 'apellido' => 'Herrera', 'ci' => '1000036', 'email' => 'claudia.herrera@test.com', 'genero' => 'F', 'telefono' => '77711136'],
+    ['nombre' => 'Jorge', 'apellido' => 'Reyes', 'ci' => '1000037', 'email' => 'jorge.reyes@test.com', 'genero' => 'M', 'telefono' => '77711137'],
+    ['nombre' => 'Teresa', 'apellido' => 'Castro', 'ci' => '1000038', 'email' => 'teresa.castro@test.com', 'genero' => 'F', 'telefono' => '77711138'],
+    ['nombre' => 'Miguel', 'apellido' => 'Villarroel', 'ci' => '1000039', 'email' => 'miguel.villarroel@test.com', 'genero' => 'M', 'telefono' => '77711139'],
+    ['nombre' => 'Eva', 'apellido' => 'Lara', 'ci' => '1000040', 'email' => 'eva.lara@test.com', 'genero' => 'F', 'telefono' => '77711140'],
+    ['nombre' => 'Samuel', 'apellido' => 'Camacho', 'ci' => '1000041', 'email' => 'samuel.camacho@test.com', 'genero' => 'M', 'telefono' => '77711141'],
+    ['nombre' => 'Rosa', 'apellido' => 'Miranda', 'ci' => '1000042', 'email' => 'rosa.miranda@test.com', 'genero' => 'F', 'telefono' => '77711142'],
+    ['nombre' => 'Victor', 'apellido' => 'Arancibia', 'ci' => '1000043', 'email' => 'victor.arancibia@test.com', 'genero' => 'M', 'telefono' => '77711143'],
+    ['nombre' => 'Julia', 'apellido' => 'Escobar', 'ci' => '1000044', 'email' => 'julia.escobar@test.com', 'genero' => 'F', 'telefono' => '77711144'],
+    ['nombre' => 'Francisco', 'apellido' => 'Pinto', 'ci' => '1000045', 'email' => 'francisco.pinto@test.com', 'genero' => 'M', 'telefono' => '77711145'],
+    ['nombre' => 'Sara', 'apellido' => 'Mendez', 'ci' => '1000046', 'email' => 'sara.mendez@test.com', 'genero' => 'F', 'telefono' => '77711146'],
+    ['nombre' => 'Hugo', 'apellido' => 'Orellana', 'ci' => '1000047', 'email' => 'hugo.orellana@test.com', 'genero' => 'M', 'telefono' => '77711147'],
+    ['nombre' => 'Beatriz', 'apellido' => 'Valdez', 'ci' => '1000048', 'email' => 'beatriz.valdez@test.com', 'genero' => 'F', 'telefono' => '77711148'],
+    ['nombre' => 'Rodrigo', 'apellido' => 'Cabrera', 'ci' => '1000049', 'email' => 'rodrigo.cabrera@test.com', 'genero' => 'M', 'telefono' => '77711149'],
+    ['nombre' => 'Olga', 'apellido' => 'Fuentes', 'ci' => '1000050', 'email' => 'olga.fuentes@test.com', 'genero' => 'F', 'telefono' => '77711150'],
+    ['nombre' => 'Esteban', 'apellido' => 'Ramos', 'ci' => '1000051', 'email' => 'esteban.ramos@test.com', 'genero' => 'M', 'telefono' => '77711151'],
+    ['nombre' => 'Lorena', 'apellido' => 'Molina', 'ci' => '1000052', 'email' => 'lorena.molina@test.com', 'genero' => 'F', 'telefono' => '77711152'],
+    ['nombre' => 'Felipe', 'apellido' => 'Caceres', 'ci' => '1000053', 'email' => 'felipe.caceres@test.com', 'genero' => 'M', 'telefono' => '77711153'],
+    ['nombre' => 'Ruth', 'apellido' => 'Pacheco', 'ci' => '1000054', 'email' => 'ruth.pacheco@test.com', 'genero' => 'F', 'telefono' => '77711154'],
+    ['nombre' => 'Mario', 'apellido' => 'Tapia', 'ci' => '1000055', 'email' => 'mario.tapia@test.com', 'genero' => 'M', 'telefono' => '77711155'],
+
+    // Tercer bloque - Química (20 estudiantes)
+    ['nombre' => 'Andrea', 'apellido' => 'Rivera', 'ci' => '1000056', 'email' => 'andrea.rivera@test.com', 'genero' => 'F', 'telefono' => '77711156'],
+    ['nombre' => 'Gustavo', 'apellido' => 'Medina', 'ci' => '1000057', 'email' => 'gustavo.medina@test.com', 'genero' => 'M', 'telefono' => '77711157'],
+    ['nombre' => 'Carolina', 'apellido' => 'Vega', 'ci' => '1000058', 'email' => 'carolina.vega@test.com', 'genero' => 'F', 'telefono' => '77711158'],
+    ['nombre' => 'Leonardo', 'apellido' => 'Espinoza', 'ci' => '1000059', 'email' => 'leonardo.espinoza@test.com', 'genero' => 'M', 'telefono' => '77711159'],
+    ['nombre' => 'Diana', 'apellido' => 'Castillo', 'ci' => '1000060', 'email' => 'diana.castillo@test.com', 'genero' => 'F', 'telefono' => '77711160'],
+    ['nombre' => 'Marcelo', 'apellido' => 'Guerrero', 'ci' => '1000061', 'email' => 'marcelo.guerrero@test.com', 'genero' => 'M', 'telefono' => '77711161'],
+    ['nombre' => 'Valeria', 'apellido' => 'Ortiz', 'ci' => '1000062', 'email' => 'valeria.ortiz@test.com', 'genero' => 'F', 'telefono' => '77711162'],
+    ['nombre' => 'Rafael', 'apellido' => 'Silva', 'ci' => '1000063', 'email' => 'rafael.silva@test.com', 'genero' => 'M', 'telefono' => '77711163'],
+    ['nombre' => 'Paola', 'apellido' => 'Carrasco', 'ci' => '1000064', 'email' => 'paola.carrasco@test.com', 'genero' => 'F', 'telefono' => '77711164'],
+    ['nombre' => 'Santiago', 'apellido' => 'Parada', 'ci' => '1000065', 'email' => 'santiago.parada@test.com', 'genero' => 'M', 'telefono' => '77711165'],
+    ['nombre' => 'Nadia', 'apellido' => 'Rocha', 'ci' => '1000066', 'email' => 'nadia.rocha@test.com', 'genero' => 'F', 'telefono' => '77711166'],
+    ['nombre' => 'Cesar', 'apellido' => 'Maldonado', 'ci' => '1000067', 'email' => 'cesar.maldonado@test.com', 'genero' => 'M', 'telefono' => '77711167'],
+    ['nombre' => 'Jimena', 'apellido' => 'Aguirre', 'ci' => '1000068', 'email' => 'jimena.aguirre@test.com', 'genero' => 'F', 'telefono' => '77711168'],
+    ['nombre' => 'Andres', 'apellido' => 'Villanueva', 'ci' => '1000069', 'email' => 'andres.villanueva@test.com', 'genero' => 'M', 'telefono' => '77711169'],
+    ['nombre' => 'Lucia', 'apellido' => 'Peralta', 'ci' => '1000070', 'email' => 'lucia.peralta@test.com', 'genero' => 'F', 'telefono' => '77711170'],
+    ['nombre' => 'Emilio', 'apellido' => 'Zapata', 'ci' => '1000071', 'email' => 'emilio.zapata@test.com', 'genero' => 'M', 'telefono' => '77711171'],
+    ['nombre' => 'Marcela', 'apellido' => 'Rivas', 'ci' => '1000072', 'email' => 'marcela.rivas@test.com', 'genero' => 'F', 'telefono' => '77711172'],
+    ['nombre' => 'Arturo', 'apellido' => 'Salas', 'ci' => '1000073', 'email' => 'arturo.salas@test.com', 'genero' => 'M', 'telefono' => '77711173'],
+    ['nombre' => 'Rocio', 'apellido' => 'Contreras', 'ci' => '1000074', 'email' => 'rocio.contreras@test.com', 'genero' => 'F', 'telefono' => '77711174'],
+    ['nombre' => 'Guillermo', 'apellido' => 'Bustos', 'ci' => '1000075', 'email' => 'guillermo.bustos@test.com', 'genero' => 'M', 'telefono' => '77711175'],
+
+    // Cuarto bloque - Biología (15 estudiantes)
+    ['nombre' => 'Vanessa', 'apellido' => 'Paz', 'ci' => '1000076', 'email' => 'vanessa.paz@test.com', 'genero' => 'F', 'telefono' => '77711176'],
+    ['nombre' => 'Omar', 'apellido' => 'Cortez', 'ci' => '1000077', 'email' => 'omar.cortez@test.com', 'genero' => 'M', 'telefono' => '77711177'],
+    ['nombre' => 'Gabriela', 'apellido' => 'Leon', 'ci' => '1000078', 'email' => 'gabriela.leon@test.com', 'genero' => 'F', 'telefono' => '77711178'],
+    ['nombre' => 'Nicolas', 'apellido' => 'Marquez', 'ci' => '1000079', 'email' => 'nicolas.marquez@test.com', 'genero' => 'M', 'telefono' => '77711179'],
+    ['nombre' => 'Alejandra', 'apellido' => 'Cisneros', 'ci' => '1000080', 'email' => 'alejandra.cisneros@test.com', 'genero' => 'F', 'telefono' => '77711180'],
+    ['nombre' => 'Hernan', 'apellido' => 'Valencia', 'ci' => '1000081', 'email' => 'hernan.valencia@test.com', 'genero' => 'M', 'telefono' => '77711181'],
+    ['nombre' => 'Susana', 'apellido' => 'Rios', 'ci' => '1000082', 'email' => 'susana.rios@test.com', 'genero' => 'F', 'telefono' => '77711182'],
+    ['nombre' => 'Federico', 'apellido' => 'Galindo', 'ci' => '1000083', 'email' => 'federico.galindo@test.com', 'genero' => 'M', 'telefono' => '77711183'],
+    ['nombre' => 'Liliana', 'apellido' => 'Mora', 'ci' => '1000084', 'email' => 'liliana.mora@test.com', 'genero' => 'F', 'telefono' => '77711184'],
+    ['nombre' => 'Renato', 'apellido' => 'Carrillo', 'ci' => '1000085', 'email' => 'renato.carrillo@test.com', 'genero' => 'M', 'telefono' => '77711185'],
+    ['nombre' => 'Katherine', 'apellido' => 'Villalba', 'ci' => '1000086', 'email' => 'katherine.villalba@test.com', 'genero' => 'F', 'telefono' => '77711186'],
+    ['nombre' => 'Sebastian', 'apellido' => 'Barrios', 'ci' => '1000087', 'email' => 'sebastian.barrios@test.com', 'genero' => 'M', 'telefono' => '77711187'],
+    ['nombre' => 'Daniela', 'apellido' => 'Montes', 'ci' => '1000088', 'email' => 'daniela.montes@test.com', 'genero' => 'F', 'telefono' => '77711188'],
+    ['nombre' => 'Cristian', 'apellido' => 'Rangel', 'ci' => '1000089', 'email' => 'cristian.rangel@test.com', 'genero' => 'M', 'telefono' => '77711189'],
+    ['nombre' => 'Yesica', 'apellido' => 'Soliz', 'ci' => '1000090', 'email' => 'yesica.soliz@test.com', 'genero' => 'F', 'telefono' => '77711190'],
+
+    //Astronomía
+    ['nombre' => 'Walter', 'apellido' => 'Miranda', 'ci' => '1000091', 'email' => 'walter.miranda@test.com', 'genero' => 'M', 'telefono' => '77711191'],
+    ['nombre' => 'Ximena', 'apellido' => 'Franco', 'ci' => '1000092', 'email' => 'ximena.franco@test.com', 'genero' => 'F', 'telefono' => '77711192'],
+    ['nombre' => 'Ivan', 'apellido' => 'Paredes', 'ci' => '1000093', 'email' => 'ivan.paredes@test.com', 'genero' => 'M', 'telefono' => '77711193'],
+    ['nombre' => 'Regina', 'apellido' => 'Salvatierra', 'ci' => '1000094', 'email' => 'regina.salvatierra@test.com', 'genero' => 'F', 'telefono' => '77711194'],
+    ['nombre' => 'Edgar', 'apellido' => 'Campos', 'ci' => '1000095', 'email' => 'edgar.campos@test.com', 'genero' => 'M', 'telefono' => '77711195'],
+    ['nombre' => 'Fabiola', 'apellido' => 'Arce', 'ci' => '1000096', 'email' => 'fabiola.arce@test.com', 'genero' => 'F', 'telefono' => '77711196'],
+    ['nombre' => 'Milton', 'apellido' => 'Villca', 'ci' => '1000097', 'email' => 'milton.villca@test.com', 'genero' => 'M', 'telefono' => '77711197'],
+    ['nombre' => 'Doris', 'apellido' => 'Mamani', 'ci' => '1000098', 'email' => 'doris.mamani@test.com', 'genero' => 'F', 'telefono' => '77711198'],
+    ['nombre' => 'Rolando', 'apellido' => 'Quispe', 'ci' => '1000099', 'email' => 'rolando.quispe@test.com', 'genero' => 'M', 'telefono' => '77711199'],
+    ['nombre' => 'Nancy', 'apellido' => 'Yujra', 'ci' => '1000100', 'email' => 'nancy.yujra@test.com', 'genero' => 'F', 'telefono' => '77711200'],
+];
+        
 
             $personasCompetidores = [];
             foreach ($personasCompetidoresData as $data) {
