@@ -48,7 +48,6 @@ class MedalleroRepository
         ->orderBy('nivel.id_nivel')
         ->get();
 
-    // Quitar campos de medallas si no hay registro
     return $niveles->map(function($nivel) {
         if ($nivel->oro === null) {
             unset($nivel->oro, $nivel->plata, $nivel->bronce, $nivel->menciones);

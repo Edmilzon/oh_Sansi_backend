@@ -54,7 +54,7 @@ class AreasEvaluadoresSeeder extends Seeder
                     $areaNivelData[] = [
                         'id_area' => $area->id_area,
                         'id_nivel' => $i,
-                        'id_grado_escolaridad' => $i, // 1ro a 3ro
+                        'id_grado_escolaridad' => $i,
                         'id_olimpiada' => $olimpiada->id_olimpiada,
                         'activo' => true,
                         'created_at' => $now,
@@ -84,11 +84,13 @@ class AreasEvaluadoresSeeder extends Seeder
             return;
         }
 
-        // 7️⃣ Crear responsables
+        // 7️⃣ Crear solo 5 responsables
         $responsables = [
             ['nombre'=>'Resp1','apellido'=>'Sistema','areas'=>[1,2,3]],
             ['nombre'=>'Resp2','apellido'=>'Sistema','areas'=>[4]],
             ['nombre'=>'Resp3','apellido'=>'Sistema','areas'=>[5]],
+            ['nombre'=>'Resp4','apellido'=>'Sistema','areas'=>[1,2]], 
+            ['nombre'=>'Resp5','apellido'=>'Sistema','areas'=>[3,4]], 
         ];
 
         $contadorEval = 1;
@@ -130,7 +132,6 @@ class AreasEvaluadoresSeeder extends Seeder
                 $areaObj = $areas->where('id_area', $id_area)->first();
                 $nombreArea = strtolower(str_replace(' ', '_', $areaObj->nombre));
 
-                // Normalizar nombre del área para email (sin acentos ni caracteres especiales)
                 $nombreAreaEmail = iconv('UTF-8', 'ASCII//TRANSLIT', $nombreArea);
                 $nombreAreaEmail = preg_replace('/[^A-Za-z0-9_]/', '', $nombreAreaEmail);
 
