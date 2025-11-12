@@ -28,33 +28,35 @@ class MedalleroRepository
 {
     $gestionActual = date('Y');
 
-    return DB::table('area_nivel')
+    $niveles = DB::table('area_nivel')
         ->join('nivel', 'area_nivel.id_nivel', '=', 'nivel.id_nivel')
         ->join('olimpiada', 'area_nivel.id_olimpiada', '=', 'olimpiada.id_olimpiada')
-        ->leftJoin('param_medallero', function ($join) {
-            $join->on('area_nivel.id_area_nivel', '=', 'param_medallero.id_area_nivel')
-                 ->orOn(function ($query) {
-                     // Une también por área y nivel si el id_area_nivel cambió
-                     $query->whereColumn('area_nivel.id_area', '=', DB::raw('(SELECT id_area FROM area_nivel WHERE id_area_nivel = param_medallero.id_area_nivel)'))
-                           ->whereColumn('area_nivel.id_nivel', '=', DB::raw('(SELECT id_nivel FROM area_nivel WHERE id_area_nivel = param_medallero.id_area_nivel)'));
-                 });
-        })
+        ->leftJoin('param_medallero', 'area_nivel.id_area_nivel', '=', 'param_medallero.id_area_nivel')
         ->select(
             'area_nivel.id_area_nivel',
             'nivel.id_nivel',
             'nivel.nombre as nombre_nivel',
-            DB::raw('COALESCE(param_medallero.oro, 1) as oro'),
-            DB::raw('COALESCE(param_medallero.plata, 1) as plata'),
-            DB::raw('COALESCE(param_medallero.bronce, 1) as bronce'),
-            DB::raw('COALESCE(param_medallero.menciones, 0) as menciones')
+            'olimpiada.gestion',
+            'param_medallero.oro',
+            'param_medallero.plata',
+            'param_medallero.bronce',
+            'param_medallero.menciones'
         )
         ->where('area_nivel.id_area', $idArea)
         ->where('olimpiada.gestion', $gestionActual)
         ->where('area_nivel.activo', true)
-        ->orderBy('nivel.nombre')
-        ->distinct()
+        ->orderBy('nivel.id_nivel')
         ->get();
+
+    // Quitar campos de medallas si no hay registro
+    return $niveles->map(function($nivel) {
+        if ($nivel->oro === null) {
+            unset($nivel->oro, $nivel->plata, $nivel->bronce, $nivel->menciones);
+        }
+        return $nivel;
+    });
 }
+
 
 
     public function insertarMedallero(array $niveles): array
