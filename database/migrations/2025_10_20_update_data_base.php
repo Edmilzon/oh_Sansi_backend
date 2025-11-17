@@ -107,7 +107,7 @@ return new class extends Migration
         Schema::create('parametro', function (Blueprint $table) {
             $table->id('id_parametro');
             $table->double('nota_min_clasif');
-            $table->integer('cantidad_max_apro');
+            $table->integer('cantidad_max_apro') -> nullable();
             $table->unsignedBigInteger('id_area_nivel');
             $table->timestamps();
 
