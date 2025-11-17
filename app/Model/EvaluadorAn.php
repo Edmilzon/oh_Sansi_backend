@@ -21,4 +21,9 @@ class EvaluadorAn extends Model
     {
         return $this->belongsTo(\App\Model\AreaNivel::class, 'id_area_nivel');
     }
+
+    public function usuario()
+    {
+        return $this->belongsTo(Usuario::class, 'id_usuario', 'id_usuario');
+    }
 }

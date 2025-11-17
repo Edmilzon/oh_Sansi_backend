@@ -154,6 +154,19 @@ return new class extends Migration
             $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiada')->onDelete('cascade');
         });
 
+        Schema::create('competencia', function (Blueprint $table) {
+            $table->id('id_competencia');
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
+            $table->string('estado');
+            $table->unsignedBigInteger('id_responsableArea')->nullable();            
+            $table->unsignedBigInteger('id_fase')->nullable();
+            $table->timestamps();
+
+            $table->foreign('id_responsableArea')->references('id_responsableArea')->on('responsable_area')->onDelete('set null');
+            $table->foreign('id_fase')->references('id_fase')->on('fase')->onDelete('set null');
+        });
+
         Schema::create('competidor', function (Blueprint $table) {
             $table->id('id_competidor');
             $table->string('departamento');
@@ -171,36 +184,23 @@ return new class extends Migration
             $table->foreign('id_persona')->references('id_persona')->on('persona')->onDelete('cascade');
             $table->foreign('id_grado_escolaridad')->references('id_grado_escolaridad')->on('grado_escolaridad')->onDelete('cascade');
         });
-
+        
         Schema::create('evaluacion', function (Blueprint $table) {
             $table->id('id_evaluacion');
-            $table->decimal('nota', 5, 2);
+            $table->decimal('nota');
             $table->text('observaciones')->nullable();
             $table->date('fecha_evaluacion');
-            $table->boolean('estado')->default(true);
-            $table->unsignedBigInteger('id_evaluadorAN')->nullable();
+            $table->string('estado')->default('Pendiente');
             $table->unsignedBigInteger('id_competidor');
-            $table->timestamps();
-
-            $table->foreign('id_evaluadorAN')->references('id_evaluadorAN')->on('evaluador_an')->onDelete('set null');
-            $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('cascade');
-        });
-        
-        Schema::create('competencia', function (Blueprint $table) {
-            $table->id('id_competencia');
-            $table->date('fecha_inicio');
-            $table->date('fecha_fin');
-            $table->string('estado')->default("Pendiente");
-            $table->unsignedBigInteger('id_responsableArea')->nullable();
-            $table->unsignedBigInteger('id_fase')->nullable();
+            $table->unsignedBigInteger('id_competencia')->nullable();
+            $table->unsignedBigInteger('id_evaluadorAN')->nullable();
             $table->unsignedBigInteger('id_parametro')->nullable();
-            $table->unsignedBigInteger('id_evaluacion')->nullable();
             $table->timestamps();
 
-            $table->foreign('id_responsableArea')->references('id_responsableArea')->on('responsable_area')->onDelete('set null');
-            $table->foreign('id_fase')->references('id_fase')->on('fase')->onDelete('set null');
+            $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('cascade');
+            $table->foreign('id_competencia')->references('id_competencia')->on('competencia')->onDelete('set null');
+            $table->foreign('id_evaluadorAN')->references('id_evaluadorAN')->on('evaluador_an')->onDelete('set null');
             $table->foreign('id_parametro')->references('id_parametro')->on('parametro')->onDelete('set null');
-            $table->foreign('id_evaluacion')->references('id_evaluacion')->on('evaluacion')->onDelete('set null');
         });
 
         Schema::create('grupo', function (Blueprint $table) {

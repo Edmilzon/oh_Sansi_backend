@@ -289,50 +289,35 @@ class Olimpiada2023Seeder extends Seeder
 
             $this->command->info('Competidor de Física creado.');
 
-            // 14. Crear Evaluaciones
-            $evaluaciones = [
-                Evaluacion::create([
-                    'nota' => 95.50, 
-                    'fecha_evaluacion' => '2023-10-15', 
-                    'estado' => true, 
-                    'id_evaluadorAN' => $evaluadorAn->id_evaluadorAN, 
-                    'id_competidor' => $competidores[0]->id_competidor
-                ]),
-                Evaluacion::create([
-                    'nota' => 88.00, 
-                    'fecha_evaluacion' => '2023-10-15', 
-                    'estado' => true, 
-                    'id_evaluadorAN' => $evaluadorAn->id_evaluadorAN, 
-                    'id_competidor' => $competidores[1]->id_competidor
-                ]),
-                Evaluacion::create([
-                    'nota' => 75.00, 
-                    'fecha_evaluacion' => '2023-10-15', 
-                    'estado' => false, 
-                    'id_evaluadorAN' => $evaluadorAn->id_evaluadorAN, 
-                    'id_competidor' => $competidores[2]->id_competidor
-                ]),
-                Evaluacion::create([
-                    'nota' => 45.00, 
-                    'fecha_evaluacion' => '2023-10-15', 
-                    'estado' => true, 
-                    'id_evaluadorAN' => $evaluadorAn->id_evaluadorAN, 
-                    'id_competidor' => $competidores[3]->id_competidor
-                ]),
-            ];
-            $this->command->info('Evaluaciones creadas.');
-
             // 15. Crear una Competencia (evento final)
             $competencia = Competencia::create([
                 'fecha_inicio' => '2023-11-01',
                 'fecha_fin' => '2023-11-02',
                 'estado' => 'Finalizado',
                 'id_fase' => $faseFinal->id_fase,
-                'id_parametro' => $parametro->id_parametro,
-                'id_evaluacion' => $evaluaciones[0]->id_evaluacion,
                 'id_responsableArea' => $responsableArea->id_responsableArea,
             ]);
             $this->command->info('Registro de Competencia creado.');
+
+            // 14. Crear Evaluaciones y asociarlas a la competencia
+            $evaluacionesData = [
+                ['nota' => 95.50, 'estado' => true, 'id_competidor' => $competidores[0]->id_competidor],
+                ['nota' => 88.00, 'estado' => true, 'id_competidor' => $competidores[1]->id_competidor],
+                ['nota' => 75.00, 'estado' => false, 'id_competidor' => $competidores[2]->id_competidor],
+                ['nota' => 45.00, 'estado' => true, 'id_competidor' => $competidores[3]->id_competidor],
+            ];
+
+            $evaluaciones = [];
+            foreach ($evaluacionesData as $data) {
+                $evaluaciones[] = Evaluacion::create([
+                    'nota' => $data['nota'],
+                    'fecha_evaluacion' => '2023-10-15',
+                    'estado' => $data['estado'],
+                    'id_competidor' => $data['id_competidor'],
+                    'id_competencia' => $competencia->id_competencia,
+                ]);
+            }
+            $this->command->info('Evaluaciones creadas y asociadas a la competencia.');
 
             // 16. Crear Grupos y asignar competidores clasificados
             $grupoFinal = Grupo::create([
@@ -381,8 +366,7 @@ class Olimpiada2023Seeder extends Seeder
             $evaluacionDescalificada = Evaluacion::create([
                 'nota' => 0, 
                 'fecha_evaluacion' => '2023-10-15', 
-                'estado' => false, 
-                'id_evaluadorAN' => $evaluadorAn->id_evaluadorAN, 
+                'estado' => false,
                 'id_competidor' => $competidorDescalificado->id_competidor
             ]);
             

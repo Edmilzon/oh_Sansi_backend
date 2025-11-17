@@ -17,8 +17,10 @@ class Evaluacion extends Model
         'observaciones',
         'fecha_evaluacion',
         'estado',
-        'id_evaluadorAN',
         'id_competidor',
+        'id_competencia',
+        'id_evaluadorAN',
+        'id_parametro',
     ];
 
     /**
@@ -26,14 +28,14 @@ class Evaluacion extends Model
      *
      * @var array
      */
-    protected $casts = ['estado' => 'boolean'];
+    protected $casts = [];
 
     /**
-     * Get the evaluadorAn that owns the evaluacion.
+     * Get the competencia associated with the evaluacion.
      */
-    public function evaluadorAn()
+    public function competencia()
     {
-        return $this->belongsTo(EvaluadorAn::class, 'id_evaluadorAN', 'id_evaluadorAN');
+        return $this->belongsTo(Competencia::class, 'id_competencia', 'id_competencia');
     }
 
     /**
@@ -45,10 +47,18 @@ class Evaluacion extends Model
     }
 
     /**
-     * Get the competencia associated with the evaluacion.
+     * Get the evaluadorAn that owns the evaluacion.
      */
-    public function competencia()
+    public function evaluadorAn()
     {
-        return $this->hasOne(Competencia::class, 'id_evaluacion', 'id_evaluacion');
+        return $this->belongsTo(EvaluadorAn::class, 'id_evaluadorAN', 'id_evaluadorAN');
+    }
+
+    /**
+     * Get the parametro associated with the evaluacion.
+     */
+    public function parametro()
+    {
+        return $this->belongsTo(Parametro::class, 'id_parametro', 'id_parametro');
     }
 }
