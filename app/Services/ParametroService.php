@@ -13,6 +13,8 @@ class ParametroService
     protected $areaNivelRepository;
     protected $olimpiadaService;
 
+    const MAXIMO_CLASIFICADOS = PHP_INT_MAX;
+
     public function __construct(
         ParametroRepository $parametroRepository,
         AreaNivelRepository $areaNivelRepository,
@@ -66,12 +68,17 @@ class ParametroService
                     $errors[] = "El área-nivel con ID {$areaNivelData['id_area_nivel']} no existe";
                     continue;
                 }
+                
+
+                $cantidadMaxApro = isset($areaNivelData['cantidad_max_apro']) 
+                    ? $areaNivelData['cantidad_max_apro'] 
+                    : null;
 
                 $parametro = $this->parametroRepository->updateOrCreateByAreaNivel(
                     $areaNivelData['id_area_nivel'],
                     [
                         'nota_min_clasif' => $areaNivelData['nota_min_clasif'],
-                        'cantidad_max_apro' => $areaNivelData['cantidad_max_apro']
+                        'cantidad_max_apro' => $cantidadMaxApro
                     ]
                 );
 
@@ -104,6 +111,10 @@ class ParametroService
             throw new \Exception("El área-nivel con ID {$data['id_area_nivel']} no existe");
         }
 
+        $cantidadMaxApro = isset($data['cantidad_max_apro']) 
+            ? $data['cantidad_max_apro'] 
+            : null;
+        
         $parametro = $this->parametroRepository->updateOrCreateByAreaNivel(
             $data['id_area_nivel'],
             [
@@ -138,6 +149,9 @@ public function getAllParametrosByGestiones(): array
         }
 
         $parametrosFormateados = $parametrosGestion->map(function($parametro) {
+
+            $cantMaxClasificados = $parametro->cant_max_clasificados ?? self::MAXIMO_CLASIFICADOS;
+
             return [
                 'id_area_nivel' => $parametro->id_area_nivel,
                 'nombre_area' => $parametro->nombre_area,
@@ -166,6 +180,9 @@ public function getAllParametrosByGestiones(): array
     ];
 }    private function formatParametro($parametro): array
     {
+
+        $cantidadMaxApro = $parametro->cantidad_max_apro ?? self::MAXIMO_CLASIFICADOS;
+
         return [
             'id_parametro' => $parametro->id_parametro,
             'nota_min_clasif' => $parametro->nota_min_clasif,
@@ -210,6 +227,9 @@ public function getAllParametrosByGestiones(): array
         $primero = $parametrosArea->first();
 
         $parametrosFormateados = $parametrosArea->map(function($parametro) {
+
+            $cantMaxClasificados = $parametro->cant_max_clasificados ?? self::MAXIMO_CLASIFICADOS;
+
             return [
                 'id_olimpiada' => $parametro->id_olimpiada,
                 'gestion' => $parametro->gestion,
