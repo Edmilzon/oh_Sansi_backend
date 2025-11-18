@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Fase;
+use App\Model\Fase;
 use App\Services\AreaNivelService;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\JsonResponse;
@@ -40,7 +40,7 @@ class AreaNivelController extends Controller
         try {
             Log::info('[CONTROLLER] Request recibido en store:', $request->all());
 
-            $existeFase = \App\Models\Fase::exists();
+            $existeFase = \App\Model\Fase::exists();
 
             if($existeFase){
                 return response()->json([
@@ -48,6 +48,7 @@ class AreaNivelController extends Controller
                     'message' => 'Se está en una fase de evaluación, por lo tanto no se puede registrar más datos.'
                 ], 400);
             }
+
             $validatedData = $request->validate([
                 '*.id_area' => 'required|integer|exists:area,id_area',
                 '*.id_nivel' => 'required|integer|exists:nivel,id_nivel',
