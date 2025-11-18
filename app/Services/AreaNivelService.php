@@ -646,7 +646,4 @@ class AreaNivelService
 
         return $resultado->values()->all();
     }
-
-
-
 }

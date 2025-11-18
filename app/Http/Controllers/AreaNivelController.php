@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Fase;
 use App\Services\AreaNivelService;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\JsonResponse;
@@ -39,7 +40,14 @@ class AreaNivelController extends Controller
         try {
             Log::info('[CONTROLLER] Request recibido en store:', $request->all());
 
-            // Validación que incluye id_grado_escolaridad
+            $existeFase = \App\Models\Fase::exists();
+
+            if($existeFase){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Se está en una fase de evaluación, por lo tanto no se puede registrar más datos.'
+                ], 400);
+            }
             $validatedData = $request->validate([
                 '*.id_area' => 'required|integer|exists:area,id_area',
                 '*.id_nivel' => 'required|integer|exists:nivel,id_nivel',
@@ -228,6 +236,16 @@ class AreaNivelController extends Controller
     public function updateByArea($id_area, Request $request): JsonResponse
     {
         try {
+
+            $existeFase = \App\Model\Fase::exists();
+        
+            if ($existeFase) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Se está en una fase de evaluación, por lo tanto no se pueden modificar los datos'
+            ], 422);
+            }
+            
             $validatedData = $request->validate([
                 '*.id_nivel' => 'required|integer|exists:nivel,id_nivel',
                 '*.id_grado_escolaridad' => 'required|integer|exists:grado_escolaridad,id_grado_escolaridad',
@@ -253,6 +271,16 @@ class AreaNivelController extends Controller
     public function update(Request $request, $id): JsonResponse
     {
         try {
+
+            $existeFase = \App\Model\Fase::exists();
+        
+            if ($existeFase) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Se está en una fase de evaluación, por lo tanto no se pueden modificar los datos'
+            ], 422);
+            }
+
             $validatedData = $request->validate([
                 'id_area' => 'sometimes|required|integer|exists:area,id_area',
                 'id_nivel' => 'sometimes|required|integer|exists:nivel,id_nivel',
@@ -278,6 +306,16 @@ class AreaNivelController extends Controller
     public function destroy($id): JsonResponse
     {
         try {
+
+            $existeFase = \App\Model\Fase::exists();
+        
+            if ($existeFase) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Se está en una fase de evaluación, por lo tanto no se pueden modificar los datos'
+            ], 422);
+            }
+
             $result = $this->areaNivelService->deleteAreaNivel($id);
             
             return response()->json([
