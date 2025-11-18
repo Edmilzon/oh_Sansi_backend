@@ -183,30 +183,28 @@ class Olimpiadas2024Seeder extends Seeder
 
             $this->command->info('Competidores de Química creados.');
 
-            // 11. Crear evaluaciones
-            $evaluaciones = [];
-            foreach ($competidoresQuimica as $index => $comp) {
-                $evaluaciones[] = Evaluacion::create([
-                    'nota' => [90, 85][$index] ?? 0,
-                    'fecha_evaluacion' => '2024-10-15',
-                    'estado' => false,
-                    'id_evaluadorAN' => $evaluadorQuimica->id_evaluadorAN,
-                    'id_competidor' => $comp->id_competidor,
-                ]);
-            }
-
-            $this->command->info('Evaluaciones de Química creadas.');
-
             // 12. Crear competencia final
             $competencia = Competencia::create([
                 'fecha_inicio' => '2024-11-01',
                 'fecha_fin' => '2024-11-02',
                 'estado' => 'En Curso',
                 'id_fase' => $faseFinalQuimica->id_fase,
-                'id_parametro' => $paramQuimica->id_parametro,
-                'id_evaluacion' => $evaluaciones[0]->id_evaluacion,
                 'id_responsableArea' => $responsableQuimica->id_responsableArea,
             ]);
+
+            // 11. Crear evaluaciones y asociarlas a la competencia
+            $evaluaciones = [];
+            foreach ($competidoresQuimica as $index => $comp) {
+                $evaluaciones[] = Evaluacion::create([
+                    'nota' => [90, 85][$index] ?? 0,
+                    'fecha_evaluacion' => '2024-10-15',
+                    'estado' => false,
+                    'id_competidor' => $comp->id_competidor,
+                    'id_competencia' => $competencia->id_competencia,
+                ]);
+            }
+
+            $this->command->info('Evaluaciones de Química creadas y asociadas a la competencia.');
 
             // 13. Crear grupo final y asignar competidores
             $grupoFinal = Grupo::create([

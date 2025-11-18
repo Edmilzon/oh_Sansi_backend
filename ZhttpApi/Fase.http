@@ -1,0 +1,37 @@
+@hostname = http://localhost:8000
+@api_prefix = /api
+@id_area_nivel = 1
+@id_fase = 1
+
+### OBTENER TODAS LAS FASES DE UN AREA-NIVEL
+GET {{hostname}}{{api_prefix}}/area-niveles/{{id_area_nivel}}/fases
+Accept: application/json
+
+### CREAR UNA NUEVA FASE
+POST {{hostname}}{{api_prefix}}/area-niveles/{{id_area_nivel}}/fases
+Content-Type: application/json
+Accept: application/json
+
+{
+    "nombre": "Fase Clasificatoria Departamental",
+    "orden": 1,
+    "fecha_inicio": "2025-12-01",
+    "fecha_fin": "2025-12-05"
+}
+
+### OBTENER UNA FASE ESPECÍFICA
+GET {{hostname}}{{api_prefix}}/fases/{{id_fase}}
+Accept: application/json
+
+### ACTUALIZAR UNA FASE
+PUT {{hostname}}{{api_prefix}}/fases/{{id_fase}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "nombre": "Fase Final Nacional"
+}
+
+### ELIMINAR UNA FASE
+DELETE {{hostname}}{{api_prefix}}/fases/{{id_fase}}
+Accept: application/json

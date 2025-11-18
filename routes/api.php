@@ -18,6 +18,7 @@ use App\Http\Controllers\ParametroController;
 use App\Http\Controllers\AreaNivelController;
 use App\Http\Controllers\ListaResponsableAreaController;
 use App\Http\Controllers\GradoEscolaridadController;
+use App\Http\Controllers\FaseController;
 use App\Http\Controllers\MedalleroController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -162,7 +163,12 @@ Route::get('/listaCompleta/{idResponsable}/{idArea}/{idNivel}/{idGrado}/{genero?
 Route::get('/competidores/area/{idArea}/nivel/{idNivel}', [ListaResponsableAreaController::class, 'getCompetidoresPorAreaYNivel']);
 
 //Rutas para la calificación
+Route::apiResource('area-niveles.fases', FaseController::class)->shallow();
 Route::post('/competencias/{id_competencia}/evaluacion', [EvaluacionController::class, 'store']);
+Route::get('/competencias/{id_competencia}/calificados', [EvaluacionController::class, 'getCalificados']);
+Route::get('/competidores/{id_competidor}/evaluacion', [EvaluacionController::class, 'getEvaluacionPorCompetidor']);
+Route::put('/evaluaciones/{id_evaluacion}', [EvaluacionController::class, 'update']);
+Route::post('/evaluaciones/{id_evaluacion}/finalizar', [EvaluacionController::class, 'finalizarCalificacion']);
 
 //Rutas para parametrizacion 
 Route::get('/responsableGestion/{idResponsable}', [MedalleroController::class, 'getAreaPorResponsable']);
