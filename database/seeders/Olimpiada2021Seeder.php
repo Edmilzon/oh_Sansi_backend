@@ -74,7 +74,7 @@ class Olimpiada2021Seeder extends Seeder
             $this->command->info("Olimpiada '{$olimpiada->nombre}' creada.");
 
             // 3. Obtener Areas y Niveles
-            $areas = Area::whereIn('nombre', ['Matemáticas', 'Física', 'Informática', 'Química', 'Biología'])->get();
+            $areas = Area::whereIn('nombre', ['Matemáticas', 'Física', 'Informática', 'Química', 'Biología', 'Arte'])->get();
             if ($areas->isEmpty()) {
                 $this->command->error('No se encontraron áreas. Crea algunas áreas primero.');
                 return;
@@ -276,12 +276,14 @@ class Olimpiada2021Seeder extends Seeder
             $areaQuimica = $areas->firstWhere('nombre', 'Química');
             $areaBiologia = $areas->firstWhere('nombre', 'Biología');
             $areaInformatica = $areas->firstWhere('nombre', 'Informática');
+            $areaArte = $areas->firstWhere('nombre', 'Arte');
 
             $areaNivelesMatematicas = [];
             $areaNivelesFisica = [];
             $areaNivelesQuimica = [];
             $areaNivelesBiologia = [];
             $areaNivelesInformatica = [];
+            $areaNivelesArte = [];
 
             // Grados disponibles para asignar aleatoriamente
             $gradosBasica = [$grado1ro, $grado2do, $grado3ro, $grado4to, $grado5to, $grado6to];
@@ -304,6 +306,18 @@ class Olimpiada2021Seeder extends Seeder
                 $gradoAleatorio = $gradosSecundaria[array_rand($gradosSecundaria)];
                 $areaNivelesFisica[$nivel->id_nivel] = AreaNivel::create([
                     'id_area' => $areaFisica->id_area,
+                    'id_nivel' => $nivel->id_nivel,
+                    'id_grado_escolaridad' => $gradoAleatorio->id_grado_escolaridad,
+                    'id_olimpiada' => $olimpiada->id_olimpiada,
+                    'activo' => true,
+                ]);
+            }
+
+            // Crear AreaNivel para Arte (3 niveles con grados aleatorios)
+            foreach ($niveles->take(3) as $nivel) {
+                $gradoAleatorio = $gradosSecundaria[array_rand($gradosSecundaria)];
+                $areaNivelesArte[$nivel->id_nivel] = AreaNivel::create([
+                    'id_area' => $areaArte->id_area,
                     'id_nivel' => $nivel->id_nivel,
                     'id_grado_escolaridad' => $gradoAleatorio->id_grado_escolaridad,
                     'id_olimpiada' => $olimpiada->id_olimpiada,
