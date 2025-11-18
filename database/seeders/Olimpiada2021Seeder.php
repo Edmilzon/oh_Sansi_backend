@@ -55,16 +55,16 @@ class Olimpiada2021Seeder extends Seeder
 
             $grado1ro = GradoEscolaridad::where('nombre', '1ro Básico')->first();
             $grado2do = GradoEscolaridad::where('nombre', '2do Básico')->first();
-            $grado2do = GradoEscolaridad::where('nombre', '3ro Básico')->first();
-            $grado2do = GradoEscolaridad::where('nombre', '4to Básico')->first();
-            $grado2do = GradoEscolaridad::where('nombre', '5to Básico')->first();
-            $grado2do = GradoEscolaridad::where('nombre', '6to Básico')->first();
-            $grado2do = GradoEscolaridad::where('nombre', '1ro de Secundaria')->first();
-            $grado2do = GradoEscolaridad::where('nombre', '2do de Secundaria')->first();
-            $grado2do = GradoEscolaridad::where('nombre', '3ro de Secundaria')->first();
-            $grado2do = GradoEscolaridad::where('nombre', '4to de Secundaria')->first();
-            $grado2do = GradoEscolaridad::where('nombre', '5to de Secundaria')->first();
-            $grado2do = GradoEscolaridad::where('nombre', '6to de Secundaria')->first();
+            $grado3ro = GradoEscolaridad::where('nombre', '3ro Básico')->first();
+            $grado4to = GradoEscolaridad::where('nombre', '4to Básico')->first();
+            $grado5to = GradoEscolaridad::where('nombre', '5to Básico')->first();
+            $grado6to = GradoEscolaridad::where('nombre', '6to Básico')->first();
+            $grado7mo = GradoEscolaridad::where('nombre', '1ro de Secundaria')->first();
+            $grado8vo = GradoEscolaridad::where('nombre', '2do de Secundaria')->first();
+            $grado9no = GradoEscolaridad::where('nombre', '3ro de Secundaria')->first();
+            $grado10mo = GradoEscolaridad::where('nombre', '4to de Secundaria')->first();
+            $grado11vo = GradoEscolaridad::where('nombre', '5to de Secundaria')->first();
+            $grado12vo = GradoEscolaridad::where('nombre', '6to de Secundaria')->first();
 
             // 2. Crear la Olimpiada
             $olimpiada = Olimpiada::create([
@@ -161,36 +161,25 @@ class Olimpiada2021Seeder extends Seeder
                 ['nombre' => 'Fabiola', 'apellido' => 'Luna', 'ci' => '3456711', 'email' => 'fabila.luna@test.com', 'genero' => 'F', 'telefono' => '77919100'],
                 ['nombre' => 'Raiza ', 'apellido' => 'Rodriguez', 'ci' => '4786823', 'email' => 'raiza.rodriguez@test.com', 'genero' => 'F', 'telefono' => '71818123'],
 
-                ['nombre' => 'Ana', 'apellido' => 'Vaca', 'ci' => '1000001', 'email' => 'ana.vaca@test.com', 'genero' => 'F', 'telefono' => '77711101'],
-                ['nombre' => 'Juan', 'apellido' => 'Angel', 'ci' => '1000002', 'email' => 'juan.angel@test.com', 'genero' => 'M', 'telefono' => '77711102'],
-                ['nombre' => 'Sofia', 'apellido' => 'Rios', 'ci' => '1000003', 'email' => 'sofia.rios@test.com', 'genero' => 'F', 'telefono' => '77711103'],
-                ['nombre' => 'Mateo', 'apellido' => 'Choque', 'ci' => '1000004', 'email' => 'mateo.choque@test.com', 'genero' => 'M', 'telefono' => '77711104'],
-                ['nombre' => 'Lucas', 'apellido' => 'Vaca', 'ci' => '1000005', 'email' => 'lucas.vaca@test.com', 'genero' => 'M', 'telefono' => '77711105'],
-                ['nombre' => 'Fiorilo', 'apellido' => 'Angel', 'ci' => '1000006', 'email' => 'fiorilo.angel@test.com', 'genero' => 'M', 'telefono' => '77711106'],
-                ['nombre' => 'Pedro', 'apellido' => 'Lopez', 'ci' => '1000007', 'email' => 'pedro.lopez@test.com', 'genero' => 'M', 'telefono' => '77711107'],
-                ['nombre' => 'Maria', 'apellido' => 'Gutierrez', 'ci' => '1000008', 'email' => 'maria.gutierrez@test.com', 'genero' => 'F', 'telefono' => '77711108'],
-                ['nombre' => 'Carlos', 'apellido' => 'Mendoza', 'ci' => '1000009', 'email' => 'carlos.mendoza@test.com', 'genero' => 'M', 'telefono' => '77711109'],
                 ['nombre' => 'Elena', 'apellido' => 'Paredes', 'ci' => '1000010', 'email' => 'elena.paredes@test.com', 'genero' => 'F', 'telefono' => '77711110'],
-                ['nombre' => 'Roberto', 'apellido' => 'Salazar', 'ci' => '1000011', 'email' => 'roberto.salazar@test.com', 'genero' => 'M', 'telefono' => '77711111'],
-                ['nombre' => 'Laura', 'apellido' => 'Torrez', 'ci' => '1000012', 'email' => 'laura.torrez@test.com', 'genero' => 'F', 'telefono' => '77711112'],
-                ['nombre' => 'Diego', 'apellido' => 'Castro', 'ci' => '1000013', 'email' => 'diego.castro@test.com', 'genero' => 'M', 'telefono' => '77711113'],
-                ['nombre' => 'Gabriela', 'apellido' => 'Rojas', 'ci' => '1000014', 'email' => 'gabriela.rojas@test.com', 'genero' => 'F', 'telefono' => '77711114'],
-                ['nombre' => 'Fernando', 'apellido' => 'Vargas', 'ci' => '1000015', 'email' => 'fernando.vargas@test.com', 'genero' => 'M', 'telefono' => '77711115'],
-                ['nombre' => 'Isabel', 'apellido' => 'Morales', 'ci' => '1000016', 'email' => 'isabel.morales@test.com', 'genero' => 'F', 'telefono' => '77711116'],
-                ['nombre' => 'Ricardo', 'apellido' => 'Suarez', 'ci' => '1000017', 'email' => 'ricardo.suarez@test.com', 'genero' => 'M', 'telefono' => '77711117'],
-                ['nombre' => 'Patricia', 'apellido' => 'Cruz', 'ci' => '1000018', 'email' => 'patricia.cruz@test.com', 'genero' => 'F', 'telefono' => '77711118'],
-                ['nombre' => 'Javier', 'apellido' => 'Ortega', 'ci' => '1000019', 'email' => 'javier.ortega@test.com', 'genero' => 'M', 'telefono' => '77711119'],
-                ['nombre' => 'Carmen', 'apellido' => 'Navarro', 'ci' => '1000020', 'email' => 'carmen.navarro@test.com', 'genero' => 'F', 'telefono' => '77711120'],
-                ['nombre' => 'Alejandro', 'apellido' => 'Romero', 'ci' => '1000021', 'email' => 'alejandro.romero@test.com', 'genero' => 'M', 'telefono' => '77711121'],
-                ['nombre' => 'Raquel', 'apellido' => 'Aguilar', 'ci' => '1000022', 'email' => 'raquel.aguilar@test.com', 'genero' => 'F', 'telefono' => '77711122'],
-                ['nombre' => 'Mauricio', 'apellido' => 'Santos', 'ci' => '1000023', 'email' => 'mauricio.santos@test.com', 'genero' => 'M', 'telefono' => '77711123'],
-                ['nombre' => 'Daniela', 'apellido' => 'Cordova', 'ci' => '1000024', 'email' => 'daniela.cordova@test.com', 'genero' => 'F', 'telefono' => '77711124'],
-                ['nombre' => 'Oscar', 'apellido' => 'Ponce', 'ci' => '1000025', 'email' => 'oscar.ponce@test.com', 'genero' => 'M', 'telefono' => '77711125'],
-                ['nombre' => 'Veronica', 'apellido' => 'Velasco', 'ci' => '1000026', 'email' => 'veronica.velasco@test.com', 'genero' => 'F', 'telefono' => '77711126'],
-                ['nombre' => 'Hector', 'apellido' => 'Zambrana', 'ci' => '1000027', 'email' => 'hector.zambrana@test.com', 'genero' => 'M', 'telefono' => '77711127'],
-                ['nombre' => 'Natalia', 'apellido' => 'Quiroga', 'ci' => '1000028', 'email' => 'natalia.quiroga@test.com', 'genero' => 'F', 'telefono' => '77711128'],
-                ['nombre' => 'Pablo', 'apellido' => 'Salinas', 'ci' => '1000029', 'email' => 'pablo.salinas@test.com', 'genero' => 'M', 'telefono' => '77711129'],
-                ['nombre' => 'Adriana', 'apellido' => 'Perez', 'ci' => '1000030', 'email' => 'adriana.perez@test.com', 'genero' => 'F', 'telefono' => '77711130'],
+                ['nombre' => 'Diego', 'apellido' => 'Castro', 'ci' => '1000013', 'email' => 'diego.castro@test.com', 'genero' => 'M', 'telefono' => '77711323'],
+                ['nombre' => 'Gabriela', 'apellido' => 'Rojas', 'ci' => '1000014', 'email' => 'gabriela.rojas@test.com', 'genero' => 'F', 'telefono' => '77711324'],
+                ['nombre' => 'Fernando', 'apellido' => 'Vargas', 'ci' => '1000015', 'email' => 'fernando.vargas@test.com', 'genero' => 'M', 'telefono' => '77711325'],
+                ['nombre' => 'Isabel', 'apellido' => 'Morales', 'ci' => '1000016', 'email' => 'isabel.morales@test.com', 'genero' => 'F', 'telefono' => '77711326'],
+                ['nombre' => 'Ricardo', 'apellido' => 'Suarez', 'ci' => '1000017', 'email' => 'ricardo.suarez@test.com', 'genero' => 'M', 'telefono' => '77711327'],
+                ['nombre' => 'Patricia', 'apellido' => 'Cruz', 'ci' => '1000018', 'email' => 'patricia.cruz@test.com', 'genero' => 'F', 'telefono' => '77711328'],
+                ['nombre' => 'Javier', 'apellido' => 'Ortega', 'ci' => '1000019', 'email' => 'javier.ortega@test.com', 'genero' => 'M', 'telefono' => '77711329'],
+                ['nombre' => 'Carmen', 'apellido' => 'Navarro', 'ci' => '1000020', 'email' => 'carmen.navarro@test.com', 'genero' => 'F', 'telefono' => '77713220'],
+                ['nombre' => 'Alejandro', 'apellido' => 'Romero', 'ci' => '1000021', 'email' => 'alejandro.romero@test.com', 'genero' => 'M', 'telefono' => '77711321'],
+                ['nombre' => 'Raquel', 'apellido' => 'Aguilar', 'ci' => '1000022', 'email' => 'raquel.aguilar@test.com', 'genero' => 'F', 'telefono' => '77711322'],
+                ['nombre' => 'Mauricio', 'apellido' => 'Santos', 'ci' => '1000023', 'email' => 'mauricio.santos@test.com', 'genero' => 'M', 'telefono' => '7771133'],
+                ['nombre' => 'Daniela', 'apellido' => 'Cordova', 'ci' => '1000024', 'email' => 'daniela.cordova@test.com', 'genero' => 'F', 'telefono' => '7771134'],
+                ['nombre' => 'Oscar', 'apellido' => 'Ponce', 'ci' => '1000025', 'email' => 'oscar.ponce@test.com', 'genero' => 'M', 'telefono' => '7771135'],
+                ['nombre' => 'Veronica', 'apellido' => 'Velasco', 'ci' => '1000026', 'email' => 'veronica.velasco@test.com', 'genero' => 'F', 'telefono' => '7771136'],
+                ['nombre' => 'Hector', 'apellido' => 'Zambrana', 'ci' => '1000027', 'email' => 'hector.zambrana@test.com', 'genero' => 'M', 'telefono' => '7771137'],
+                ['nombre' => 'Natalia', 'apellido' => 'Quiroga', 'ci' => '1000028', 'email' => 'natalia.quiroga@test.com', 'genero' => 'F', 'telefono' => '7771138'],
+                ['nombre' => 'Pablo', 'apellido' => 'Salinas', 'ci' => '1000029', 'email' => 'pablo.salinas@test.com', 'genero' => 'M', 'telefono' => '7771139'],
+                ['nombre' => 'Adriana', 'apellido' => 'Perez', 'ci' => '1000030', 'email' => 'adriana.perez@test.com', 'genero' => 'F', 'telefono' => '7771130'],
 
     // Segundo bloque - Física (25 estudiantes)
     ['nombre' => 'Luis', 'apellido' => 'Fernandez', 'ci' => '1000031', 'email' => 'luis.fernandez@test.com', 'genero' => 'M', 'telefono' => '77711131'],
@@ -281,195 +270,190 @@ class Olimpiada2021Seeder extends Seeder
             $institucion1 = Institucion::create(['nombre' => 'Colegio Don Bosco']);
             $institucion2 = Institucion::create(['nombre' => 'Colegio La Salle']);
 
-            // 10. Crear AreaNivel para las Areas
+            // 10. Crear AreaNivel para las Areas con más relaciones
             $areaMatematicas = $areas->firstWhere('nombre', 'Matemáticas');
-            $areaNivelesMatematicas = [];
-
-            foreach ($niveles->take(3) as $nivel) {
-                // Para cada nivel, crear area_nivel para 1ro y 2do de secundaria
-                $areaNivelesMatematicas[$nivel->id_nivel.'_1ro'] = AreaNivel::create([
-                    'id_area' => $areaMatematicas->id_area,
-                    'id_nivel' => $nivel->id_nivel,
-                    'id_grado_escolaridad' => $grado1ro->id_grado_escolaridad,
-                    'id_olimpiada' => $olimpiada->id_olimpiada,
-                    'activo' => true,
-                ]);
-                
-                $areaNivelesMatematicas[$nivel->id_nivel.'_2do'] = AreaNivel::create([
-                    'id_area' => $areaMatematicas->id_area,
-                    'id_nivel' => $nivel->id_nivel,
-                    'id_grado_escolaridad' => $grado2do->id_grado_escolaridad,
-                    'id_olimpiada' => $olimpiada->id_olimpiada,
-                    'activo' => true,
-                ]);
-            }
-
             $areaFisica = $areas->firstWhere('nombre', 'Física');
+            $areaQuimica = $areas->firstWhere('nombre', 'Química');
+            $areaBiologia = $areas->firstWhere('nombre', 'Biología');
+            $areaInformatica = $areas->firstWhere('nombre', 'Informática');
+
+            $areaNivelesMatematicas = [];
             $areaNivelesFisica = [];
-            foreach ($niveles->take(2) as $nivel) {
-                $areaNivelesFisica[$nivel->id_nivel.'_1ro'] = AreaNivel::create([
-                    'id_area' => $areaFisica->id_area,
+            $areaNivelesQuimica = [];
+            $areaNivelesBiologia = [];
+            $areaNivelesInformatica = [];
+
+            // Grados disponibles para asignar aleatoriamente
+            $gradosBasica = [$grado1ro, $grado2do, $grado3ro, $grado4to, $grado5to, $grado6to];
+            $gradosSecundaria = [$grado7mo, $grado8vo, $grado9no, $grado10mo, $grado11vo, $grado12vo];
+
+            // Crear AreaNivel para Matemáticas (3 niveles con grados aleatorios)
+            foreach ($niveles->take(3) as $nivel) {
+                $gradoAleatorio = $gradosSecundaria[array_rand($gradosSecundaria)];
+                $areaNivelesMatematicas[$nivel->id_nivel] = AreaNivel::create([
+                    'id_area' => $areaMatematicas->id_area,
                     'id_nivel' => $nivel->id_nivel,
-                    'id_grado_escolaridad' => $grado1ro->id_grado_escolaridad,
+                    'id_grado_escolaridad' => $gradoAleatorio->id_grado_escolaridad,
                     'id_olimpiada' => $olimpiada->id_olimpiada,
                     'activo' => true,
                 ]);
             }
 
-            $areaQuimica = $areas->firstWhere('nombre', 'Química');
-            $areaNivelesFisica = [];
-            foreach ($niveles->take(2) as $nivel) {
-                $areaNivelesFisica[$nivel->id_nivel.'_1ro'] = AreaNivel::create([
+            // Crear AreaNivel para Física (3 niveles con grados aleatorios)
+            foreach ($niveles->take(3) as $nivel) {
+                $gradoAleatorio = $gradosSecundaria[array_rand($gradosSecundaria)];
+                $areaNivelesFisica[$nivel->id_nivel] = AreaNivel::create([
                     'id_area' => $areaFisica->id_area,
                     'id_nivel' => $nivel->id_nivel,
-                    'id_grado_escolaridad' => $grado1ro->id_grado_escolaridad,
+                    'id_grado_escolaridad' => $gradoAleatorio->id_grado_escolaridad,
                     'id_olimpiada' => $olimpiada->id_olimpiada,
                     'activo' => true,
                 ]);
             }
-            // 10.1 Asignar el evaluador a Matemáticas ahora que AreaNivel existe
+
+            // Crear AreaNivel para Química (3 niveles con grados aleatorios)
+            foreach ($niveles->take(3) as $nivel) {
+                $gradoAleatorio = $gradosSecundaria[array_rand($gradosSecundaria)];
+                $areaNivelesQuimica[$nivel->id_nivel] = AreaNivel::create([
+                    'id_area' => $areaQuimica->id_area,
+                    'id_nivel' => $nivel->id_nivel,
+                    'id_grado_escolaridad' => $gradoAleatorio->id_grado_escolaridad,
+                    'id_olimpiada' => $olimpiada->id_olimpiada,
+                    'activo' => true,
+                ]);
+            }
+
+            // Crear AreaNivel para Biología (3 niveles con grados aleatorios)
+            foreach ($niveles->take(3) as $nivel) {
+                $gradoAleatorio = $gradosSecundaria[array_rand($gradosSecundaria)];
+                $areaNivelesBiologia[$nivel->id_nivel] = AreaNivel::create([
+                    'id_area' => $areaBiologia->id_area,
+                    'id_nivel' => $nivel->id_nivel,
+                    'id_grado_escolaridad' => $gradoAleatorio->id_grado_escolaridad,
+                    'id_olimpiada' => $olimpiada->id_olimpiada,
+                    'activo' => true,
+                ]);
+            }
+
+            // Crear AreaNivel para Informática (3 niveles con grados aleatorios)
+            foreach ($niveles->take(3) as $nivel) {
+                $gradoAleatorio = $gradosSecundaria[array_rand($gradosSecundaria)];
+                $areaNivelesInformatica[$nivel->id_nivel] = AreaNivel::create([
+                    'id_area' => $areaInformatica->id_area,
+                    'id_nivel' => $nivel->id_nivel,
+                    'id_grado_escolaridad' => $gradoAleatorio->id_grado_escolaridad,
+                    'id_olimpiada' => $olimpiada->id_olimpiada,
+                    'activo' => true,
+                ]);
+            }
+
+            $this->command->info('AreaNivel creados para todas las áreas con 3 niveles cada una.');
+
+            // 10.1 Asignar el evaluador a Matemáticas
+            $primerAreaNivelMat = reset($areaNivelesMatematicas);
             $evaluadorAn = EvaluadorAn::create([
                 'id_usuario' => $evaluadorUser->id_usuario,
-                'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_1ro']->id_area_nivel,
+                'id_area_nivel' => $primerAreaNivelMat->id_area_nivel,
             ]);
 
             $this->command->info('Usuarios asignados como responsables de área y evaluadores.');
 
-            // 11. Crear Fases y Parámetros para Matemáticas (primer nivel, 1ro de secundaria)
+            // 11. Crear Fases y Parámetros para Matemáticas (primer nivel)
             $faseClasificatoria = Fase::create([
                 'nombre' => 'Clasificatoria',
                 'orden' => 1,
-                'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_1ro']->id_area_nivel
+                'id_area_nivel' => $primerAreaNivelMat->id_area_nivel
             ]);
             
             $faseFinal = Fase::create([
                 'nombre' => 'Final',
                 'orden' => 2,
-                'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_1ro']->id_area_nivel
+                'id_area_nivel' => $primerAreaNivelMat->id_area_nivel
             ]);
 
             $parametro = Parametro::create([
                 'nota_min_clasif' => 51,
                 'cantidad_max_apro' => 10,
-                'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_1ro']->id_area_nivel
+                'id_area_nivel' => $primerAreaNivelMat->id_area_nivel
             ]);
 
             $this->command->info('Fases y parámetros creados.');
 
-            // 12. Crear Competidores para Matemáticas (6 estudiantes)
-            $competidoresDataMat = [
-                [
-                    'departamento' => 'La Paz', 
-                    'contacto_tutor' => '77722222', 
-                    'id_institucion' => $institucion1->id_institucion, 
-                    'id_persona' => $personasCompetidores[0]->id_persona,
-                    'id_grado_escolaridad' => $grado1ro->id_grado_escolaridad,
-                    'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_1ro']->id_area_nivel
-                ],
-                [
-                    'departamento' => 'La Paz', 
-                    'contacto_tutor' => '77722223', 
-                    'id_institucion' => $institucion1->id_institucion, 
-                    'id_persona' => $personasCompetidores[1]->id_persona,
-                    'id_grado_escolaridad' => $grado1ro->id_grado_escolaridad,
-                    'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_1ro']->id_area_nivel
-                ],
-                [
-                    'departamento' => 'Cochabamba', 
-                    'contacto_tutor' => '77722224', 
-                    'id_institucion' => $institucion2->id_institucion, 
-                    'id_persona' => $personasCompetidores[2]->id_persona,
-                    'id_grado_escolaridad' => $grado1ro->id_grado_escolaridad,
-                    'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_1ro']->id_area_nivel
-                ],
-                [
-                    'departamento' => 'Cochabamba', 
-                    'contacto_tutor' => '77722225', 
-                    'id_institucion' => $institucion2->id_institucion, 
-                    'id_persona' => $personasCompetidores[3]->id_persona,
-                    'id_grado_escolaridad' => $grado1ro->id_grado_escolaridad,
-                    'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_1ro']->id_area_nivel
-                ],
-                [
-                    'departamento' => 'La Paz', 
-                    'contacto_tutor' => '77722226', 
-                    'id_institucion' => $institucion1->id_institucion, 
-                    'id_persona' => $personasCompetidores[4]->id_persona,
-                    'id_grado_escolaridad' => $grado2do->id_grado_escolaridad,
-                    'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_2do']->id_area_nivel
-                ],
-                [
-                    'departamento' => 'La Paz', 
-                    'contacto_tutor' => '77722227', 
-                    'id_institucion' => $institucion1->id_institucion, 
-                    'id_persona' => $personasCompetidores[5]->id_persona,
-                    'id_grado_escolaridad' => $grado2do->id_grado_escolaridad,
-                    'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_2do']->id_area_nivel
-                ],
-            ];
-
+            // 12. Crear Competidores para diferentes áreas
             $competidores = [];
-            foreach ($competidoresDataMat as $data) {
-                $competidores[] = Competidor::create($data);
+
+            // Competidores para Matemáticas
+            foreach (array_slice($personasCompetidores, 0, 6) as $index => $persona) {
+                $areaNivel = $areaNivelesMatematicas[array_rand($areaNivelesMatematicas)];
+                $competidores[] = Competidor::create([
+                    'departamento' => $index % 2 == 0 ? 'La Paz' : 'Cochabamba',
+                    'contacto_tutor' => '7772222' . $index,
+                    'id_institucion' => $index % 2 == 0 ? $institucion1->id_institucion : $institucion2->id_institucion,
+                    'id_persona' => $persona->id_persona,
+                    'id_grado_escolaridad' => $areaNivel->id_grado_escolaridad,
+                    'id_area_nivel' => $areaNivel->id_area_nivel
+                ]);
             }
 
-            $this->command->info('Competidores de Matemáticas creados.');
+            // Competidores para Física
+            foreach (array_slice($personasCompetidores, 6, 4) as $index => $persona) {
+                $areaNivel = $areaNivelesFisica[array_rand($areaNivelesFisica)];
+                $competidores[] = Competidor::create([
+                    'departamento' => 'La Paz',
+                    'contacto_tutor' => '7773333' . $index,
+                    'id_institucion' => $institucion1->id_institucion,
+                    'id_persona' => $persona->id_persona,
+                    'id_grado_escolaridad' => $areaNivel->id_grado_escolaridad,
+                    'id_area_nivel' => $areaNivel->id_area_nivel
+                ]);
+            }
 
-            // 13. Crear 1 competidor para Física (primer nivel, 1ro de secundaria)
-            $competidorFisica = Competidor::create([
-                'departamento' => 'La Paz',
-                'contacto_tutor' => '77722228',
-                'id_institucion' => $institucion1->id_institucion,
-                'id_area_nivel' => $areaNivelesFisica[$niveles->first()->id_nivel.'_1ro']->id_area_nivel,
-                'id_persona' => $personasCompetidores[6]->id_persona,
-                'id_grado_escolaridad' => $grado1ro->id_grado_escolaridad
-            ]);
+            $this->command->info('Competidores creados para diferentes áreas.');
 
-            $this->command->info('Competidor de Física creado.');
-
-            // 15. Crear una Competencia (evento final)
+            // 13. Crear una Competencia (evento final) - CORREGIDO: eliminar id_parametro
             $competencia = Competencia::create([
                 'fecha_inicio' => '2023-11-01',
                 'fecha_fin' => '2023-11-02',
                 'estado' => 'Finalizado',
                 'id_fase' => $faseFinal->id_fase,
-                'id_parametro' => $parametro->id_parametro,
                 'id_responsableArea' => $responsableArea->id_responsableArea,
             ]);
             $this->command->info('Registro de Competencia creado.');
 
-            // 14. Crear Evaluaciones y asociarlas a la competencia
+            // 14. Crear Evaluaciones y asociarlas a la competencia - CORREGIDO: agregar id_evaluadorAN
             $evaluacionesData = [
-                ['nota' => 95.50, 'estado' => false, 'id_competidor' => $competidores[0]->id_competidor],
-                ['nota' => 88.00, 'estado' => false, 'id_competidor' => $competidores[1]->id_competidor],
-                ['nota' => 76.50, 'estado' => false, 'id_competidor' => $competidores[2]->id_competidor],
-                ['nota' => 45.00, 'estado' => false, 'id_competidor' => $competidores[3]->id_competidor],
+                ['nota' => 95.50, 'estado' => 'Calificado', 'id_competidor' => $competidores[0]->id_competidor],
+                ['nota' => 88.00, 'estado' => 'Calificado', 'id_competidor' => $competidores[1]->id_competidor],
+                ['nota' => 76.50, 'estado' => 'Calificado', 'id_competidor' => $competidores[2]->id_competidor],
+                ['nota' => 45.00, 'estado' => 'Calificado', 'id_competidor' => $competidores[3]->id_competidor],
             ];
+            
             foreach ($evaluacionesData as $data) {
                 Evaluacion::create([
                     'nota' => $data['nota'],
                     'fecha_evaluacion' => '2023-10-15',
-                    'estado' => $data['estado'] ? 'En Calificacion' : 'Calificado',
+                    'estado' => $data['estado'],
                     'id_competidor' => $data['id_competidor'],
                     'id_competencia' => $competencia->id_competencia,
+                    'id_evaluadorAN' => $evaluadorAn->id_evaluadorAN,
                 ]);
             }
             $this->command->info('Evaluaciones creadas y asociadas a la competencia.');
 
-            // 16. Crear Grupos y asignar competidores clasificados
+            // 15. Crear Grupos y asignar competidores clasificados - CORREGIDO: usar tabla pivote
             $grupoFinal = Grupo::create([
                 'nombre' => 'Grupo Finalistas', 
             ]);
             
             // Asignar competidores al grupo usando la tabla pivote
-            $grupoFinal->competidores()->attach([
-                $competidores[0]->id_competidor,
-                $competidores[1]->id_competidor,
-                $competidores[2]->id_competidor
+            DB::table('grupo_competidor')->insert([
+                ['id_grupo' => $grupoFinal->id_grupo, 'id_competidor' => $competidores[0]->id_competidor],
+                ['id_grupo' => $grupoFinal->id_grupo, 'id_competidor' => $competidores[1]->id_competidor],
+                ['id_grupo' => $grupoFinal->id_grupo, 'id_competidor' => $competidores[2]->id_competidor],
             ]);
             $this->command->info('Grupos y asignación de competidores finalistas creados.');
 
-            // 17. Crear Medallero
+            // 16. Crear Medallero
             Medallero::create([
                 'puesto' => 1, 
                 'medalla' => 'Oro', 
@@ -490,23 +474,24 @@ class Olimpiada2021Seeder extends Seeder
             ]);
             $this->command->info('Medallero generado.');
 
-            // 18. Simular una desclasificación
+            // 17. Simular una desclasificación
             $competidorDescalificado = Competidor::create([
                 'departamento' => 'La Paz',
                 'contacto_tutor' => '77722229',
                 'id_institucion' => $institucion1->id_institucion,
-                'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_1ro']->id_area_nivel,
+                'id_area_nivel' => $primerAreaNivelMat->id_area_nivel,
                 'id_persona' => $personasCompetidores[7]->id_persona,
-                'id_grado_escolaridad' => $grado1ro->id_grado_escolaridad
+                'id_grado_escolaridad' => $primerAreaNivelMat->id_grado_escolaridad
             ]);
 
-            $evaluacionDescalificada = Evaluacion::create(array_merge([
+            $evaluacionDescalificada = Evaluacion::create([
                 'nota' => 0, 
                 'fecha_evaluacion' => '2023-10-15', 
                 'estado' => 'Calificado',
                 'id_competidor' => $competidorDescalificado->id_competidor,
                 'id_competencia' => $competencia->id_competencia,
-            ]));
+                'id_evaluadorAN' => $evaluadorAn->id_evaluadorAN,
+            ]);
             
             Desclasificacion::create([
                 'fecha' => '2023-10-16',
@@ -516,7 +501,7 @@ class Olimpiada2021Seeder extends Seeder
             ]);
             $this->command->info('Ejemplo de desclasificación creado.');
 
-            // 19. Crear un Aval
+            // 18. Crear un Aval
             Aval::create([
                 'fecha_aval' => '2023-11-05',
                 'estado' => 'Aprobado',
