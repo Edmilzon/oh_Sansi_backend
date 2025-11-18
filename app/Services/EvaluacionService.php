@@ -76,6 +76,26 @@ class EvaluacionService
     }
 
     /**
+     * Finaliza el proceso de calificación, guarda la nota y cambia el estado a 'Calificado'.
+     *
+     * @param int $id_evaluacion
+     * @param array $data
+     * @return \App\Model\Evaluacion
+     */
+    public function finalizarCalificacion(int $id_evaluacion, array $data): \App\Model\Evaluacion
+    {
+        $evaluacion = Evaluacion::findOrFail($id_evaluacion);
+        if ($evaluacion->estado !== 'En Proceso') {
+            throw new \Exception("Solo se puede calificar una evaluación que está 'En Proceso'.");
+        }
+
+        $data['estado'] = 'Calificado';
+        $data['fecha_evaluacion'] = now();
+        return $this->actualizarEvaluacion($id_evaluacion, $data);
+    }
+
+    // Los otros métodos permanecen igual...
+    /**
      * Obtiene todas las evaluaciones calificadas para una competencia.
      *
      * @param int $id_competencia
@@ -95,24 +115,5 @@ class EvaluacionService
     public function getEvaluacionPorCompetidor(int $id_competidor)
     {
         return $this->evaluacionRepository->getPorCompetidor($id_competidor);
-    }
-
-    /**
-     * Finaliza el proceso de calificación, guarda la nota y cambia el estado a 'Calificado'.
-     *
-     * @param int $id_evaluacion
-     * @param array $data
-     * @return \App\Model\Evaluacion
-     */
-    public function finalizarCalificacion(int $id_evaluacion, array $data): \App\Model\Evaluacion
-    {
-        $evaluacion = Evaluacion::findOrFail($id_evaluacion);
-        if ($evaluacion->estado !== 'En Proceso') {
-            throw new \Exception("Solo se puede calificar una evaluación que está 'En Proceso'.");
-        }
-
-        $data['estado'] = 'Calificado';
-        $data['fecha_evaluacion'] = now()->toDateString();
-        return $this->actualizarEvaluacion($id_evaluacion, $data);
     }
 }
