@@ -19,14 +19,12 @@ class FaseRepository
     public function crearConCompetencia(array $data): Fase
     {
         return DB::transaction(function () use ($data) {
-            // 1. Crear la Fase
             $fase = Fase::create([
                 'nombre' => $data['nombre'],
                 'orden' => $data['orden'] ?? 1,
                 'id_area_nivel' => $data['id_area_nivel'],
             ]);
 
-            // 2. Encontrar el Responsable de Área
             $areaNivel = AreaNivel::findOrFail($data['id_area_nivel']);
             $areaOlimpiada = AreaOlimpiada::where('id_area', $areaNivel->id_area)
                 ->where('id_olimpiada', $areaNivel->id_olimpiada)
@@ -40,7 +38,6 @@ class FaseRepository
                 throw new \Exception("No se encontró un responsable para el área de esta fase.");
             }
 
-            // 3. Crear la Competencia
             Competencia::create([
                 'fecha_inicio' => $data['fecha_inicio'],
                 'fecha_fin' => $data['fecha_fin'],

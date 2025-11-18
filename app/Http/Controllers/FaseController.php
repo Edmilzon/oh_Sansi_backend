@@ -38,7 +38,7 @@ class FaseController extends Controller
 
         $datos = $request->all();
         $datos['id_area_nivel'] = $id_area_nivel;
-        $datos['estado'] = 'Pendiente'; // Estado inicial de la competencia
+        $datos['estado'] = 'Pendiente';
 
         $fase = $this->faseService->crearFaseConCompetencia($datos);
 

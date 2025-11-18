@@ -39,7 +39,6 @@ class EvaluacionController extends Controller
             $datosEvaluacion = $request->only(['id_competidor', 'id_evaluadorAN']);
             $datosEvaluacion['fecha_evaluacion'] = now()->toDateString();
 
-            // Cambiamos a un método que solo crea la evaluación
             $evaluacion = $this->evaluacionService->crearEvaluacion($datosEvaluacion, $id_competencia);
             $evaluacion->load('competidor.persona', 'competencia', 'evaluadorAn.usuario', 'parametro');
 

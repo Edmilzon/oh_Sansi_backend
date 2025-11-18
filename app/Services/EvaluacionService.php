@@ -58,7 +58,6 @@ class EvaluacionService
         return DB::transaction(function () use ($id_evaluacion, $data) {
             $evaluacion = $this->evaluacionRepository->crearOActualizar($data, $id_evaluacion);
 
-            // Si se actualiza el estado, también se actualiza el estado de la competencia.
             if (isset($data['estado'])) {
                 $competencia = Competencia::findOrFail($evaluacion->id_competencia);
                 $totalEvaluaciones = Evaluacion::where('id_competencia', $evaluacion->id_competencia)->count();
