@@ -40,9 +40,16 @@ Accept: application/json
     "observaciones": "malo"
 }
 
-### ACTUALIZAR UNA EVALUACIÓN (PUT genérico, ahora menos necesario para estados)
-# @id_evaluacion = 2
-# PUT {{hostname}}{{api_prefix}}/evaluaciones/{{id_evaluacion}}
+### ACTUALIZAR UNA EVALUACIÓN
+@id_evaluacion = 8
+PUT {{hostname}}{{api_prefix}}/evaluaciones/{{id_evaluacion}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "nota": 85.5,
+    "observaciones": "malo"
+}
 
 ### OBTENER COMPETIDORES CALIFICADOS DE UNA COMPETENCIA
 ### ================= CONSULTAS =================
