@@ -52,6 +52,7 @@ class ParametroRepository
 
     public function create(array $data): Parametro
     {
+        $data['cantidad_max_apro'] = $data['cantidad_max_apro'] ?? null;
         return Parametro::create($data);
     }
 
@@ -63,11 +64,14 @@ class ParametroRepository
             return false;
         }
 
+        $data['cantidad_max_apro'] = $data['cantidad_max_apro'] ?? null;
         return $parametro->update($data);
     }
 
     public function updateOrCreateByAreaNivel(int $idAreaNivel, array $data): Parametro
     {
+        $data['cantidad_max_apro'] = $data['cantidad_max_apro'] ?? null;
+        
         return Parametro::updateOrCreate(
             ['id_area_nivel' => $idAreaNivel],
             $data
