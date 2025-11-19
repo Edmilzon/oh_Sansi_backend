@@ -91,7 +91,7 @@ Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);
 //area mostrar y insertar
 Route::get('/area', [AreaController::class, 'index']);
 Route::post('/area', [AreaController::class, 'store']);
-Route::get('/area/{id_olimpiada}', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);//Probado y funcionando
+Route::get('/area/{id_olimpiada}', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);
 Route::get('/area/gestion/{gestion}', [AreaOlimpiadaController::class, 'getAreasByGestion']);
 
 //Niveles

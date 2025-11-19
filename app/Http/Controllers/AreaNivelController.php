@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Model\Fase;
 use App\Services\AreaNivelService;
+use App\Services\OlimpiadaService;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
@@ -40,13 +41,16 @@ class AreaNivelController extends Controller
         try {
             Log::info('[CONTROLLER] Request recibido en store:', $request->all());
 
-            $existeFase = \App\Model\Fase::exists();
-
-            if($existeFase){
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Se está en una fase de evaluación, por lo tanto no se puede registrar más datos.'
-                ], 400);
+            $olimpiadaActual = $this->olimpiadaService->obtenerOlimpiadaActual();
+            $existeFaseEnGestionActual = Fase::whereHas('areaNivel', function($query) use ($olimpiadaActual) {
+            $query->where('id_olimpiada', $olimpiadaActual->id_olimpiada);
+            })->exists();
+        
+            if ($existeFaseEnGestionActual) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Se está en una fase de evaluación para la gestión ' . $olimpiadaActual->gestion . ', por lo tanto no se pueden registrar más datos'
+            ], 422);
             }
 
             $validatedData = $request->validate([
@@ -238,14 +242,17 @@ class AreaNivelController extends Controller
     {
         try {
 
-            $existeFase = \App\Model\Fase::exists();
+            $olimpiadaActual = $this->olimpiadaService->obtenerOlimpiadaActual();
+            $existeFaseEnGestionActual = Fase::whereHas('areaNivel', function($query) use ($olimpiadaActual) {
+            $query->where('id_olimpiada', $olimpiadaActual->id_olimpiada);
+            })->exists();
         
-            if ($existeFase) {
+            if ($existeFaseEnGestionActual) {
             return response()->json([
                 'success' => false,
-                'message' => 'Se está en una fase de evaluación, por lo tanto no se pueden modificar los datos'
+                'message' => 'Se está en una fase de evaluación para la gestión ' . $olimpiadaActual->gestion . ', por lo tanto no se pueden registrar más datos'
             ], 422);
-            }
+        }
             
             $validatedData = $request->validate([
                 '*.id_nivel' => 'required|integer|exists:nivel,id_nivel',
@@ -273,12 +280,15 @@ class AreaNivelController extends Controller
     {
         try {
 
-            $existeFase = \App\Model\Fase::exists();
+            $olimpiadaActual = $this->olimpiadaService->obtenerOlimpiadaActual();
+            $existeFaseEnGestionActual = Fase::whereHas('areaNivel', function($query) use ($olimpiadaActual) {
+            $query->where('id_olimpiada', $olimpiadaActual->id_olimpiada);
+            })->exists();
         
-            if ($existeFase) {
+            if ($existeFaseEnGestionActual) {
             return response()->json([
                 'success' => false,
-                'message' => 'Se está en una fase de evaluación, por lo tanto no se pueden modificar los datos'
+                'message' => 'Se está en una fase de evaluación para la gestión ' . $olimpiadaActual->gestion . ', por lo tanto no se pueden registrar más datos'
             ], 422);
             }
 

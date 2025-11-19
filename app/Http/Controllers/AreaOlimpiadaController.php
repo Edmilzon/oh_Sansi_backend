@@ -80,9 +80,27 @@ class AreaOlimpiadaController extends Controller
         try {
             $areas = $this->areaOlimpiadaService->getAreasByGestion($gestion);
 
+            $olimpiada = \App\Model\Olimpiada::where('gestion', $gestion)->first();
+            $mensajeFase = '';
+        
+            if ($olimpiada) {
+            $existeFaseEnGestion = \App\Model\Fase::whereHas('areaNivel', function($query) use ($olimpiada) {
+                $query->where('id_olimpiada', $olimpiada->id_olimpiada);
+            })->exists();
+            
+            if ($existeFaseEnGestion) {
+                $mensajeFase = 'La funcionalidad de asignar niveles a un Área no está disponible porque el proceso de evaluación ha iniciado. Solo puede ver las asignaciones previamente realizadas.';
+            } else {
+                $mensajeFase = 'No existe un proceso de evaluación.';
+            }
+            } else {
+            $mensajeFase = 'No se encontró la olimpiada para la gestión proporcionada.';
+            }
+
+
             return response()->json([
                 'success' => true,
-                'message' => "Áreas obtenidas exitosamente para la gestión {$gestion}",
+                'message' => $mensajeFase,
                 'data' => $areas
             ]);
         } catch (\Exception $e) {
