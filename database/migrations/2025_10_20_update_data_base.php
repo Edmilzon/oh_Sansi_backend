@@ -189,7 +189,7 @@ return new class extends Migration
             $table->id('id_evaluacion');
             $table->decimal('nota');
             $table->text('observaciones')->nullable();
-            $table->date('fecha_evaluacion');
+            $table->dateTime('fecha_evaluacion');
             $table->string('estado')->default('Pendiente');
             $table->unsignedBigInteger('id_competidor');
             $table->unsignedBigInteger('id_competencia')->nullable();

@@ -28,7 +28,10 @@ class Evaluacion extends Model
      *
      * @var array
      */
-    protected $casts = [];
+    protected $casts = [
+        'fecha_evaluacion' => 'datetime',
+        'nota' => 'decimal:2',
+    ];
 
     /**
      * Get the competencia associated with the evaluacion.

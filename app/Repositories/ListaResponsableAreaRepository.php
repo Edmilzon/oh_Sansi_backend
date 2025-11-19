@@ -136,7 +136,8 @@ class ListaResponsableAreaRepository
 
     public function getCompetidoresPorAreaYNivel(int $idArea, int $idNivel): Collection
     {
-        $query = DB::table('competidor')
+        // Primero obtenemos los competidores
+        $competidores = DB::table('competidor')
             ->join('persona', 'competidor.id_persona', '=', 'persona.id_persona')
             ->join('area_nivel', 'competidor.id_area_nivel', '=', 'area_nivel.id_area_nivel')
             ->join('area', 'area_nivel.id_area', '=', 'area.id_area')
@@ -144,9 +145,15 @@ class ListaResponsableAreaRepository
             ->join('grado_escolaridad', 'competidor.id_grado_escolaridad', '=', 'grado_escolaridad.id_grado_escolaridad')
             ->join('institucion', 'competidor.id_institucion', '=', 'institucion.id_institucion')
             ->where('area.id_area', $idArea)
-            ->where('nivel.id_nivel', $idNivel);
-
-        return $query->select(
+            ->where('nivel.id_nivel', $idNivel)
+            ->select(
+                'competidor.id_competidor',
+                'competidor.id_persona',
+                'competidor.id_area_nivel',
+                'competidor.id_grado_escolaridad',
+                'competidor.id_institucion',
+                'competidor.departamento',
+                'competidor.contacto_tutor',
                 'persona.apellido',
                 'persona.nombre',
                 DB::raw("CASE 
@@ -155,15 +162,46 @@ class ListaResponsableAreaRepository
                             ELSE persona.genero
                         END AS genero"),
                 'persona.ci',
-                'competidor.departamento',
+                'persona.telefono',
+                'persona.email',
                 'institucion.nombre as colegio',
                 'area.nombre as area',
                 'nivel.nombre as nivel',
-                'grado_escolaridad.nombre as grado'
+                'grado_escolaridad.nombre as grado',
+                'area_nivel.id_area',
+                'area_nivel.id_nivel',
+                'area_nivel.id_olimpiada'
             )
             ->orderBy('persona.apellido')
             ->orderBy('persona.nombre')
             ->get();
+
+        // Obtenemos los IDs de los competidores
+        $competidorIds = $competidores->pluck('id_competidor');
+
+        // Obtenemos las evaluaciones para estos competidores
+        $evaluaciones = DB::table('evaluacion')
+            ->whereIn('id_competidor', $competidorIds)
+            ->select(
+                'id_evaluacion',
+                'nota',
+                'observaciones',
+                'fecha_evaluacion',
+                'estado',
+                'id_competidor',
+                'id_competencia',
+                'id_evaluadorAN',
+                'id_parametro'
+            )
+            ->get()
+            ->groupBy('id_competidor');
+
+        // Combinamos los datos
+        return $competidores->map(function ($competidor) use ($evaluaciones) {
+            $competidorArray = (array) $competidor;
+            $competidorArray['evaluaciones'] = $evaluaciones->get($competidor->id_competidor, []);
+            return (object) $competidorArray;
+        });
     }
 
     public function getListaGrados(){

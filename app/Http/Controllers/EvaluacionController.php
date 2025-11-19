@@ -37,7 +37,7 @@ class EvaluacionController extends Controller
 
         try {
             $datosEvaluacion = $request->only(['id_competidor', 'id_evaluadorAN']);
-            $datosEvaluacion['fecha_evaluacion'] = now()->toDateString();
+            $datosEvaluacion['fecha_evaluacion'] = now(); // Cambiar a now() sin toDateString()
 
             $evaluacion = $this->evaluacionService->crearEvaluacion($datosEvaluacion, $id_competencia);
             $evaluacion->load('competidor.persona', 'competencia', 'evaluadorAn.usuario', 'parametro');
@@ -69,7 +69,7 @@ class EvaluacionController extends Controller
 
         try {
             $datosEvaluacion = $request->only(['nota', 'observaciones', 'estado']);
-            $datosEvaluacion['fecha_evaluacion'] = now()->toDateString();
+            $datosEvaluacion['fecha_evaluacion'] = now(); // Cambiar a now() sin toDateString()
 
             $evaluacion = $this->evaluacionService->actualizarEvaluacion($id_evaluacion, $datosEvaluacion);
             $evaluacion->load('competidor.persona', 'competencia', 'evaluadorAn.usuario', 'parametro');
@@ -80,6 +80,36 @@ class EvaluacionController extends Controller
         }
     }
 
+    /**
+     * Finaliza una evaluación, guardando la nota y marcándola como 'Calificado'.
+     *
+     * @param Request $request
+     * @param int $id_evaluacion
+     * @return JsonResponse
+     */
+    public function finalizarCalificacion(Request $request, int $id_evaluacion): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'nota' => 'required|numeric|min:0|max:100',
+            'observaciones' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        try {
+            $datosFinales = $request->only(['nota', 'observaciones']);
+            $evaluacion = $this->evaluacionService->finalizarCalificacion($id_evaluacion, $datosFinales);
+            $evaluacion->load('competidor.persona', 'competencia', 'evaluadorAn.usuario', 'parametro');
+
+            return response()->json($evaluacion->toArray());
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al finalizar la calificación.', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    // Los otros métodos permanecen igual...
     /**
      * Obtiene todas las evaluaciones calificadas para una competencia.
      *
@@ -120,35 +150,6 @@ class EvaluacionController extends Controller
                 'message' => 'Error al obtener la calificación del competidor.',
                 'error' => $e->getMessage()
             ], 500);
-        }
-    }
-
-    /**
-     * Finaliza una evaluación, guardando la nota y marcándola como 'Calificado'.
-     *
-     * @param Request $request
-     * @param int $id_evaluacion
-     * @return JsonResponse
-     */
-    public function finalizarCalificacion(Request $request, int $id_evaluacion): JsonResponse
-    {
-        $validator = Validator::make($request->all(), [
-            'nota' => 'required|numeric|min:0|max:100',
-            'observaciones' => 'nullable|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        try {
-            $datosFinales = $request->only(['nota', 'observaciones']);
-            $evaluacion = $this->evaluacionService->finalizarCalificacion($id_evaluacion, $datosFinales);
-            $evaluacion->load('competidor.persona', 'competencia', 'evaluadorAn.usuario', 'parametro');
-
-            return response()->json($evaluacion->toArray());
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al finalizar la calificación.', 'error' => $e->getMessage()], 500);
         }
     }
 }
