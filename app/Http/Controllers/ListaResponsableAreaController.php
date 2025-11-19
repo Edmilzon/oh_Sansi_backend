@@ -69,13 +69,10 @@ class ListaResponsableAreaController extends Controller
         ], 500);
     }
 }
-
-
-
-    public function getGrado(): JsonResponse
+    public function getListaGrados(Request $request, int $idNivel): JsonResponse
     {
         try {
-            $grados = $this->listaResponsableAreaService->getListaGrados();
+            $grados = $this->listaResponsableAreaService->getListaGrados((int)$idNivel);
 
             return response()->json([
                 'success' => true,
@@ -88,6 +85,7 @@ class ListaResponsableAreaController extends Controller
             ], 500);
         }
     }
+
     public function getDepartamento(): JsonResponse
 {
     try {

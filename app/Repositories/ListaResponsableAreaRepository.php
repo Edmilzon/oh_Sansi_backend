@@ -203,11 +203,34 @@ class ListaResponsableAreaRepository
             return (object) $competidorArray;
         });
     }
+     public function getListaGrados(int $idNivel): Collection
+    {
+        if ($idNivel <= 0) {
+            return collect();
+        }
 
-    public function getListaGrados(){
-        return GradoEscolaridad::all();
+        $gestionActual = (int) date('Y');
+
+        // Tomamos los id_grado_escolaridad desde area_nivel (uniendo con olimpiada vía id_olimpiada)
+        $gradoIds = DB::table('area_nivel')
+            ->join('olimpiada', 'area_nivel.id_olimpiada', '=', 'olimpiada.id_olimpiada')
+            ->where('area_nivel.id_nivel', $idNivel)
+            ->where('area_nivel.activo', true)
+            ->whereNotNull('area_nivel.id_grado_escolaridad')
+            ->where('olimpiada.gestion', $gestionActual)
+            ->distinct()
+            ->pluck('area_nivel.id_grado_escolaridad')
+            ->filter()
+            ->values();
+
+        if ($gradoIds->isEmpty()) {
+            return collect();
+        }
+
+        return GradoEscolaridad::whereIn('id_grado_escolaridad', $gradoIds)
+            ->orderBy('nombre')
+            ->get();
     }
-
      public function getListaDepartamento()
 {
     return Departamento::all();
