@@ -41,18 +41,6 @@ class AreaNivelController extends Controller
         try {
             Log::info('[CONTROLLER] Request recibido en store:', $request->all());
 
-            $olimpiadaActual = $this->olimpiadaService->obtenerOlimpiadaActual();
-            $existeFaseEnGestionActual = Fase::whereHas('areaNivel', function($query) use ($olimpiadaActual) {
-            $query->where('id_olimpiada', $olimpiadaActual->id_olimpiada);
-            })->exists();
-        
-            if ($existeFaseEnGestionActual) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Se está en una fase de evaluación para la gestión ' . $olimpiadaActual->gestion . ', por lo tanto no se pueden registrar más datos'
-            ], 422);
-            }
-
             $validatedData = $request->validate([
                 '*.id_area' => 'required|integer|exists:area,id_area',
                 '*.id_nivel' => 'required|integer|exists:nivel,id_nivel',
@@ -241,19 +229,7 @@ class AreaNivelController extends Controller
     public function updateByArea($id_area, Request $request): JsonResponse
     {
         try {
-
-            $olimpiadaActual = $this->olimpiadaService->obtenerOlimpiadaActual();
-            $existeFaseEnGestionActual = Fase::whereHas('areaNivel', function($query) use ($olimpiadaActual) {
-            $query->where('id_olimpiada', $olimpiadaActual->id_olimpiada);
-            })->exists();
-        
-            if ($existeFaseEnGestionActual) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Se está en una fase de evaluación para la gestión ' . $olimpiadaActual->gestion . ', por lo tanto no se pueden registrar más datos'
-            ], 422);
-        }
-            
+           
             $validatedData = $request->validate([
                 '*.id_nivel' => 'required|integer|exists:nivel,id_nivel',
                 '*.id_grado_escolaridad' => 'required|integer|exists:grado_escolaridad,id_grado_escolaridad',
@@ -279,18 +255,6 @@ class AreaNivelController extends Controller
     public function update(Request $request, $id): JsonResponse
     {
         try {
-
-            $olimpiadaActual = $this->olimpiadaService->obtenerOlimpiadaActual();
-            $existeFaseEnGestionActual = Fase::whereHas('areaNivel', function($query) use ($olimpiadaActual) {
-            $query->where('id_olimpiada', $olimpiadaActual->id_olimpiada);
-            })->exists();
-        
-            if ($existeFaseEnGestionActual) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Se está en una fase de evaluación para la gestión ' . $olimpiadaActual->gestion . ', por lo tanto no se pueden registrar más datos'
-            ], 422);
-            }
 
             $validatedData = $request->validate([
                 'id_area' => 'sometimes|required|integer|exists:area,id_area',
