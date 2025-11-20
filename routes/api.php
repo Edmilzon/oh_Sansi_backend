@@ -92,7 +92,7 @@ Route::apiResource('niveles', NivelController::class)->only(['index', 'store']);
 //area mostrar y insertar
 Route::get('/area', [AreaController::class, 'index']);
 Route::post('/area', [AreaController::class, 'store']);
-Route::get('/area/{id_olimpiada}', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);//Probado y funcionando
+Route::get('/area/{id_olimpiada}', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);
 Route::get('/area/gestion/{gestion}', [AreaOlimpiadaController::class, 'getAreasByGestion']);
 
 //Niveles
@@ -157,7 +157,8 @@ Route::post('/parametros', [ParametroController::class, 'store']);
 //lista de competidores
 Route::get('/responsable/{idResponsable}', [ListaResponsableAreaController::class, 'getAreaPorResponsable']);
 Route::get('/niveles/{idArea}/area', [ListaResponsableAreaController::class, 'getNivelesPorArea']);
-Route::get('/grado', [ListaResponsableAreaController::class, 'getGrado']);
+//Route::get('/grado', [ListaResponsableAreaController::class, 'getGrado']);
+Route::get('/grados/nivel/{idNivel}', [App\Http\Controllers\ListaResponsableAreaController::class, 'getListaGrados']);
 Route::get('/departamento', [ListaResponsableAreaController::class, 'getDepartamento']);
 Route::get('/generos', [ListaResponsableAreaController::class, 'getGenero']);
 Route::get('/listaCompleta/{idResponsable}/{idArea}/{idNivel}/{idGrado}/{genero?}/{departamento?}', [ListaResponsableAreaController::class, 'listarPorAreaYNivel']);

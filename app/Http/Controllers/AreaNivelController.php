@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Model\Fase;
 use App\Services\AreaNivelService;
+use App\Services\OlimpiadaService;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
@@ -39,15 +40,6 @@ class AreaNivelController extends Controller
     {
         try {
             Log::info('[CONTROLLER] Request recibido en store:', $request->all());
-
-            $existeFase = \App\Model\Fase::exists();
-
-            if($existeFase){
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Se está en una fase de evaluación, por lo tanto no se puede registrar más datos.'
-                ], 400);
-            }
 
             $validatedData = $request->validate([
                 '*.id_area' => 'required|integer|exists:area,id_area',
@@ -237,16 +229,7 @@ class AreaNivelController extends Controller
     public function updateByArea($id_area, Request $request): JsonResponse
     {
         try {
-
-            $existeFase = \App\Model\Fase::exists();
-        
-            if ($existeFase) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Se está en una fase de evaluación, por lo tanto no se pueden modificar los datos'
-            ], 422);
-            }
-            
+           
             $validatedData = $request->validate([
                 '*.id_nivel' => 'required|integer|exists:nivel,id_nivel',
                 '*.id_grado_escolaridad' => 'required|integer|exists:grado_escolaridad,id_grado_escolaridad',
@@ -272,15 +255,6 @@ class AreaNivelController extends Controller
     public function update(Request $request, $id): JsonResponse
     {
         try {
-
-            $existeFase = \App\Model\Fase::exists();
-        
-            if ($existeFase) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Se está en una fase de evaluación, por lo tanto no se pueden modificar los datos'
-            ], 422);
-            }
 
             $validatedData = $request->validate([
                 'id_area' => 'sometimes|required|integer|exists:area,id_area',
