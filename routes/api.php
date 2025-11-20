@@ -83,6 +83,7 @@ Route::get('olimpiadas/{identifier}/areas', [AreaOlimpiadaController::class, 'ge
 //Rutas Olimpiada
 Route::get('/olimpiadas/anteriores', [OlimpiadaController::class, 'olimpiadasAnteriores']);
 Route::get('/olimpiadas/actual', [OlimpiadaController::class, 'olimpiadaActual']);
+Route::get('/gestiones', [OlimpiadaController::class, 'gestiones']);
 
 
 //Rutas para la gestión de niveles

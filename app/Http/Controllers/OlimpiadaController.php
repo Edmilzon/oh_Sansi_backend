@@ -52,4 +52,23 @@ class OlimpiadaController extends Controller
             ], 500);
         }
     }
+
+    public function gestiones()
+    {
+        try {
+            $gestiones = $this->olimpiadaService->obtenerGestiones();
+            
+            return response()->json([
+                'success' => true,
+                'data' => $gestiones,
+                'message' => 'Gestiones obtenidas correctamente'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener las gestiones: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -124,6 +124,14 @@ return new class extends Migration
             $table->foreign('id_area_nivel')->references('id_area_nivel')->on('area_nivel')->onDelete('cascade');
         });
 
+        Schema::create('fase-global', function (Blueprint $table) {
+            $table->id('id_fase-global');
+            $table->string('codigo');
+            $table->string('nombre');
+            $table->integer('orden')->default(1);
+            $table->timestamps();
+        });
+
         Schema::create('responsable_area', function (Blueprint $table) {
             $table->id('id_responsableArea');
             $table->unsignedBigInteger('id_usuario');

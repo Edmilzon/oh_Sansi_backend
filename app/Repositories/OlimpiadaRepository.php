@@ -35,4 +35,9 @@ class OlimpiadaRepository
     {
         return $this->model->firstOrCreate($attributes, $values);
     }
+
+    public function obtenerGestiones(): Collection
+    {
+        return $this->model->orderBy('gestion', 'desc')->get();
+    }
 }
