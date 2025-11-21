@@ -4,6 +4,7 @@
 
 
 ###Evaluador con sus areas y niveles actuales
+##9, 28, 46, 47, 48, 49, 50
 GET {{hostname}}{{api_prefix}}/evaluadores/9/areas-niveles
 Accept: application/json
 
@@ -24,13 +25,13 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "id_competidor": 1,
-    "id_evaluadorAN": 1 
+    "id_competidor": 302,
+    "id_evaluadorAN": 35
 }
 
 ### PASO 2: CALIFICAR EVALUACIÓN (Estado: Pendiente -> Calificado)
 # El evaluador envía la nota y las observaciones para finalizar la calificación.
-@id_evaluacion_creada = 8
+@id_evaluacion_creada = 13
 POST {{hostname}}{{api_prefix}}/evaluaciones/{{id_evaluacion_creada}}/finalizar
 Content-Type: application/json
 Accept: application/json
