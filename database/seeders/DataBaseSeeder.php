@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
             FaseGlobalSeeder::class,
             AccionSistemaSeeder::class,
             ConfiguracionAccionSeeder::class,
+            EvaluadorSeeder::class,
+            ParametroSeeder::class,
             //FasesGestionActualSeeder::class,
         ]);
     }

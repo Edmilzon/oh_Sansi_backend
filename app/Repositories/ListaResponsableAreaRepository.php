@@ -136,6 +136,7 @@ class ListaResponsableAreaRepository
 
     public function getCompetidoresPorAreaYNivel(int $idArea, int $idNivel): Collection
     {
+        $gestionActual = date('Y');
         // Primero obtenemos los competidores
         $competidores = DB::table('competidor')
             ->join('persona', 'competidor.id_persona', '=', 'persona.id_persona')
@@ -144,8 +145,10 @@ class ListaResponsableAreaRepository
             ->join('nivel', 'area_nivel.id_nivel', '=', 'nivel.id_nivel')
             ->join('grado_escolaridad', 'competidor.id_grado_escolaridad', '=', 'grado_escolaridad.id_grado_escolaridad')
             ->join('institucion', 'competidor.id_institucion', '=', 'institucion.id_institucion')
+            ->join('olimpiada', 'area_nivel.id_olimpiada', '=', 'olimpiada.id_olimpiada')
             ->where('area.id_area', $idArea)
             ->where('nivel.id_nivel', $idNivel)
+            ->where('olimpiada.gestion', $gestionActual)
             ->select(
                 'competidor.id_competidor',
                 'competidor.id_persona',
