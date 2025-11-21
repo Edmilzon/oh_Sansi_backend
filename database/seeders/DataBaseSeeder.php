@@ -30,6 +30,10 @@ class DatabaseSeeder extends Seeder
             AreasEvaluadoresSeeder::class,
             CompetidorSeeder::class,
             Olimpiada2021Seeder::class,
+            FaseGlobalSeeder::class,
+            AccionSistemaSeeder::class,
+            ConfiguracionAccionSeeder::class,
+            //FasesGestionActualSeeder::class,
         ]);
     }
 }

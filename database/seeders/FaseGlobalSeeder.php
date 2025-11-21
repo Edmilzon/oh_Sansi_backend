@@ -14,7 +14,7 @@ class FaseGlobalSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('fase-global')->insert([
+        DB::table('fase_global')->insert([
             [
                 'codigo' => 'CONFIG',
                 'nombre' => 'Fase de Configuración',
