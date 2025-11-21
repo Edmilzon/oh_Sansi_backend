@@ -44,6 +44,6 @@ Accept: application/json
 }
 
 ### Ver qué acciones están habilitadas para la gestión y fase actual
-GET {{hostname}}{{api_prefix}}/gestiones/1/fases/4/acciones-habilitadas
+GET {{hostname}}{{api_prefix}}/gestiones/1/fases/1/acciones-habilitadas
 Accept: application/json
 

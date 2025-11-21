@@ -170,14 +170,8 @@ class FaseRepository
     }
     public function getAccionesHabilitadas(int $idGestion, int $idFase)
     {
-        $fase = Fase::find($idFase);
-
-        if (!$fase || !$fase->id_fase_global) {
-            return [];
-        }
-
         return ConfiguracionAccion::where('id_olimpiada', $idGestion)
-            ->where('id_fase_global', $fase->id_fase_global)
+            ->where('id_fase_global', $idFase)
             ->where('habilitada', true)
             ->join('accion_sistema', 'configuracion_accion.id_accion', '=', 'accion_sistema.id_accion')
             ->pluck('accion_sistema.codigo');
