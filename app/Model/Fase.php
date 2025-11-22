@@ -16,6 +16,7 @@ class Fase extends Model
         'nombre',
         'orden',
         'id_area_nivel',
+        'id_fase_global',
     ];
 
     /**
@@ -24,6 +25,14 @@ class Fase extends Model
     public function areaNivel()
     {
         return $this->belongsTo(AreaNivel::class, 'id_area_nivel', 'id_area_nivel');
+    }
+
+    /**
+     * Get the fase_global that owns the fase.
+     */
+    public function faseGlobal()
+    {
+        return $this->belongsTo(FaseGlobal::class, 'id_fase_global', 'id_fase_global');
     }
 
     /**

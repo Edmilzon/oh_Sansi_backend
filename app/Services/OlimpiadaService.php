@@ -8,11 +8,26 @@ use App\Repositories\OlimpiadaRepository;
 
 class OlimpiadaService
 {
-    protected $oimpiadaRepository;
+    protected $olimpiadaRepository;
 
-    public function __construct(OlimpiadaRepository $oimpiadaRepository)
+    public function __construct(OlimpiadaRepository $olimpiadaRepository)
     {
-        $this->OlimpiadaRepository = $oimpiadaRepository;
+        $this->olimpiadaRepository = $olimpiadaRepository;
+    }
+
+    public function obtenerGestiones()
+    {
+        $gestiones = $this->olimpiadaRepository->obtenerGestiones();
+        $currentYear = date('Y');
+
+        return $gestiones->map(function ($olimpiada) use ($currentYear) {
+            return [
+                'id' => $olimpiada->id_olimpiada,
+                'nombre' => $olimpiada->nombre,
+                'gestion' => $olimpiada->gestion,
+                'esActual' => $olimpiada->gestion == $currentYear,
+            ];
+        });
     }
 
     public function obtenerOlimpiadaActual(): Olimpiada
@@ -45,6 +60,6 @@ class OlimpiadaService
     public function obtenerOlimpiadasAnteriores(): Collection
     {
         $gestionActual = date('Y');
-        return $this->OlimpiadaRepository->obtenerOlimpiadasAnteriores($gestionActual);
+        return $this->olimpiadaRepository->obtenerOlimpiadasAnteriores($gestionActual);
     }
 }

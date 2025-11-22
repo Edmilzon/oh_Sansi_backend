@@ -83,6 +83,7 @@ Route::get('olimpiadas/{identifier}/areas', [AreaOlimpiadaController::class, 'ge
 //Rutas Olimpiada
 Route::get('/olimpiadas/anteriores', [OlimpiadaController::class, 'olimpiadasAnteriores']);
 Route::get('/olimpiadas/actual', [OlimpiadaController::class, 'olimpiadaActual']);
+Route::get('/gestiones', [OlimpiadaController::class, 'gestiones']);
 
 
 //Rutas para la gestión de niveles
@@ -156,13 +157,20 @@ Route::post('/parametros', [ParametroController::class, 'store']);
 //lista de competidores
 Route::get('/responsable/{idResponsable}', [ListaResponsableAreaController::class, 'getAreaPorResponsable']);
 Route::get('/niveles/{idArea}/area', [ListaResponsableAreaController::class, 'getNivelesPorArea']);
-Route::get('/grado', [ListaResponsableAreaController::class, 'getGrado']);
+//Route::get('/grado', [ListaResponsableAreaController::class, 'getGrado']);
+Route::get('/grados/nivel/{idNivel}', [App\Http\Controllers\ListaResponsableAreaController::class, 'getListaGrados']);
 Route::get('/departamento', [ListaResponsableAreaController::class, 'getDepartamento']);
 Route::get('/generos', [ListaResponsableAreaController::class, 'getGenero']);
 Route::get('/listaCompleta/{idResponsable}/{idArea}/{idNivel}/{idGrado}/{genero?}/{departamento?}', [ListaResponsableAreaController::class, 'listarPorAreaYNivel']);
 Route::get('/competidores/area/{idArea}/nivel/{idNivel}', [ListaResponsableAreaController::class, 'getCompetidoresPorAreaYNivel']);
 
 //Rutas para la calificación
+Route::get('/fases-globales', [FaseController::class, 'indexGlobales']);
+Route::get('/acciones-sistema', [FaseController::class, 'listarAccionesSistema']);
+Route::get('/gestiones/{idGestion}/configuracion-acciones', [FaseController::class, 'getConfiguracionAccionesPorGestion']);
+Route::put('/gestiones/{idGestion}/configuracion-acciones', [FaseController::class, 'guardarConfiguracionAccionesPorGestion']);
+Route::patch('/gestiones/{idGestion}/fases/{idFase}/acciones/{idAccion}', [FaseController::class, 'actualizarAccionEnFase']);
+Route::get('/gestiones/{idGestion}/fases/{idFase}/acciones-habilitadas', [FaseController::class, 'getAccionesHabilitadas']);
 Route::apiResource('area-niveles.fases', FaseController::class)->shallow();
 Route::post('/competencias/{id_competencia}/evaluacion', [EvaluacionController::class, 'store']);
 Route::get('/competencias/{id_competencia}/calificados', [EvaluacionController::class, 'getCalificados']);

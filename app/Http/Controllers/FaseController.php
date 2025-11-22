@@ -17,6 +17,12 @@ class FaseController extends Controller
         $this->faseService = $faseService;
     }
 
+    public function indexGlobales(): JsonResponse
+    {
+        $fases = $this->faseService->obtenerFasesGlobales();
+        return response()->json($fases);
+    }
+
     public function index(int $id_area_nivel): JsonResponse
     {
         $fases = $this->faseService->obtenerFasesPorAreaNivel($id_area_nivel);
@@ -84,5 +90,56 @@ class FaseController extends Controller
         }
 
         return response()->json(null, 204);
+    }
+
+    public function listarAccionesSistema(): JsonResponse
+    {
+        $acciones = $this->faseService->listarAccionesSistema();
+        return response()->json($acciones);
+    }
+
+    public function getConfiguracionAccionesPorGestion(int $idGestion): JsonResponse
+    {
+        $configuracion = $this->faseService->getConfiguracionAccionesPorGestion($idGestion);
+        return response()->json($configuracion);
+    }
+
+    public function guardarConfiguracionAccionesPorGestion(Request $request, int $idGestion): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'accionesPorFase' => 'required|array',
+            'accionesPorFase.*.idAccion' => 'required|integer',
+            'accionesPorFase.*.idFase' => 'required|integer',
+            'accionesPorFase.*.habilitada' => 'required|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $this->faseService->guardarConfiguracionAccionesPorGestion($idGestion, $request->input('accionesPorFase'));
+
+        return response()->json(['message' => 'Configuración guardada exitosamente.']);
+    }
+
+    public function actualizarAccionEnFase(Request $request, int $idGestion, int $idFase, int $idAccion): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'habilitada' => 'required|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $this->faseService->actualizarAccionHabilitada($idGestion, $idFase, $idAccion, $request->input('habilitada'));
+
+        return response()->json(['message' => 'El estado de la acción ha sido actualizado.']);
+    }
+
+    public function getAccionesHabilitadas(int $idGestion, int $idFase): JsonResponse
+    {
+        $acciones = $this->faseService->getAccionesHabilitadas($idGestion, $idFase);
+        return response()->json($acciones);
     }
 }

@@ -131,14 +131,47 @@ return new class extends Migration
             $table->foreign('id_area_nivel')->references('id_area_nivel')->on('area_nivel')->onDelete('cascade');
         });
 
+        Schema::create('fase_global', function (Blueprint $table) {
+            $table->id('id_fase_global');
+            $table->string('codigo');
+            $table->string('nombre');
+            $table->integer('orden')->default(1);
+            $table->timestamps();
+        });
+
+        Schema::create('accion_sistema', function (Blueprint $table) {
+            $table->id('id_accion');
+            $table->string('codigo')->unique();
+            $table->string('nombre');
+            $table->text('descripcion')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('configuracion_accion', function (Blueprint $table) {
+            $table->id('id_configuracion');
+            $table->unsignedBigInteger('id_olimpiada');
+            $table->unsignedBigInteger('id_fase_global');
+            $table->unsignedBigInteger('id_accion');
+            $table->boolean('habilitada')->default(false);
+            $table->timestamps();
+            
+            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiada')->onDelete('cascade');
+            $table->foreign('id_fase_global')->references('id_fase_global')->on('fase_global')->onDelete('cascade');
+            $table->foreign('id_accion')->references('id_accion')->on('accion_sistema')->onDelete('cascade');
+            
+            $table->unique(['id_olimpiada', 'id_fase_global', 'id_accion'], 'config_accion_unique');
+        });
+
         Schema::create('fase', function (Blueprint $table) {
             $table->id('id_fase');
             $table->string('nombre');
-            $table->integer('orden')->default(1);
+            $table->integer('orden');
             $table->unsignedBigInteger('id_area_nivel');
+            $table->unsignedBigInteger('id_fase_global')->nullable();
             $table->timestamps();
 
             $table->foreign('id_area_nivel')->references('id_area_nivel')->on('area_nivel')->onDelete('cascade');
+            $table->foreign('id_fase_global')->references('id_fase_global')->on('fase_global')->onDelete('cascade');
         });
 
         Schema::create('responsable_area', function (Blueprint $table) {
@@ -320,6 +353,7 @@ return new class extends Migration
         Schema::dropIfExists('grado_escolaridad');
         Schema::dropIfExists('departamento');
         Schema::dropIfExists('param_medallero');
+        Schema::dropIfExists('fase_global');
         Schema::dropIfExists('registro_nota');
     }
 };
