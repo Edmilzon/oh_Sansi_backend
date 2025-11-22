@@ -69,6 +69,23 @@ return new class extends Migration
             $table->foreign('id_grado_escolaridad')->references('id_grado_escolaridad')->on('grado_escolaridad')->onDelete('cascade');
         });
 
+        Schema::create('registro_nota', function (Blueprint $table) {
+            $table->id('id_registro_nota');
+            $table->unsignedBigInteger('id_area_nivel');
+            $table->unsignedBigInteger('id_evaluadorAN');
+            $table->unsignedBigInteger('id_competidor');
+            $table->string('accion');
+            $table->double('nota_anterior')->nullable();
+            $table->double('nota_nueva')->nullable();
+            $table->text('observacion')->nullable();
+            $table->text('descripcion');
+            $table->timestamps();
+
+            $table->foreign('id_area_nivel')->references('id_area_nivel')->on('area_nivel')->onDelete('cascade');
+            $table->foreign('id_evaluadorAN')->references('id_evaluadorAN')->on('evaluador_an')->onDelete('cascade');
+            $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('cascade');
+        });
+
         Schema::create('usuario', function (Blueprint $table) {
             $table->id('id_usuario');
             $table->string('nombre');
@@ -303,5 +320,6 @@ return new class extends Migration
         Schema::dropIfExists('grado_escolaridad');
         Schema::dropIfExists('departamento');
         Schema::dropIfExists('param_medallero');
+        Schema::dropIfExists('registro_nota');
     }
 };
