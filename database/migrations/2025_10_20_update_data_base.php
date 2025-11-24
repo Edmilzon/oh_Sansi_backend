@@ -58,7 +58,6 @@ return new class extends Migration
             $table->id('id_area_nivel');
             $table->unsignedBigInteger('id_area');
             $table->unsignedBigInteger('id_nivel');
-            $table->unsignedBigInteger('id_grado_escolaridad')->nullable() ;
             $table->unsignedBigInteger('id_olimpiada');
             $table->boolean('activo')->default(true);
             $table->timestamps();
@@ -66,10 +65,19 @@ return new class extends Migration
             $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
             $table->foreign('id_nivel')->references('id_nivel')->on('nivel')->onDelete('cascade');
             $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiada')->onDelete('cascade');
+        });
+
+        Schema::create('nivel_grado', function (Blueprint $table) {
+            $table->id('id_nivel_grado');
+            $table->unsignedBigInteger('id_area_nivel');
+            $table->unsignedBigInteger('id_grado_escolaridad');
+            $table->timestamps();
+
+            $table->foreign('id_nivel')->references('id_nivel')->on('nivel')->onDelete('cascade');
             $table->foreign('id_grado_escolaridad')->references('id_grado_escolaridad')->on('grado_escolaridad')->onDelete('cascade');
         });
 
-        /*Schema::create('registro_nota', function (Blueprint $table) {
+        Schema::create('registro_nota', function (Blueprint $table) {
             $table->id('id_registro_nota');
             $table->unsignedBigInteger('id_area_nivel');
             $table->unsignedBigInteger('id_evaluadorAN');
@@ -84,7 +92,7 @@ return new class extends Migration
             $table->foreign('id_area_nivel')->references('id_area_nivel')->on('area_nivel')->onDelete('cascade');
             $table->foreign('id_evaluadorAN')->references('id_evaluadorAN')->on('evaluador_an')->onDelete('cascade');
             $table->foreign('id_competidor')->references('id_competidor')->on('competidor')->onDelete('cascade');
-        });*/
+        });
 
         Schema::create('usuario', function (Blueprint $table) {
             $table->id('id_usuario');
