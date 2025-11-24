@@ -14,16 +14,16 @@ class ResponsableArea extends Model
 
     protected $fillable = [
         'id_usuario',
-        'id_area_olimpiada',
+        'id_area',
     ];
 
-    public function areaOlimpiada()
+    public function areaO()
     {
-        return $this->belongsTo(\App\Model\AreaOlimpiada::class, 'id_area_olimpiada');
+        return $this->belongsTo(\App\Model\Area::class, 'id_area');
     }
 
-    public function area()
+    public function usuario()
     {
-        return $this->hasOneThrough(\App\Model\Area::class, \App\Model\AreaOlimpiada::class, 'id_area_olimpiada', 'id_area', 'id_area_olimpiada', 'id_area');
+        return $this->belongsTo(\App\Model\Usuario::class, 'id_usuario');
     }
 }

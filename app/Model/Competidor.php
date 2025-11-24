@@ -13,56 +13,81 @@ class Competidor extends Model
     protected $primaryKey = 'id_competidor';
 
     protected $fillable = [
-        'grado_escolar',
         'departamento',
         'contacto_tutor',
         'id_institucion',
-        'id_area_nivel',
+        'id_nivel_grado', // Solo este campo
         'id_archivo_csv',
         'id_persona',
     ];
 
-    protected $casts = [
-        'datos' => 'array',
-    ];
-
-    /**
-     * Get the institucion that owns the competidor.
-     */
     public function institucion()
     {
-        return $this->belongsTo(Institucion::class, 'id_institucion', 'id_institucion');
+        return $this->belongsTo(Institucion::class, 'id_institucion');
     }
 
-    /**
-     * Get the area_nivel that owns the competidor.
-     */
-    public function areaNivel()
+    public function nivelGrado()
     {
-        return $this->belongsTo(AreaNivel::class, 'id_area_nivel', 'id_area_nivel');
+        return $this->belongsTo(NivelGrado::class, 'id_nivel_grado');
     }
 
-    /**
-     * Get the archivo_csv that owns the competidor.
-     */
-    public function archivoCsv()
+    public function archivoCSV()
     {
-        return $this->belongsTo(ArchivoCsv::class, 'id_archivo_csv', 'id_archivo_csv');
+        return $this->belongsTo(ArchivoCSV::class, 'id_archivo_csv');
     }
 
     public function persona()
     {
-        return $this->belongsTo(Persona::class, 'id_persona', 'id_persona');
+        return $this->belongsTo(Persona::class, 'id_persona');
     }
 
-    /**
-     * The grupos that belong to the competidor.
-     */
-    public function grupos()
+    public function evaluaciones()
     {
-        return $this->belongsToMany(Grupo::class, 'grupo_competidor', 'id_competidor', 'id_grupo')
-                    ->withTimestamps();
+        return $this->hasMany(Evaluacion::class, 'id_competidor');
     }
 
-    
+    public function registrosNota()
+    {
+        return $this->hasMany(RegistroNota::class, 'id_competidor');
+    }
+
+    public function grupoCompetidores()
+    {
+        return $this->hasMany(GrupoCompetidor::class, 'id_competidor');
+    }
+
+    public function desclasificaciones()
+    {
+        return $this->hasMany(Desclasificacion::class, 'id_competidor');
+    }
+
+    public function medalleros()
+    {
+        return $this->hasMany(Medallero::class, 'id_competidor');
+    }
+
+    public function getAreaNivelAttribute()
+    {
+        return $this->nivelGrado->areaNivel ?? null;
+    }
+
+    public function getGradoEscolaridadAttribute()
+    {
+        return $this->nivelGrado->gradoEscolaridad ?? null;
+    }
+
+    public function getAreaAttribute()
+    {
+        return $this->areaNivel->area ?? null;
+    }
+
+    public function getNivelAttribute()
+    {
+        return $this->areaNivel->nivel ?? null;
+    }
+
+    public function getOlimpiadaAttribute()
+    {
+        return $this->areaNivel->olimpiada ?? null;
+    }
 }

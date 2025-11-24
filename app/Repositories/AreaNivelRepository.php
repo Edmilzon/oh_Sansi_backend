@@ -5,13 +5,14 @@ namespace App\Repositories;
 use App\Model\AreaNivel;
 use App\Model\Area;
 use App\Model\Nivel;
+use App\Model\NivelGrado;
 use Illuminate\Database\Eloquent\Collection;
 
 class AreaNivelRepository
 {
     public function getAllAreasNiveles(): Collection
     {
-        return AreaNivel::with(['area', 'nivel', 'olimpiada'])->get();
+        return AreaNivel::with(['area', 'nivel', 'olimpiada', 'nivelGrado.gradoEscolaridad'])->get();
     }
 
     public function getByArea(int $id_area, ?int $idOlimpiada = null): Collection

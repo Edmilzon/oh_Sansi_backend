@@ -14,8 +14,9 @@ class GradoEscolaridad extends Model
 
     protected $fillable = ['nombre'];
 
-    public function areaNiveles()
+    public function nivelGrados()
     {
-        return $this->hasMany(\App\Model\AreaNivel::class, 'id_grado_escolaridad');
+        return $this->hasMany(\App\Model\NivelGrado::class, 'id_grado_escolaridad');
     }
+
 }

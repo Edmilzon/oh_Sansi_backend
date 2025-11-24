@@ -15,7 +15,6 @@ class AreaNivel extends Model
     protected $fillable = [
         'id_area',
         'id_nivel',
-        'id_grado_escolaridad',
         'id_olimpiada',
         'activo',
     ];
@@ -30,11 +29,6 @@ class AreaNivel extends Model
         return $this->belongsTo(\App\Model\Nivel::class, 'id_nivel');
     }
 
-    public function gradoEscolaridad()
-    {
-        return $this->belongsTo(\App\Model\GradoEscolaridad::class, 'id_grado_escolaridad');
-    }
-
     public function olimpiada()
     {
         return $this->belongsTo(\App\Model\Olimpiada::class, 'id_olimpiada');
@@ -43,5 +37,30 @@ class AreaNivel extends Model
     public function parametro()
     {
         return $this->hasOne(\App\Model\Parametro::class, 'id_area_nivel');
+    }
+
+    public function nivelGrado()
+    {
+        return $this->hasMany(\App\Model\NivelGrado::class, 'id_area_nivel');
+    }
+
+    public function registroNota()
+    {
+        return $this->hasMany(\App\Model\RegistroNota::class, 'id_area_nivel');
+    }
+
+    public function competidor()
+    {
+        return $this->hasMany(\App\Model\Competidor::class, 'id_area_nivel');
+    }
+
+    public function fase()
+    {
+        return $this->hasMany(\App\Model\Fase::class, 'id_area_nivel');
+    }
+
+    public function evaluadorAn()
+    {
+        return $this->hasMany(\App\Model\EvaluadorAn::class, 'id_area_nivel');
     }
 }
