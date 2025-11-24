@@ -25,20 +25,20 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "id_competidor": 302,
-    "id_evaluadorAN": 35
+    "id_competidor": 250,
+    "id_evaluadorAN": 37
 }
 
 ### PASO 2: CALIFICAR EVALUACIÓN (Estado: Pendiente -> Calificado)
 # El evaluador envía la nota y las observaciones para finalizar la calificación.
-@id_evaluacion_creada = 13
+@id_evaluacion_creada = 15
 POST {{hostname}}{{api_prefix}}/evaluaciones/{{id_evaluacion_creada}}/finalizar
 Content-Type: application/json
 Accept: application/json
 
 {
-    "nota": 85.5,
-    "observaciones": "malo"
+    "nota": 100,
+    "observaciones": "Bueno"
 }
 
 ### ACTUALIZAR UNA EVALUACIÓN
