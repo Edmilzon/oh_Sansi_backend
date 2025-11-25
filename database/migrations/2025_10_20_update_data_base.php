@@ -177,10 +177,12 @@ return new class extends Migration
             $table->id('id_responsableArea');
             $table->unsignedBigInteger('id_usuario');
             $table->unsignedBigInteger('id_area');
+            $table->unsignedBigInteger('id_olimpiada');
             $table->timestamps();
 
             $table->foreign('id_usuario')->references('id_usuario')->on('usuario')->onDelete('cascade');
             $table->foreign('id_area')->references('id_area')->on('area')->onDelete('cascade');
+            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiada')->onDelete('cascade');
         });
 
         Schema::create('evaluador_an', function (Blueprint $table) {

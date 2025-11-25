@@ -15,6 +15,7 @@ class ResponsableArea extends Model
     protected $fillable = [
         'id_usuario',
         'id_area',
+        'id_olimpiada',
     ];
 
     public function areaO()
@@ -25,5 +26,20 @@ class ResponsableArea extends Model
     public function usuario()
     {
         return $this->belongsTo(\App\Model\Usuario::class, 'id_usuario');
+    }
+
+    public function olimpiada()
+    {
+        return $this->belongsTo(\App\Model\Olimpiada::class, 'id_olimpiada');
+    }
+
+    public function competencias()
+    {
+        return $this->hasMany(\App\Model\Competencia::class, 'id_responsableArea');
+    }
+
+    public function aval()
+    {
+        return $this->hasMany(\App\Model\Aval::class, 'id_responsableArea');
     }
 }
