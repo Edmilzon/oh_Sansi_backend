@@ -47,7 +47,7 @@ class ListaResponsableAreaRepository
     /**
      * Lista los competidores filtrando por área/nivel/grado 
      */
-   public function listarPorAreaYNivel(
+  public function listarPorAreaYNivel(
     int $idResponsable, 
     ?int $idArea, 
     ?int $idNivel, 
@@ -67,6 +67,7 @@ class ListaResponsableAreaRepository
         return collect();
     }
 
+    // Si el usuario pasa un valor no válido para género, lo tratamos como departamento
     if ($genero && !in_array(strtolower($genero), ['m', 'f', 'masculino', 'femenino'])) {
         $departamento = $genero;
         $genero = null;
@@ -77,11 +78,14 @@ class ListaResponsableAreaRepository
         ->join('area_nivel', 'competidor.id_area_nivel', '=', 'area_nivel.id_area_nivel')
         ->join('area', 'area_nivel.id_area', '=', 'area.id_area')
         ->join('nivel', 'area_nivel.id_nivel', '=', 'nivel.id_nivel')
-        ->join('grado_escolaridad', 'competidor.id_grado_escolaridad', '=', 'grado_escolaridad.id_grado_escolaridad')
+
+        // ✅ CAMBIO IMPORTANTE → grado desde area_nivel, NO desde competidor
+        ->join('grado_escolaridad', 'area_nivel.id_grado_escolaridad', '=', 'grado_escolaridad.id_grado_escolaridad')
+
         ->join('institucion', 'competidor.id_institucion', '=', 'institucion.id_institucion')
         ->whereIn('area.id_area', $areasDelResponsable);
 
-    // 🧩 Filtro por olimpiada del año actual
+    // Filtro por Olimpiada actual
     $anioActual = date('Y');
     $query->join('olimpiada', 'area_nivel.id_olimpiada', '=', 'olimpiada.id_olimpiada')
           ->where('olimpiada.gestion', $anioActual);
@@ -95,6 +99,7 @@ class ListaResponsableAreaRepository
         $query->where('nivel.id_nivel', $idNivel);
     }
 
+    // Filtro de grado desde area_nivel (funciona igual)
     if ($idGrado && $idGrado !== 0) {
         $query->where('grado_escolaridad.id_grado_escolaridad', $idGrado);
     }
@@ -125,7 +130,10 @@ class ListaResponsableAreaRepository
             'institucion.nombre as colegio',
             'area.nombre as area',
             'nivel.nombre as nivel',
+
+            // 🔥 Grado final viene desde area_nivel → grado_escolaridad.nombre
             'grado_escolaridad.nombre as grado',
+
             'olimpiada.gestion as gestion'
         )
         ->orderBy('persona.apellido')
