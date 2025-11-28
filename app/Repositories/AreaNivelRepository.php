@@ -12,12 +12,18 @@ class AreaNivelRepository
 {
     public function getAllAreasNiveles(): Collection
     {
-        return AreaNivel::with(['area', 'nivel', 'olimpiada', 'nivelGrado.gradoEscolaridad'])->get();
+        return AreaNivel::with([
+            'area', 
+            'nivel', 
+            'olimpiada', 
+            'nivelGrado.gradoEscolaridad'
+        ])->get();
     }
 
     public function getByArea(int $id_area, ?int $idOlimpiada = null): Collection
     {
-        $query = AreaNivel::where('id_area', $id_area);
+        $query = AreaNivel::with(['nivelGrado.gradoEscolaridad'])
+            ->where('id_area', $id_area);
         
         if ($idOlimpiada) {
             $query->where('id_olimpiada', $idOlimpiada);
@@ -31,7 +37,8 @@ class AreaNivelRepository
         $query = AreaNivel::with([
             'area:id_area,nombre',
             'nivel:id_nivel,nombre', 
-            'olimpiada:id_olimpiada,gestion'
+            'olimpiada:id_olimpiada,gestion',
+            'nivelGrado.gradoEscolaridad'
         ])
         ->where('id_area', $id_area);
 
@@ -45,16 +52,21 @@ class AreaNivelRepository
     {
         return Area::with([
             'areaNiveles' => function($query) use ($idOlimpiada) {
-                $query->where('id_olimpiada', $idOlimpiada);
-            },
-            'areaNiveles.nivel:id_nivel,nombre'
+                $query->where('id_olimpiada', $idOlimpiada)
+                      ->with(['nivel:id_nivel,nombre', 'nivelGrado.gradoEscolaridad']);
+            }
         ])
         ->get(['id_area', 'nombre']);
     }
     
     public function getById(int $id): ?AreaNivel
     {
-        return AreaNivel::with(['area', 'nivel', 'olimpiada'])->find($id);
+        return AreaNivel::with([
+            'area', 
+            'nivel', 
+            'olimpiada', 
+            'nivelGrado.gradoEscolaridad'
+        ])->find($id);
     }
 
     public function update(int $id, array $data): bool
@@ -79,9 +91,10 @@ class AreaNivelRepository
         return $areaNivel->delete();
     }
     
-     public function getByAreaAndNivel(int $id_area, int $id_nivel, int $id_olimpiada): ?AreaNivel
+    public function getByAreaAndNivel(int $id_area, int $id_nivel, int $id_olimpiada): ?AreaNivel
     {
-        return AreaNivel::where('id_area', $id_area)
+        return AreaNivel::with(['nivelGrado.gradoEscolaridad'])
+            ->where('id_area', $id_area)
             ->where('id_nivel', $id_nivel)
             ->where('id_olimpiada', $id_olimpiada)
             ->first();
@@ -93,29 +106,18 @@ class AreaNivelRepository
     }
 
     public function getAreasConNivelesSimplificado(int $idOlimpiada): Collection
-{
-    return Area::with([
-        'areaNiveles' => function($query) use ($idOlimpiada) {
-            $query->where('id_olimpiada', $idOlimpiada)
-                  ->where('activo', true);
-        },
-        'areaNiveles.nivel:id_nivel,nombre'
-    ])
-    ->whereHas('areaNiveles', function($query) use ($idOlimpiada) {
-        $query->where('id_olimpiada', $idOlimpiada)
-              ->where('activo', true);
-    })
-    ->get(['id_area', 'nombre']);
-}
-
-    public function getActualesByOlimpiada(int $idOlimpiada): Collection
     {
         return Area::with([
             'areaNiveles' => function($query) use ($idOlimpiada) {
                 $query->where('id_olimpiada', $idOlimpiada)
-                      ->where('activo', true);
-            },
-            'areaNiveles.nivel:id_nivel,nombre'
+                      ->where('activo', true)
+                      ->with([
+                          'nivel:id_nivel,nombre', 
+                          'nivelGrado' => function($q) {
+                              $q->where('activo', true)->with('gradoEscolaridad');
+                          }
+                      ]);
+            }
         ])
         ->whereHas('areaNiveles', function($query) use ($idOlimpiada) {
             $query->where('id_olimpiada', $idOlimpiada)
@@ -124,4 +126,66 @@ class AreaNivelRepository
         ->get(['id_area', 'nombre']);
     }
 
+    public function getActualesByOlimpiada(int $idOlimpiada): Collection
+    {
+        return Area::with([
+            'areaNiveles' => function($query) use ($idOlimpiada) {
+                $query->where('id_olimpiada', $idOlimpiada)
+                      ->where('activo', true)
+                      ->with([
+                          'nivel:id_nivel,nombre', 
+                          'nivelGrado' => function($q) {
+                              $q->where('activo', true)->with('gradoEscolaridad');
+                          }
+                      ]);
+            }
+        ])
+        ->whereHas('areaNiveles', function($query) use ($idOlimpiada) {
+            $query->where('id_olimpiada', $idOlimpiada)
+                  ->where('activo', true);
+        })
+        ->get(['id_area', 'nombre']);
+    }
+
+    // Métodos para NivelGrado
+    public function createNivelGrado(array $data): NivelGrado
+    {
+        return NivelGrado::create($data);
+    }
+
+    public function getNivelGradoByAreaNivelAndGrado(int $id_area_nivel, int $id_grado_escolaridad): ?NivelGrado
+    {
+        return NivelGrado::where('id_area_nivel', $id_area_nivel)
+            ->where('id_grado_escolaridad', $id_grado_escolaridad)
+            ->first();
+    }
+
+    public function updateNivelGrado(int $id, array $data): bool
+    {
+        $nivelGrado = NivelGrado::find($id);
+        
+        if (!$nivelGrado) {
+            return false;
+        }
+
+        return $nivelGrado->update($data);
+    }
+
+    public function getAreaNivelesByOlimpiada(int $idOlimpiada): Collection
+    {
+        return AreaNivel::with([
+            'area', 
+            'nivel', 
+            'nivelGrado.gradoEscolaridad'
+        ])
+        ->where('id_olimpiada', $idOlimpiada)
+        ->get();
+    }
+
+    public function getNivelesGradosByAreaNivel(int $id_area_nivel): Collection
+    {
+        return NivelGrado::with('gradoEscolaridad')
+            ->where('id_area_nivel', $id_area_nivel)
+            ->get();
+    }
 }

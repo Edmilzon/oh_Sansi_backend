@@ -197,6 +197,26 @@ class Olimpiada2023Seeder extends Seeder
 
             $this->command->info('Usuarios asignados como responsables de área y evaluadores.');
 
+            $nivelGradosMatematicas = [];
+            foreach ($areaNivelesMatematicas as $key => $areaNivel) {
+                $nivelGrado = NivelGrado::create([
+                    'id_area_nivel' => $areaNivel->id_area_nivel,
+                    'id_grado_escolaridad' => $areaNivel->id_grado_escolaridad,
+                    'activo' => true,
+            ]);
+            $nivelGradosMatematicas[$key] = $nivelGrado;
+            }
+
+            $nivelGradosFisica = [];
+            foreach ($areaNivelesFisica as $key => $areaNivel) {
+                $nivelGrado = NivelGrado::create([
+                    'id_area_nivel' => $areaNivel->id_area_nivel,
+                    'id_grado_escolaridad' => $areaNivel->id_grado_escolaridad,
+                    'activo' => true,
+            ]);
+            $nivelGradosFisica[$key] = $nivelGrado;
+            }
+
             // 11. Crear Fases y Parámetros para Matemáticas (primer nivel, 1ro de secundaria)
             $faseClasificatoria = Fase::create([
                 'nombre' => 'Clasificatoria',
@@ -225,48 +245,42 @@ class Olimpiada2023Seeder extends Seeder
                     'contacto_tutor' => '77722222', 
                     'id_institucion' => $institucion1->id_institucion, 
                     'id_persona' => $personasCompetidores[0]->id_persona,
-                    'id_grado_escolaridad' => $grado1ro->id_grado_escolaridad,
-                    'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_1ro']->id_area_nivel
+                    'id_nivel_grado' => $nivelGradosMatematicas[$niveles->first()->id_nivel.'_1ro']->id_nivel_grado
                 ],
                 [
                     'departamento' => 'La Paz', 
                     'contacto_tutor' => '77722223', 
                     'id_institucion' => $institucion1->id_institucion, 
                     'id_persona' => $personasCompetidores[1]->id_persona,
-                    'id_grado_escolaridad' => $grado1ro->id_grado_escolaridad,
-                    'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_1ro']->id_area_nivel
+                    'id_nivel_grado' => $nivelGradosMatematicas[$niveles->first()->id_nivel.'_1ro']->id_nivel_grado
                 ],
                 [
                     'departamento' => 'Cochabamba', 
                     'contacto_tutor' => '77722224', 
                     'id_institucion' => $institucion2->id_institucion, 
                     'id_persona' => $personasCompetidores[2]->id_persona,
-                    'id_grado_escolaridad' => $grado1ro->id_grado_escolaridad,
-                    'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_1ro']->id_area_nivel
+                    'id_nivel_grado' => $nivelGradosMatematicas[$niveles->first()->id_nivel.'_1ro']->id_nivel_grado
                 ],
                 [
                     'departamento' => 'Cochabamba', 
                     'contacto_tutor' => '77722225', 
                     'id_institucion' => $institucion2->id_institucion, 
                     'id_persona' => $personasCompetidores[3]->id_persona,
-                    'id_grado_escolaridad' => $grado1ro->id_grado_escolaridad,
-                    'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_1ro']->id_area_nivel
+                    'id_nivel_grado' => $nivelGradosMatematicas[$niveles->first()->id_nivel.'_1ro']->id_nivel_grado
                 ],
                 [
                     'departamento' => 'La Paz', 
                     'contacto_tutor' => '77722226', 
                     'id_institucion' => $institucion1->id_institucion, 
                     'id_persona' => $personasCompetidores[4]->id_persona,
-                    'id_grado_escolaridad' => $grado2do->id_grado_escolaridad,
-                    'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_2do']->id_area_nivel
+                    'id_nivel_grado' => $nivelGradosMatematicas[$niveles->first()->id_nivel.'_2do']->id_nivel_grado
                 ],
                 [
                     'departamento' => 'La Paz', 
                     'contacto_tutor' => '77722227', 
                     'id_institucion' => $institucion1->id_institucion, 
                     'id_persona' => $personasCompetidores[5]->id_persona,
-                    'id_grado_escolaridad' => $grado2do->id_grado_escolaridad,
-                    'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_2do']->id_area_nivel
+                    'id_nivel_grado' => $nivelGradosMatematicas[$niveles->first()->id_nivel.'_2do']->id_nivel_grado
                 ],
             ];
 
@@ -282,9 +296,8 @@ class Olimpiada2023Seeder extends Seeder
                 'departamento' => 'La Paz',
                 'contacto_tutor' => '77722228',
                 'id_institucion' => $institucion1->id_institucion,
-                'id_area_nivel' => $areaNivelesFisica[$niveles->first()->id_nivel.'_1ro']->id_area_nivel,
                 'id_persona' => $personasCompetidores[6]->id_persona,
-                'id_grado_escolaridad' => $grado1ro->id_grado_escolaridad
+                'id_nivel_grado' => $nivelGradosFisica[$niveles->first()->id_nivel.'_1ro']->id_nivel_grado
             ]);
 
             $this->command->info('Competidor de Física creado.');
@@ -358,9 +371,8 @@ class Olimpiada2023Seeder extends Seeder
                 'departamento' => 'La Paz',
                 'contacto_tutor' => '77722229',
                 'id_institucion' => $institucion1->id_institucion,
-                'id_area_nivel' => $areaNivelesMatematicas[$niveles->first()->id_nivel.'_1ro']->id_area_nivel,
                 'id_persona' => $personasCompetidores[7]->id_persona,
-                'id_grado_escolaridad' => $grado1ro->id_grado_escolaridad
+                'id_nivel_grado' => $nivelGradosMatematicas[$niveles->first()->id_nivel.'_1ro']->id_nivel_grado
             ]);
 
             $evaluacionDescalificada = Evaluacion::create([

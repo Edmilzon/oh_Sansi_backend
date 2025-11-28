@@ -289,8 +289,8 @@ class Olimpiada2021Seeder extends Seeder
             $gradosBasica = [$grado1ro, $grado2do, $grado3ro, $grado4to, $grado5to, $grado6to];
             $gradosSecundaria = [$grado7mo, $grado8vo, $grado9no, $grado10mo, $grado11vo, $grado12vo];
 
-            // Crear AreaNivel para Matemáticas (3 niveles con grados aleatorios)
-            foreach ($niveles->take(3) as $nivel) {
+            // Crear AreaNivel para Matemáticas (6 niveles con grados aleatorios)
+            foreach ($niveles->take(6) as $nivel) {
                 $gradoAleatorio = $gradosSecundaria[array_rand($gradosSecundaria)];
                 $areaNivelesMatematicas[$nivel->id_nivel] = AreaNivel::create([
                     'id_area' => $areaMatematicas->id_area,
@@ -302,7 +302,7 @@ class Olimpiada2021Seeder extends Seeder
             }
 
             // Crear AreaNivel para Física (3 niveles con grados aleatorios)
-            foreach ($niveles->take(3) as $nivel) {
+            foreach ($niveles->take(6) as $nivel) {
                 $gradoAleatorio = $gradosSecundaria[array_rand($gradosSecundaria)];
                 $areaNivelesFisica[$nivel->id_nivel] = AreaNivel::create([
                     'id_area' => $areaFisica->id_area,
@@ -370,6 +370,66 @@ class Olimpiada2021Seeder extends Seeder
                 'id_area_nivel' => $primerAreaNivelMat->id_area_nivel,
             ]);
 
+            $nivelGradosMatematicas = [];
+            foreach ($areaNivelesMatematicas as $areaNivel) {
+            $nivelGrado = NivelGrado::create([
+                'id_area_nivel' => $areaNivel->id_area_nivel,
+                'id_grado_escolaridad' => $areaNivel->id_grado_escolaridad,
+                'activo' => true,
+            ]);
+            $nivelGradosMatematicas[$areaNivel->id_area_nivel] = $nivelGrado;
+            }
+
+            $nivelGradosFisica = [];
+            foreach ($areaNivelesFisica as $areaNivel) {
+            $nivelGrado = NivelGrado::create([
+            'id_area_nivel' => $areaNivel->id_area_nivel,
+            'id_grado_escolaridad' => $areaNivel->id_grado_escolaridad,
+            'activo' => true,
+            ]);
+            $nivelGradosFisica[$areaNivel->id_area_nivel] = $nivelGrado;
+            }
+
+            $nivelGradosArte = [];
+            foreach ($areaNivelesArte as $areaNivel) {
+            $nivelGrado = NivelGrado::create([
+            'id_area_nivel' => $areaNivel->id_area_nivel,
+            'id_grado_escolaridad' => $areaNivel->id_grado_escolaridad,
+            'activo' => true,
+            ]);
+            $nivelGradosArte[$areaNivel->id_area_nivel] = $nivelGrado;
+            }
+
+            $nivelGradosBiologia = [];
+            foreach ($areaNivelesBiologia as $areaNivel) {
+            $nivelGrado = NivelGrado::create([
+            'id_area_nivel' => $areaNivel->id_area_nivel,
+            'id_grado_escolaridad' => $areaNivel->id_grado_escolaridad,
+            'activo' => true,
+            ]);
+            $nivelGradosBiologia[$areaNivel->id_area_nivel] = $nivelGrado;
+            }
+
+            $nivelGradosInformatica = [];
+            foreach ($areaNivelesInformatica as $areaNivel) {
+            $nivelGrado = NivelGrado::create([
+            'id_area_nivel' => $areaNivel->id_area_nivel,
+            'id_grado_escolaridad' => $areaNivel->id_grado_escolaridad,
+            'activo' => true,
+            ]);
+            $nivelGradosInformatica[$areaNivel->id_area_nivel] = $nivelGrado;
+            }
+
+            $nivelGradosQuimica = [];
+            foreach ($areaNivelesQuimica as $areaNivel) {
+            $nivelGrado = NivelGrado::create([
+            'id_area_nivel' => $areaNivel->id_area_nivel,
+            'id_grado_escolaridad' => $areaNivel->id_grado_escolaridad,
+            'activo' => true,
+            ]);
+            $nivelGradosQuimica[$areaNivel->id_area_nivel] = $nivelGrado;
+            }
+
             $this->command->info('Usuarios asignados como responsables de área y evaluadores.');
 
             // 11. Crear Fases y Parámetros para Matemáticas (primer nivel)
@@ -399,26 +459,80 @@ class Olimpiada2021Seeder extends Seeder
             // Competidores para Matemáticas
             foreach (array_slice($personasCompetidores, 0, 6) as $index => $persona) {
                 $areaNivel = $areaNivelesMatematicas[array_rand($areaNivelesMatematicas)];
+                $nivelGrado = $nivelGradosMatematicas[$areaNivel->id_area_nivel];
+
                 $competidores[] = Competidor::create([
                     'departamento' => $index % 2 == 0 ? 'La Paz' : 'Cochabamba',
                     'contacto_tutor' => '7772222' . $index,
                     'id_institucion' => $index % 2 == 0 ? $institucion1->id_institucion : $institucion2->id_institucion,
                     'id_persona' => $persona->id_persona,
-                    'id_grado_escolaridad' => $areaNivel->id_grado_escolaridad,
-                    'id_area_nivel' => $areaNivel->id_area_nivel
+                    'id_nivel_grado' => $nivelGrado->id_nivel_grado,
                 ]);
             }
 
             // Competidores para Física
             foreach (array_slice($personasCompetidores, 6, 4) as $index => $persona) {
                 $areaNivel = $areaNivelesFisica[array_rand($areaNivelesFisica)];
+                $nivelGrado = $nivelGradosFisica[$areaNivel->id_area_nivel];
+
                 $competidores[] = Competidor::create([
                     'departamento' => 'La Paz',
                     'contacto_tutor' => '7773333' . $index,
                     'id_institucion' => $institucion1->id_institucion,
                     'id_persona' => $persona->id_persona,
-                    'id_grado_escolaridad' => $areaNivel->id_grado_escolaridad,
-                    'id_area_nivel' => $areaNivel->id_area_nivel
+                    'nivel_grado' => $nivelGrado->id_nivel_grado,
+                ]);
+            }
+
+            foreach (array_slice($personasCompetidores, 6, 4) as $index => $persona) {
+                $areaNivel = $areaNivelesBiologia[array_rand($areaNivelesBiologia)];
+                $nivelGrado = $nivelGradosBiologia[$areaNivel->id_area_nivel];
+
+                $competidores[] = Competidor::create([
+                    'departamento' => 'La Paz',
+                    'contacto_tutor' => '7774444' . $index,
+                    'id_institucion' => $institucion1->id_institucion,
+                    'id_persona' => $persona->id_persona,
+                    'nivel_grado' => $nivelGrado->id_nivel_grado,
+                ]);
+            }
+
+            foreach (array_slice($personasCompetidores, 6, 4) as $index => $persona) {
+                $areaNivel = $areaNivelesQuimica[array_rand($areaNivelesQuimica)];
+                $nivelGrado = $nivelGradosQuimica[$areaNivel->id_area_nivel];
+
+                $competidores[] = Competidor::create([
+                    'departamento' => 'La Paz',
+                    'contacto_tutor' => '7775555' . $index,
+                    'id_institucion' => $institucion1->id_institucion,
+                    'id_persona' => $persona->id_persona,
+                    'nivel_grado' => $nivelGrado->id_nivel_grado,
+                ]);
+            }
+
+            foreach (array_slice($personasCompetidores, 6, 4) as $index => $persona) {
+                $areaNivel = $areaNivelesInformatica[array_rand($areaNivelesInformatica)];
+                $nivelGrado = $nivelGradosInformatica[$areaNivel->id_area_nivel];
+
+                $competidores[] = Competidor::create([
+                    'departamento' => 'La Paz',
+                    'contacto_tutor' => '7776666' . $index,
+                    'id_institucion' => $institucion1->id_institucion,
+                    'id_persona' => $persona->id_persona,
+                    'nivel_grado' => $nivelGrado->id_nivel_grado,
+                ]);
+            }
+
+            foreach (array_slice($personasCompetidores, 6, 4) as $index => $persona) {
+                $areaNivel = $areaNivelesArte[array_rand($areaNivelesArte)];
+                $nivelGrado = $nivelGradosArte[$areaNivel->id_area_nivel];
+
+                $competidores[] = Competidor::create([
+                    'departamento' => 'La Paz',
+                    'contacto_tutor' => '7779900' . $index,
+                    'id_institucion' => $institucion1->id_institucion,
+                    'id_persona' => $persona->id_persona,
+                    'nivel_grado' => $nivelGrado->id_nivel_grado,
                 ]);
             }
 
@@ -490,12 +604,11 @@ class Olimpiada2021Seeder extends Seeder
 
             // 17. Simular una desclasificación
             $competidorDescalificado = Competidor::create([
-                'departamento' => 'La Paz',
-                'contacto_tutor' => '77722229',
-                'id_institucion' => $institucion1->id_institucion,
-                'id_area_nivel' => $primerAreaNivelMat->id_area_nivel,
-                'id_persona' => $personasCompetidores[7]->id_persona,
-                'id_grado_escolaridad' => $primerAreaNivelMat->id_grado_escolaridad
+            'departamento' => 'La Paz',
+            'contacto_tutor' => '77722229',
+            'id_institucion' => $institucion1->id_institucion,
+            'id_persona' => $personasCompetidores[7]->id_persona,
+            'id_nivel_grado' => $nivelGradosMatematicas[$primerAreaNivelMat->id_area_nivel]->id_nivel_grado
             ]);
 
             $evaluacionDescalificada = Evaluacion::create([

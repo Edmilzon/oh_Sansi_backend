@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class UsusariosSeeder extends Seeder{
+class UsuariosSeeder extends Seeder{
     
     public function run():void{
         // Buscar la olimpiada del año actual, que fue creada por OlimpiadaSeeder.

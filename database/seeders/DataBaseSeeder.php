@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             OlimpiadaSeeder::class, 
             AreasSeeder::class,
             NivelesSeeder::class,
-            UsusariosSeeder::class,
+            UsuariosSeeder::class,
             Olimpiada2023Seeder::class,
             Olimpiadas2024Seeder::class,
             DepartamentoSeeder::class,

@@ -59,6 +59,19 @@ class CompetidorSeeder extends Seeder
             return;
         }
 
+        $nivelGrados = [];
+        foreach ($areasNiveles as $id_area_nivel) {
+        foreach ($grados as $id_grado_escolaridad) {
+            $nivelGrado = NivelGrado::firstOrCreate([
+                'id_area_nivel' => $id_area_nivel,
+                'id_grado_escolaridad' => $id_grado_escolaridad,
+            ], [
+                'activo' => true,
+            ]);
+            $nivelGrados[] = $nivelGrado;
+            }
+        }
+
         // 4️⃣ Crear 100 competidores distribuidos uniformemente
         $numCompetidores = 300;
         for ($i = 1; $i <= $numCompetidores; $i++) {
