@@ -23,6 +23,12 @@ use App\Http\Controllers\MedalleroController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+//willian
+use App\Http\Controllers\RolAccionController;
+use App\Http\Controllers\AccionDisponibilidadController;
+use App\Http\Controllers\SistemaEstadoController;
+use App\Http\Controllers\UsuarioAccionesController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -158,7 +164,7 @@ Route::post('/parametros', [ParametroController::class, 'store']);
 Route::get('/responsable/{idResponsable}', [ListaResponsableAreaController::class, 'getAreaPorResponsable']);
 Route::get('/niveles/{idArea}/area', [ListaResponsableAreaController::class, 'getNivelesPorArea']);
 //Route::get('/grado', [ListaResponsableAreaController::class, 'getGrado']);
-Route::get('/grados/nivel/{idNivel}', [App\Http\Controllers\ListaResponsableAreaController::class, 'getListaGrados']);
+Route::get('/grados/{idArea}/nivel/{idNivel}', [ListaResponsableAreaController::class, 'getListaGrados']);
 Route::get('/departamento', [ListaResponsableAreaController::class, 'getDepartamento']);
 Route::get('/generos', [ListaResponsableAreaController::class, 'getGenero']);
 Route::get('/listaCompleta/{idResponsable}/{idArea}/{idNivel}/{idGrado}/{genero?}/{departamento?}', [ListaResponsableAreaController::class, 'listarPorAreaYNivel']);
@@ -182,3 +188,22 @@ Route::post('/evaluaciones/{id_evaluacion}/finalizar', [EvaluacionController::cl
 Route::get('/responsableGestion/{idResponsable}', [MedalleroController::class, 'getAreaPorResponsable']);
 Route::get('/medallero/area/{idArea}/niveles', [MedalleroController::class, 'getNivelesPorArea']);
 Route::post('/medallero/configuracion', [MedalleroController::class, 'guardarMedallero']);
+
+//wilian
+Route::prefix('roles/{idRol}/acciones')->group(function () {
+    Route::get('/', [RolAccionController::class, 'index']);
+    Route::post('/', [RolAccionController::class, 'store']);
+    Route::delete('/{idAccion}', [RolAccionController::class, 'destroy']);
+});
+
+Route::get(
+    'rol/{id_rol}/fase-global/{id_fase_global}/gestion/{id_gestion}', 
+    [AccionDisponibilidadController::class, 'index']
+);
+
+Route::get('/sistema/estado', [SistemaEstadoController::class, 'index']);
+
+Route::get(
+    'usuario/{id_usuario}/fase-global/{id_fase_global}/gestion/{id_gestion}/acciones', 
+    [UsuarioAccionesController::class, 'index']
+);

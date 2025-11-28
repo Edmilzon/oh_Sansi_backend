@@ -497,8 +497,16 @@ class EvaluadorRepository
             ];
         });
 
+        $evaluadorData = [
+            'id_usuario' => $usuario->id_usuario,
+            'nombre_completo' => $usuario->nombre . ' ' . $usuario->apellido,
+        ];
+        if ($asignaciones->isNotEmpty()) {
+            $evaluadorData['id_evaluador'] = $asignaciones->first()->id_evaluadorAN;
+        }
+
         return [
-            'evaluador' => ['id_usuario' => $usuario->id_usuario, 'nombre_completo' => $usuario->nombre . ' ' . $usuario->apellido],
+            'evaluador' => $evaluadorData,
             'areas' => $areasAgrupadas->values()->all(),
         ];
     }
