@@ -197,8 +197,8 @@ return new class extends Migration{
         Schema::create('cronograma_fase', function (Blueprint $table) {
             $table->id('id_cronograma_fase');
             $table->unsignedBigInteger('id_fase_global')->nullable();
-            $table->date('fecha_inicio');
-            $table->date('fecha_fin');
+            $table->dateTime('fecha_inicio');
+            $table->dateTime('fecha_fin');
             $table->tinyInteger('estado')->nullable();
             $table->timestamps();
 

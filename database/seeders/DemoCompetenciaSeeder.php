@@ -47,10 +47,11 @@ class DemoCompetenciaSeeder extends Seeder
         // 3. Cronograma
         DB::table('cronograma_fase')->insert([
             'id_fase_global' => $idFaseFinal,
-            'fecha_inicio' => Carbon::now()->subDays(5),
-            'fecha_fin' => Carbon::now()->addDays(20),
-            'estado' => 1,
-            'created_at' => now(), 'updated_at' => now(),
+            'fecha_inicio'   => Carbon::now()->subDays(5)->setTime(8, 0, 0),
+            'fecha_fin'      => Carbon::now()->addDays(20)->endOfDay(),
+            'estado'         => 1,
+            'created_at'     => now(),
+            'updated_at'     => now(),
         ]);
 
         // 4. Áreas y Niveles

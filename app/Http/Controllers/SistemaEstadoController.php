@@ -4,22 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Services\SistemaEstadoService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
 class SistemaEstadoController extends Controller
 {
     public function __construct(
-        protected SistemaEstadoService $service
+        protected SistemaEstadoService $estadoService
     ) {}
 
-    public function index(Request $request): JsonResponse
+    /**
+     * GET /api/sistema/estado
+     */
+    public function index(): JsonResponse
     {
-        $estado = $this->service->obtenerEstadoDelSistema();
+        $snapshot = $this->estadoService->obtenerSnapshotDelSistema();
 
-        return response()->json([
-            'success' => true,
-            'data' => $estado
-        ]);
+        return response()->json($snapshot);
     }
 }

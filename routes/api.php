@@ -276,3 +276,6 @@ Route::apiResource('cronograma-fases', CronogramaFaseController::class);
 
 // Endpoint Custom para WebSockets (Reemplaza al /broadcasting/auth nativo)
 Route::post('/broadcasting/auth', [BroadcastController::class, 'authenticate']);
+
+// Enpoint para obtener la gestion actual y dervivados
+Route::get('/sistema/estado', [SistemaEstadoController::class, 'index']);

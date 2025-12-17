@@ -31,3 +31,8 @@ Broadcast::channel('competencia.{id}', function ($user, $id) {
     // Si está logueado, puede ver el estado de la competencia
     return $user !== null;
 });
+
+// Canal público para el estado global del sistema
+Broadcast::channel('sistema-global', function () {
+    return true; // Cualquiera puede escuchar
+});
