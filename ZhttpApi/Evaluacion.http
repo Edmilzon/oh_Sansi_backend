@@ -1,0 +1,122 @@
+@hostname = http://localhost:8000
+@api_prefix = /api
+@token = 
+
+
+### ================= CREAR COMPETENCIA =================
+
+POST {{hostname}}{{api_prefix}}/competencias
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id_area_nivel": 1,
+    "fecha_inicio": "2025-12-10",
+    "fecha_fin": "2025-12-15"
+}
+
+### ================= AÑADIR EXAMEN A COMPETENCIA =================
+
+@id_competencia_creada = 3
+POST {{hostname}}{{api_prefix}}/competencias/{{id_competencia_creada}}/examenes
+Content-Type: application/json
+Accept: application/json
+
+{
+    "nombre": "Examen Teórico",
+    "ponderacion": 60,
+    "maxima_nota": 100
+}
+
+### ================= LISTAR COMPETENCIAS =================
+
+GET {{hostname}}{{api_prefix}}/competencias
+Accept: application/json
+
+### ================= OBTENER UNA COMPETENCIA =================
+
+GET {{hostname}}{{api_prefix}}/competencias/{{id_competencia_creada}}
+Accept: application/json
+
+### ================= LISTAR EXÁMENES DE UNA COMPETENCIA =================
+
+GET {{hostname}}{{api_prefix}}/competencias/{{id_competencia_creada}}/examenes
+Accept: application/json
+
+### ================= OBTENER UN EXAMEN =================
+@id_examen = 2
+GET {{hostname}}{{api_prefix}}/examenes/{{id_examen}}
+Accept: application/json
+
+###Evaluador con sus areas y niveles actuales
+##10, 11, 12, 13, 14
+GET {{hostname}}{{api_prefix}}/evaluadores/11/areas-niveles
+Accept: application/json
+
+### LISTAR COMPETIDORES POR AREA, NIVEL Y COMPETENCIA
+GET {{hostname}}{{api_prefix}}/competencias/{{id_competencia_creada}}/area/1/nivel/1/competidores
+Accept: application/json
+
+
+### ================= FLUJO DE CALIFICACIÓN =================
+
+### PASO 1: CREAR/ASIGNAR EVALUACIÓN (Estado: EN PROCESO)
+# Se crea una evaluación para un competidor en un examen específico.
+# Esto representa la "tarea" de calificar para un evaluador.
+@id_examen = 2
+POST {{hostname}}{{api_prefix}}/examenes/{{id_examen}}/evaluaciones
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id_competidor": 21,
+    "id_evaluador_an": 4
+}
+
+### PASO 2: CALIFICAR EVALUACIÓN (Estado: Pendiente -> Calificado)
+# El evaluador envía la nota y las observaciones para finalizar la calificación.
+@id_evaluacion_creada = 5
+POST {{hostname}}{{api_prefix}}/evaluaciones/{{id_evaluacion_creada}}/finalizar
+Content-Type: application/json
+Accept: application/json
+
+{
+    "nota": 100,
+    "observaciones": "Bueno"
+}
+
+
+### ================= DESCALIFICAR COMPETIDOR (ADMINISTRATIVO) =================
+
+# Descalifica a un competidor en cualquier momento, sin necesidad de una evaluación en curso.
+# Esto actualiza el estado del competidor a 'DESCALIFICADO' y crea un registro de auditoría.
+@id_competidor_a_descalificar = 53
+POST {{hostname}}{{api_prefix}}/competidores/{{id_competidor_a_descalificar}}/descalificar
+Content-Type: application/json
+Accept: application/json
+
+{
+    "observaciones": "Incumplimiento del reglamento general de la olimpiada (Artículo 5)."
+}
+
+### ACTUALIZAR UNA EVALUACIÓN
+@id_evaluacion = 8
+PUT {{hostname}}{{api_prefix}}/evaluaciones/{{id_evaluacion}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "nota": 85.5,
+    "observaciones": "malo"
+}
+
+### OBTENER COMPETIDORES CALIFICADOS DE UNA COMPETENCIA
+### ================= CONSULTAS =================
+
+GET {{hostname}}{{api_prefix}}/competencias/1/calificados
+Accept: application/json
+
+### OBTENER LA CALIFICACIÓN DE UN COMPETIDOR ESPECÍFICO
+@id_competidor = 1
+GET {{hostname}}{{api_prefix}}/competidores/{{id_competidor}}/evaluacion
+Accept: application/json

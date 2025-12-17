@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Repositories\NivelRepository;
+use App\Model\Nivel;
+use Illuminate\Database\Eloquent\Collection;
 
 class NivelService {
-    Protected $nivelRepository;
+    protected $nivelRepository;
 
     public function __construct(NivelRepository $nivelRepository){
         $this->nivelRepository = $nivelRepository;
@@ -17,5 +19,9 @@ class NivelService {
 
     public function createNewNivel(array $data){
         return $this->nivelRepository->createNivel($data);
+    }
+
+    public function findById(int $id) : ?Nivel {
+        return $this->nivelRepository->findById($id);
     }
 }
