@@ -9,6 +9,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            FaseGlobalSeeder::class
+        ]);
+        
+        $this->call([
             RolesSeeder::class,
             AccionSistemaSeeder::class,
             DepartamentoSeeder::class,
