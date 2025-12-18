@@ -23,10 +23,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            DemoCompetenciaSeeder::class,
-        ]);
-
-        $this->call([
             ConfiguracionAccionSeeder::class,
         ]);
     }

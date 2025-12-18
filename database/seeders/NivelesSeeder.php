@@ -11,8 +11,7 @@ class NivelesSeeder extends Seeder
     {
         $niveles = [
             '1ro de Secundaria', '2do de Secundaria', '3ro de Secundaria',
-            '4to de Secundaria', '5to de Secundaria', '6to de Secundaria',
-            'Nivel 1 (Inicial)', 'Nivel 2 (Intermedio)', 'Nivel 3 (Avanzado)'
+            '4to de Secundaria', '5to de Secundaria', '6to de Secundaria'
         ];
 
         $this->command->info('Verificando niveles...');
