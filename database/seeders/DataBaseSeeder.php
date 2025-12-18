@@ -21,9 +21,5 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UsuariosSeeder::class,
         ]);
-
-        $this->call([
-            ConfiguracionAccionSeeder::class,
-        ]);
     }
 }
