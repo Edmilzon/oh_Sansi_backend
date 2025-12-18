@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Services\AreaNivelService;
 use Illuminate\Routing\Controller;
+use App\Model\FaseGlobal;
 
 class AreaNivelController extends Controller
 {
@@ -44,7 +45,7 @@ class AreaNivelController extends Controller
     public function destroy($id): JsonResponse
     {
         try {
-            $existeFase = \App\Model\Fase::exists();
+            $existeFase = FaseGlobal::exists();
 
             if ($existeFase) {
                 return response()->json([

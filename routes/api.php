@@ -216,17 +216,6 @@ Route::get('/generos', [ListaResponsableAreaController::class, 'getGenero']);
 Route::get('/listaCompleta/{idResponsable}/{idArea}/{idNivel}/{idGrado}/{genero?}/{departamento?}', [ListaResponsableAreaController::class, 'listarPorAreaYNivel']);
 Route::get('/competencias/{id_competencia}/area/{idArea}/nivel/{idNivel}/competidores', [ListaResponsableAreaController::class, 'getCompetidoresPorAreaYNivel']);
 
-// Fases
-Route::get('/fases-globales', [FaseController::class, 'indexGlobales']);
-Route::get('/acciones-sistema', [FaseController::class, 'listarAccionesSistema']);
-Route::get('/gestiones/{idGestion}/configuracion-acciones', [FaseController::class, 'getConfiguracionAccionesPorGestion']);
-Route::put('/gestiones/{idGestion}/configuracion-acciones', [FaseController::class, 'guardarConfiguracionAccionesPorGestion']);
-Route::patch('/gestiones/{idGestion}/fases/{idFase}/acciones/{idAccion}', [FaseController::class, 'actualizarAccionEnFase']);
-Route::get('/gestiones/{idGestion}/fases/{idFase}/acciones-habilitadas', [FaseController::class, 'getAccionesHabilitadas']);
-Route::get('/fases/{id}/details', [FaseController::class, 'getFaseDetails']);
-Route::get('/sub-fases/area/{id_area}/nivel/{id_nivel}/olimpiada/{id_olimpiada}', [FaseController::class, 'getSubFases']);
-Route::apiResource('area-niveles.fases', FaseController::class)->shallow();
-
 // Medallero y Reportes
 Route::get('/responsableGestion/{idResponsable}', [MedalleroController::class, 'getAreaPorResponsable']);
 Route::get('/medallero/area/{idArea}/niveles', [MedalleroController::class, 'getNivelesPorArea']);
@@ -244,12 +233,8 @@ Route::prefix('reportes')->group(function () {
 Route::apiResource('departamentos', DepartamentoController::class);
 Route::apiResource('grados-escolaridad', GradoEscolaridadController::class);
 Route::apiResource('instituciones', InstitucionController::class);
-Route::patch('/sub-fases/{id}/estado', [FaseController::class, 'updateEstado']);
-Route::get('/sub-fases/area/{id_area}/nivel/{id_nivel}/olimpiada/{id_olimpiada}', [FaseController::class, 'getSubFases']);
 Route::get('/areas/actuales', [AreaController::class, 'getActualesPlanas']);
 Route::get('/area-nivel/olimpiada/{id_olimpiada}/area/{id_area}', [AreaNivelController::class, 'getNivelesPorAreaOlimpiada']);
-Route::patch('/sub-fases/{id_subfase}/estado', [FaseController::class, 'updateEstado']);
-
 // Roles y Permisos
 Route::prefix('roles/{idRol}/acciones')->group(function () {
     Route::get('/', [RolAccionController::class, 'index']);
@@ -279,3 +264,8 @@ Route::post('/broadcasting/auth', [BroadcastController::class, 'authenticate']);
 
 // Enpoint para obtener la gestion actual y dervivados
 Route::get('/sistema/estado', [SistemaEstadoController::class, 'index']);
+
+// Fase Global
+Route::prefix('fase-global')->controller(FaseGlobalController::class)->group(function () {
+    Route::post('/configurar', 'storeCompleto');
+});

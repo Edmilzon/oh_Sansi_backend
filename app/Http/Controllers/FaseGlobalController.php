@@ -3,23 +3,34 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use App\Services\FaseService;
+use App\Http\Requests\Fase\StoreFaseCompletaRequest;
+use App\Services\FaseGlobalService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 
 class FaseGlobalController extends Controller
 {
     public function __construct(
-        protected FaseService $service
+        protected FaseGlobalService $service
     ) {}
 
-    public function listarActuales(): JsonResponse
+    public function storeCompleto(StoreFaseCompletaRequest $request): JsonResponse
     {
-        $fases = $this->service->listarFasesDeOlimpiadaActual();
+        try {
+            $resultado = $this->service->crearFaseCompleta($request->validated());
 
-        if ($fases->isEmpty()) {
-            return response()->json(['message' => 'No hay una olimpiada activa o fases configuradas.'], 404);
+            return response()->json([
+                'message' => 'Fase global y cronograma configurados correctamente.',
+                'data' => $resultado
+            ], 201);
+
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'No se pudo configurar la fase.',
+                'error' => $e->getMessage()
+            ], 409); // Conflict
         }
-
-        return response()->json($fases);
     }
 }

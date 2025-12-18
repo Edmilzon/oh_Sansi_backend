@@ -13,7 +13,7 @@ use App\Repositories\CompetenciaRepository;
 use Illuminate\Http\JsonResponse;
 use App\Events\CompetenciaCreada;
 use App\Repositories\AreaRepository;
-use App\Repositories\FaseRepository;
+use App\Repositories\FaseGlobalRepository;
 use Exception;
 
 class CompetenciaController extends Controller
@@ -23,7 +23,7 @@ class CompetenciaController extends Controller
         protected CierreCompetenciaService $cierreService,
         protected CompetenciaRepository $repository,
         protected AreaRepository $areaRepo,
-        protected FaseRepository $faseRepo
+        protected FaseGlobalRepository $faseRepo
     ) {}
 
     /**
