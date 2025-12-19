@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use App\Http\Requests\Fase\StoreFaseCompletaRequest;
-use App\Http\Requests\Cronograma\UpdateCronogramaRequest;
+use App\Http\Requests\Fase\UpdateFaseCronogramaRequest;
 use App\Services\FaseGlobalService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
@@ -35,13 +35,11 @@ class FaseGlobalController extends Controller
         }
     }
 
-    // GET /api/fase-global/actuales
     public function listarActuales(): JsonResponse
     {
         return response()->json($this->service->listarFasesActuales());
     }
 
-    // GET /api/fase-global/{id}
     public function show(int $id): JsonResponse
     {
         try {
@@ -52,9 +50,8 @@ class FaseGlobalController extends Controller
         }
     }
 
-    public function updateCronograma(UpdateCronogramaRequest $request, int $id): JsonResponse
+    public function updateCronograma(UpdateFaseCronogramaRequest $request, int $id): JsonResponse
     {
-        // El controller llama a FaseGlobalService -> que llama a CronogramaFaseService
         $cronograma = $this->service->actualizarCronograma($id, $request->validated());
 
         return response()->json([
