@@ -158,6 +158,14 @@ Route::prefix('responsables')->group(function () {
 });
 
 // Olimpiadas y Estructura
+Route::prefix('olimpiadas')->group(function () {
+
+    Route::get('/', [OlimpiadaController::class, 'index']);
+    Route::post('/', [OlimpiadaController::class, 'store']);
+    Route::patch('/{id}/activar', [OlimpiadaController::class, 'activar']);
+    Route::put('/{id}/activar', [OlimpiadaController::class, 'activar']);
+});
+
 Route::get('olimpiadas/{identifier}/areas', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);
 Route::get('/olimpiadas/anteriores', [OlimpiadaController::class, 'olimpiadasAnteriores']);
 Route::get('/olimpiadas/actual', [OlimpiadaController::class, 'olimpiadaActual']);
