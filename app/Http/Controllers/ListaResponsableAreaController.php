@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use App\Services\ListaResponsableAreaService;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
 class ListaResponsableAreaController extends Controller
@@ -114,7 +115,7 @@ class ListaResponsableAreaController extends Controller
         ], 500);
     }
 }
- 
+
     public function getDepartamento(): JsonResponse
 {
     try {
