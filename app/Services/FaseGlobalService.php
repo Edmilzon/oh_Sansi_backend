@@ -15,7 +15,8 @@ class FaseGlobalService
 {
     public function __construct(
         protected FaseGlobalRepository $repository,
-        protected SistemaEstadoService $sistemaEstadoService
+        protected SistemaEstadoService $sistemaEstadoService,
+        protected CronogramaFaseService $cronogramaService
     ) {}
 
     public function crearFaseCompleta(array $data)
@@ -97,5 +98,31 @@ class FaseGlobalService
         return CronogramaFase::whereHas('faseGlobal', function ($q) use ($idOlimpiada) {
             $q->where('id_olimpiada', $idOlimpiada);
         })->where('estado', 1)->exists();
+    }
+
+    public function listarFasesActuales()
+    {
+        $olimpiada = Olimpiada::where('estado', 1)->first();
+
+        if (!$olimpiada) {
+            return collect([]);
+        }
+        return $this->repository->getByOlimpiada($olimpiada->id_olimpiada);
+    }
+
+    public function obtenerDetalleFase(int $id)
+    {
+        return $this->repository->find($id);
+    }
+
+    /**
+     * Delega la actualización del cronograma al servicio correspondiente.
+     */
+    public function actualizarCronograma(int $idFaseGlobal, array $data)
+    {
+        return DB::transaction(function () use ($idFaseGlobal, $data) {
+            // Delegamos la lógica compleja al servicio de Cronograma
+            return $this->cronogramaService->actualizarCronogramaDeFase($idFaseGlobal, $data);
+        });
     }
 }

@@ -14,7 +14,16 @@ class CronogramaFaseRepository
 
     public function find(int $id): CronogramaFase
     {
-        return CronogramaFase::findOrFail($id);
+        return CronogramaFase::query()
+            ->select([
+                'id_cronograma_fase',
+                'id_fase_global',
+                'fecha_inicio',
+                'fecha_fin',
+                'estado'
+            ])
+            ->where('id_cronograma_fase', $id)
+            ->firstOrFail();
     }
 
     public function create(array $data): CronogramaFase
@@ -37,7 +46,7 @@ class CronogramaFaseRepository
 
     public function obtenerPorOlimpiada(int $idOlimpiada): Collection
     {
-        return \App\Model\CronogramaFase::query()
+        return CronogramaFase::query()
             ->with(['faseGlobal' => function ($query) {
                 $query->select('id_fase_global', 'nombre', 'codigo', 'orden');
             }])

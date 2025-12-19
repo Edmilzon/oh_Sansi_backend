@@ -255,9 +255,17 @@ Route::get(
 );
 
 // Cronogramas
-Route::get('cronograma-fases/actuales', [CronogramaFaseController::class, 'listarActuales']);
-Route::get('fases-globales/actuales', [FaseGlobalController::class, 'listarActuales']);
-Route::apiResource('cronograma-fases', CronogramaFaseController::class);
+Route::controller(CronogramaFaseController::class)->prefix('cronograma-fases')->group(function () {
+    // 1. Rutas específicas (Deben ir antes de las rutas con parámetros {id})
+    Route::get('/actuales', 'listarActuales');
+
+    // 2. CRUD Estándar
+    Route::get('/', 'index');              // Listar todos
+    Route::post('/', 'store');             // Crear nuevo
+    Route::get('/{id}', 'show');           // Ver uno específico
+    Route::put('/{id}', 'update');         // Actualizar (soporta datetime)
+    Route::delete('/{id}', 'destroy');     // Eliminar
+});
 
 // Endpoint Custom para WebSockets (Reemplaza al /broadcasting/auth nativo)
 Route::post('/broadcasting/auth', [BroadcastController::class, 'authenticate']);
@@ -266,6 +274,26 @@ Route::post('/broadcasting/auth', [BroadcastController::class, 'authenticate']);
 Route::get('/sistema/estado', [SistemaEstadoController::class, 'index']);
 
 // Fase Global
-Route::prefix('fase-global')->controller(FaseGlobalController::class)->group(function () {
+Route::controller(FaseGlobalController::class)->prefix('fase-global')->group(function () {
+
+    // 1. CREACIÓN MAESTRA
+    // Crea la Fase Global y su Cronograma inicial en una sola transacción.
+    // POST /api/fase-global/configurar
     Route::post('/configurar', 'storeCompleto');
+
+    // 2. LISTADO INTELIGENTE
+    // Trae todas las fases de la gestión actual con su estructura anidada.
+    // GET /api/fase-global/actuales
+    Route::get('/actuales', 'listarActuales');
+
+    // 3. DETALLE INDIVIDUAL
+    // Busca por ID de Fase Global y trae su cronograma adjunto.
+    // GET /api/fase-global/{id}
+    Route::get('/{id}', 'show');
+
+    // 4. ACTUALIZACIÓN DE TIEMPOS (NUEVO)
+    // Permite cambiar fechas o activar/desactivar la fase (apaga las demás).
+    // PATCH /api/fase-global/{id}/cronograma
+    Route::patch('/{id}/cronograma', 'updateCronograma');
+
 });

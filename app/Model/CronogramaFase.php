@@ -26,6 +26,15 @@ class CronogramaFase extends Model
         'id_fase_global' => 'integer',
     ];
 
+    /**
+     * Formato de serialización para arrays/JSON.
+     * Garantiza que el frontend reciba "YYYY-MM-DD HH:mm:ss"
+     */
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+
     public function faseGlobal()
     {
         return $this->belongsTo(FaseGlobal::class, 'id_fase_global', 'id_fase_global');

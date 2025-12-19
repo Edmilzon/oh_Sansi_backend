@@ -16,22 +16,33 @@ class FaseGlobalRepository
     }
 
     /**
-     * Encuentra una fase por ID.
-     */
-    public function find(int $id): ?FaseGlobal
-    {
-        return FaseGlobal::find($id);
-    }
-
-    /**
-     * Obtiene todas las fases de una olimpiada ordenadas.
+     * Trae todas las fases de la olimpiada con su cronograma anidado.
+     * OPTIMIZADO con selects.
      */
     public function getByOlimpiada(int $idOlimpiada): Collection
     {
-        return FaseGlobal::where('id_olimpiada', $idOlimpiada)
-            ->with('cronograma')
+        return FaseGlobal::query()
+            ->select('id_fase_global', 'id_olimpiada', 'codigo', 'nombre', 'orden')
+            ->where('id_olimpiada', $idOlimpiada)
+            ->with(['cronograma' => function ($q) {
+                $q->select('id_cronograma_fase', 'id_fase_global', 'fecha_inicio', 'fecha_fin', 'estado');
+            }])
             ->orderBy('orden', 'asc')
             ->get();
+    }
+
+    /**
+     * Busca una fase específica y trae su cronograma adjunto.
+     */
+    public function find(int $id): FaseGlobal
+    {
+        return FaseGlobal::query()
+            ->select('id_fase_global', 'id_olimpiada', 'codigo', 'nombre', 'orden')
+            ->with(['cronograma' => function ($q) {
+                $q->select('id_cronograma_fase', 'id_fase_global', 'fecha_inicio', 'fecha_fin', 'estado');
+            }])
+            ->where('id_fase_global', $id)
+            ->firstOrFail();
     }
 
     /**
@@ -51,11 +62,12 @@ class FaseGlobalRepository
     {
         return FaseGlobal::query()
             ->select('id_fase_global', 'id_olimpiada', 'codigo', 'nombre', 'orden')
-            ->where('codigo', 'EVALUACION') // Filtro duro solicitado
+            ->where('codigo', 'EVALUACION')
             ->whereHas('olimpiada', function ($q) {
-                $q->where('estado', 1); // Solo gestión actual
+                $q->where('estado', 1);
             })
             ->orderBy('orden', 'asc')
             ->get();
     }
+
 }

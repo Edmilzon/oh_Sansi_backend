@@ -16,8 +16,15 @@ class StoreCronogramaRequest extends FormRequest
         return [
             'id_fase_global' => ['required', 'integer', 'exists:fase_global,id_fase_global'],
             'fecha_inicio'   => ['required', 'date'],
-            'fecha_fin'      => ['required', 'date', 'after_or_equal:fecha_inicio'],
+            'fecha_fin'      => ['required', 'date', 'after:fecha_inicio'],
             'descripcion'    => ['nullable', 'string', 'max:255'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'fecha_fin.after' => 'La fecha y hora de finalización debe ser posterior al inicio.',
         ];
     }
 }
