@@ -77,7 +77,7 @@ class OlimpiadaController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'nombre' => 'required|string|max:255',
-                'gestion' => 'required|string|size:4', 
+                'gestion' => 'required|string|size:4',
             ]);
 
             if ($validator->fails()) {
@@ -111,7 +111,7 @@ class OlimpiadaController extends Controller
     {
         try {
             $olimpiada = $this->olimpiadaService->obtenerOlimpiadaPorId($id);
-            
+
             if (!$olimpiada) {
                 return response()->json([
                     'success' => false,
@@ -153,6 +153,43 @@ class OlimpiadaController extends Controller
                 'success' => false,
                 'message' => 'Error al obtener las olimpiadas: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * POST /api/olimpiadas/admin
+     * Crea una olimpiada con control total (puede activarla de una vez).
+     */
+    public function storeAdmin(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'nombre'  => 'required|string|max:255',
+            'gestion' => 'required|string|size:4|unique:olimpiada,gestion',
+            'user_id' => 'required|integer|exists:usuario,id_usuario',
+            'estado'  => 'boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Datos inválidos',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $olimpiada = $this->olimpiadaService->crearOlimpiadaDirecta($request->all());
+
+            return response()->json([
+                'success' => true,
+                'data'    => $olimpiada,
+                'message' => $olimpiada->estado
+                    ? 'Olimpiada creada y activada (las anteriores fueron cerradas).'
+                    : 'Olimpiada creada correctamente como inactiva.'
+            ], 201);
+
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 }

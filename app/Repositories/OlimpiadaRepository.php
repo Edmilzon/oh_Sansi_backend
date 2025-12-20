@@ -76,4 +76,11 @@ class OlimpiadaRepository
     {
         return $this->model->where('id_olimpiada', $id)->update($data);
     }
+
+    public function createConEstado(array $data): Olimpiada
+    {
+        $data['estado'] = $data['estado'] ?? false;
+
+        return $this->model->create($data);
+    }
 }

@@ -66,7 +66,7 @@ class OlimpiadaService
         return DB::transaction(function () use ($idOlimpiada) {
 
             $this->olimpiadaRepository->desactivarTodas();
-            
+
             return $this->olimpiadaRepository->activar($idOlimpiada);
         });
     }
@@ -74,5 +74,18 @@ class OlimpiadaService
     public function obtenerOlimpiadaPorId(int $id): ?Olimpiada
     {
         return $this->olimpiadaRepository->find($id);
+    }
+
+    public function crearOlimpiadaDirecta(array $data): Olimpiada
+    {
+        $quiereSerActiva = isset($data['estado']) && filter_var($data['estado'], FILTER_VALIDATE_BOOLEAN);
+
+        if ($quiereSerActiva) {
+            return DB::transaction(function () use ($data) {
+                $this->olimpiadaRepository->desactivarTodas();
+                return $this->olimpiadaRepository->createConEstado($data);
+            });
+        }
+        return $this->olimpiadaRepository->createConEstado($data);
     }
 }

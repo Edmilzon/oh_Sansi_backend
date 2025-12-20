@@ -165,6 +165,7 @@ Route::prefix('olimpiadas')->group(function () {
     Route::post('/', [OlimpiadaController::class, 'store']);
     Route::patch('/{id}/activar', [OlimpiadaController::class, 'activar']);
     Route::put('/{id}/activar', [OlimpiadaController::class, 'activar']);
+    Route::post('/admin', [OlimpiadaController::class, 'storeAdmin']);
 });
 
 Route::get('olimpiadas/{identifier}/areas', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);
