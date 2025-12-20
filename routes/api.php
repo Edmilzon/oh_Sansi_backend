@@ -33,6 +33,7 @@ use App\Http\Controllers\ExamenController;
 use App\Http\Controllers\CompetenciaController;
 use App\Http\Controllers\CompetidorController;
 use App\Http\Controllers\BroadcastController;
+use App\Http\Controllers\DescalificacionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -228,6 +229,9 @@ Route::get('/competencias/{id_competencia}/area/{idArea}/nivel/{idNivel}/competi
 Route::get('/responsableGestion/{idResponsable}', [MedalleroController::class, 'getAreaPorResponsable']);
 Route::get('/medallero/area/{idArea}/niveles', [MedalleroController::class, 'getNivelesPorArea']);
 Route::post('/medallero/configuracion', [MedalleroController::class, 'guardarMedallero']);
+
+// Descalificaciones (Reporte Unificado)
+Route::get('/descalificados', [DescalificacionController::class, 'index']);
 
 Route::prefix('reportes')->group(function () {
     Route::get('/historial-calificaciones', [ReporteController::class, 'historialCalificaciones']);

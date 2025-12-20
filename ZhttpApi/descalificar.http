@@ -33,3 +33,29 @@ Content-Type: application/json
   }
 }
 */
+
+### Ver Lista Completa de Descalificados
+GET {{hostname}}{{api_prefix}}/descalificados
+Accept: application/json
+
+/*
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "message": "Lista consolidada de descalificados.",
+  "cantidad": 1,
+  "data": [
+    {
+      "tipo": "ETICA_EXAMEN",
+      "id_competidor": 45,
+      "nombre_completo": "Juan Perez",
+      "ci": "1234567",
+      "institucion": "Colegio San Calixto",
+      "motivo": "Sanción: Incumplimiento de reglas",
+      "fecha": "2023-10-27T15:30:00.000000Z",
+      "examen_afectado": "Examen Final Matemáticas"
+    }
+  ]
+}
+*/
