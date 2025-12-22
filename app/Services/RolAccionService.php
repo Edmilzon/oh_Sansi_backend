@@ -3,56 +3,103 @@
 namespace App\Services;
 
 use App\Repositories\RolAccionRepository;
+use App\Model\AccionSistema;
+use App\Model\Rol;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Collection;
+use App\Services\UserActionService;
 
 class RolAccionService
 {
-    protected $rolAccionRepository;
+    public function __construct(
+        protected RolAccionRepository $repo,
+        protected UserActionService $permisoCacheService
+    ) {}
 
-    public function __construct(RolAccionRepository $rolAccionRepository)
+    public function obtenerMatrizGlobal(): array
     {
-        $this->rolAccionRepository = $rolAccionRepository;
-    }
+        $roles = Rol::all();
 
-    public function obtenerAccionesPorRol(int $idRol): array
-    {
-        $rolAccion = $this->rolAccionRepository->getByRol($idRol);
+        if ($roles->isEmpty()) {
+            return [];
+        }
+        $this->sincronizarGlobal($roles);
+        $permisos = $this->repo->getAllWithRelations();
 
-        return $rolAccion->map(function ($item) {
+        return $roles->map(function ($rol) use ($permisos) {
+
+            $susPermisos = $permisos->where('id_rol', $rol->id_rol);
+
             return [
-                'id_rol_accion' => $item->id_rol_accion,
-                'id_rol' => $item->id_rol,
-                'accion' => [
-                    'id_accion' => $item->accionSistema->id_accion,
-                    'codigo' => $item->accionSistema->codigo,
-                    'nombre' => $item->accionSistema->nombre,
+                'rol' => [
+                    'id_rol' => $rol->id_rol,
+                    'nombre' => $rol->nombre,
                 ],
-                'activo' => (bool)$item->activo
+                'acciones' => $susPermisos->values()->map(function ($p) {
+                    return [
+                        'id_rol_accion'     => $p->id_rol_accion,
+                        'id_accion_sistema' => $p->id_accion_sistema,
+                        'codigo'            => $p->accionSistema->codigo,
+                        'nombre'            => $p->accionSistema->nombre,
+                        'descripcion'       => $p->accionSistema->descripcion,
+                        'activo'            => (bool) $p->activo,
+                    ];
+                })->toArray()
             ];
         })->toArray();
     }
 
-    public function sincronizarAcciones(int $idRol, array $accionesIds): array
+    public function actualizarMatrizGlobal(int $userIdAdmin, array $listaRoles): void
     {
-        return DB::transaction(function () use ($idRol, $accionesIds) {
+        DB::transaction(function () use ($listaRoles) {
 
-            $resultados = [];
-            foreach ($accionesIds as $idAccion) {
-                $resultados[] = $this->rolAccionRepository->asignarAccion($idRol, $idAccion);
+            foreach ($listaRoles as $rolData) {
+                $idRol = $rolData['id_rol'];
+
+                if (isset($rolData['acciones']) && is_array($rolData['acciones'])) {
+                    foreach ($rolData['acciones'] as $accion) {
+                        $this->repo->updateOrCreate(
+                            [
+                                'id_rol' => $idRol,
+                                'id_accion_sistema' => $accion['id_accion_sistema']
+                            ],
+                            [
+                                'activo' => $accion['activo']
+                            ]
+                        );
+                    }
+                }
+
+                // Opcional: Aquí podrías invalidar caché específica si fuera necesario
+                // $this->permisoCacheService->clearCachePorRol($idRol);
             }
-
-            return [
-                'asignadas' => count($resultados),
-                'detalle' => $resultados
-            ];
         });
+
+        // Opcional: Limpieza general de caché de permisos si la política es estricta
+        // Cache::tags(['permisos'])->flush();
     }
 
-    public function revocarAccion(int $idRol, int $idAccion): bool
+    private function sincronizarGlobal($roles): void
     {
-        return DB::transaction(function () use ($idRol, $idAccion) {
-            return $this->rolAccionRepository->eliminarAccion($idRol, $idAccion);
+        $acciones = AccionSistema::all();
+
+        if ($acciones->isEmpty()) {
+            return;
+        }
+
+        DB::transaction(function () use ($roles, $acciones) {
+            foreach ($roles as $rol) {
+                foreach ($acciones as $accion) {
+                    $this->repo->firstOrCreate(
+                        [
+                            'id_rol' => $rol->id_rol,
+                            'id_accion_sistema' => $accion->id_accion_sistema
+                        ],
+                        [
+                            'activo' => false
+                        ]
+                    );
+                }
+            }
         });
     }
 }
