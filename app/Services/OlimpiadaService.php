@@ -16,6 +16,12 @@ class OlimpiadaService
 
     public function obtenerOlimpiadaActual(): Olimpiada
     {
+        $olimpiadaActiva = $this->olimpiadaRepository->findActive();
+        
+        if ($olimpiadaActiva) {
+            return $olimpiadaActiva;
+        }
+        
         $gestionActual = date('Y');
         $nombreOlimpiada = "Olimpiada Científica Estudiantil $gestionActual";
 
