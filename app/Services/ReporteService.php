@@ -3,40 +3,73 @@
 namespace App\Services;
 
 use App\Repositories\ReporteRepository;
-use App\Model\Competencia;
 use Exception;
 
 class ReporteService
 {
     public function __construct(
-        protected ReporteRepository $repository
+        protected ReporteRepository $repo
     ) {}
+    
+    public function generarHistorialPaginado(array $params): array
+    {
+        $page  = (int) $params['page'];
+        $limit = (int) $params['limit'];
+
+        $filtros = [
+            'id_area'     => $params['id_area'] ?? null,
+            'ids_niveles' => isset($params['ids_niveles']) ? explode(',', $params['ids_niveles']) : [],
+            'search'      => $params['search'] ?? null,
+        ];
+
+        return $this->repo->getHistorialCompleto($page, $limit, $filtros);
+    }
+
+    public function obtenerAreasFiltro()
+    {
+        return $this->repo->getAreasActivas();
+    }
+
+    public function obtenerNivelesFiltro(int $idArea)
+    {
+        return $this->repo->getNivelesActivosPorArea($idArea);
+    }
 
     public function obtenerResultadosOficiales(int $idCompetencia): array
     {
-        $competencia = Competencia::with('faseGlobal')->findOrFail($idCompetencia);
+        $medallero = $this->repo->getMedallero($idCompetencia);
 
-        if (in_array($competencia->estado_fase, ['borrador', 'publicada'])) {
-            throw new Exception("Los resultados aún no están disponibles.");
-        }
-
-        if ($competencia->faseGlobal->codigo === 'FINAL') {
+        if ($medallero->isNotEmpty()) {
             return [
+                'tipo'   => 'MEDALLERO_FINAL',
                 'titulo' => 'Medallero Oficial',
-                'estado' => $competencia->estado_fase,
-                'data'   => $this->repository->getMedallero($idCompetencia)
-            ];
-        } else {
-            return [
-                'titulo' => 'Lista de Clasificados',
-                'estado' => $competencia->estado_fase,
-                'data'   => $this->repository->getClasificados($idCompetencia)
+                'data'   => $medallero
             ];
         }
+
+        $clasificados = $this->repo->getClasificados($idCompetencia);
+
+        return [
+            'tipo'   => 'LISTA_CLASIFICADOS',
+            'titulo' => 'Nómina de Clasificados',
+            'data'   => $clasificados
+        ];
     }
 
     public function obtenerHistorialEvaluacion(int $idEvaluacion)
     {
-        return $this->repository->getLogCambios($idEvaluacion);
+        $logs = $this->repo->getLogCambios($idEvaluacion);
+
+        if ($logs->isEmpty()) {
+            return [
+                'mensaje' => 'No existen cambios registrados para esta evaluación.',
+                'data'    => []
+            ];
+        }
+
+        return [
+            'mensaje' => 'Historial recuperado correctamente.',
+            'data'    => $logs
+        ];
     }
 }

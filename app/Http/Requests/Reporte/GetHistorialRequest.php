@@ -3,40 +3,44 @@
 namespace App\Http\Requests\Reporte;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class GetHistorialRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            // Como el ID viene en la ruta (URL), aquí podrías validar filtros opcionales
-            // Ejemplo: ?desde=2025-01-01
-            'desde' => 'nullable|date',
-            'hasta' => 'nullable|date|after_or_equal:desde',
+            'page'        => ['required', 'integer', 'min:1'],
+            'limit'       => ['required', 'integer', 'min:1', 'max:1000'],
+            'id_area'     => ['nullable', 'integer', 'exists:area,id_area'],
+            'ids_niveles' => ['nullable', 'string', 'regex:/^(\d+,)*\d+$/'],
+            'search'      => ['nullable', 'string', 'min:3', 'max:50'],
         ];
     }
 
-    /**
-     * Preparar datos para validación (Opcional)
-     * Útil si quieres validar el ID de la ruta explícitamente aquí
-     */
-    protected function prepareForValidation()
+    public function messages(): array
     {
-        $this->merge([
-            'id' => $this->route('id'),
-        ]);
+        return [
+            'page.required'       => 'El número de página es obligatorio.',
+            'limit.required'      => 'El límite de registros por página es obligatorio.',
+            'limit.max'           => 'No puedes solicitar más de 1000 registros por página.',
+            'ids_niveles.regex'   => 'El formato de niveles debe ser IDs separados por comas (ej: 1,2,3).',
+            'id_area.exists'      => 'El área seleccionada no existe.',
+        ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success' => false,
+            'message' => 'Parámetros de consulta inválidos.',
+            'errors'  => $validator->errors()
+        ], 422));
     }
 }
