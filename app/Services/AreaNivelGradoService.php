@@ -508,4 +508,46 @@ class AreaNivelGradoService
             throw $e;
         }
     }
+
+    public function verificarAccesoResponsable(int $idOlimpiada, int $idArea, int $idResponsable): bool
+    {
+        return DB::table('area_olimpiada as ao')
+            ->join('responsable_area as ra', 'ao.id_area_olimpiada', '=', 'ra.id_area_olimpiada')
+            ->where('ao.id_olimpiada', $idOlimpiada)
+            ->where('ao.id_area', $idArea)
+            ->where('ra.id_usuario', $idResponsable)
+            ->exists();
+    }
+
+    public function getAreasPorResponsable(int $idResponsable): array
+    {
+        try {
+            $olimpiadaActiva = DB::table('olimpiada')
+                ->where('estado', true)
+                ->first();
+            
+            if (!$olimpiadaActiva) {
+                return [];
+            }
+            
+            $areas = DB::table('area_olimpiada as ao')
+                ->join('responsable_area as ra', 'ao.id_area_olimpiada', '=', 'ra.id_area_olimpiada')
+                ->join('area as a', 'ao.id_area', '=', 'a.id_area')
+                ->where('ao.id_olimpiada', $olimpiadaActiva->id_olimpiada)
+                ->where('ra.id_usuario', $idResponsable)
+                ->select('a.id_area', 'a.nombre')
+                ->distinct()
+                ->get()
+                ->toArray();
+            
+            return $areas;
+            
+        } catch (\Exception $e) {
+            Log::error('Error al obtener áreas por responsable:', [
+                'idResponsable' => $idResponsable,
+                'error' => $e->getMessage()
+            ]);
+            return [];
+        }
+    }
 }
