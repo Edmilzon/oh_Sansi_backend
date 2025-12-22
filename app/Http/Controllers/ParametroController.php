@@ -8,6 +8,8 @@ use App\Services\ParametroService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Model\Olimpiada;
+use App\Model\AreaNivel;
+use Illuminate\Support\Collection;
 
 class ParametroController extends Controller
 {
@@ -28,7 +30,41 @@ class ParametroController extends Controller
     public function store(StoreParametroRequest $request): JsonResponse
     {
         try {
-            $parametrosGuardados = $this->service->guardarParametrosMasivos($request->validated()['area_niveles']);
+            $validatedData = $request->validated()['area_niveles'];
+            
+            $olimpiadasActivas = Olimpiada::where('estado', true)->get();
+            
+            if ($olimpiadasActivas->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No hay olimpiadas activas. No se pueden guardar parámetros.',
+                ], 422);
+            }
+            
+            $idsOlimpiadasActivas = $olimpiadasActivas->pluck('id_olimpiada')->toArray();
+            
+            $idsAreaNivel = collect($validatedData)->pluck('id_area_nivel')->toArray();
+            
+            $areaNiveles = AreaNivel::whereIn('id_area_nivel', $idsAreaNivel)
+                ->with(['areaOlimpiada.olimpiada'])
+                ->get();
+            
+            $idsInvalidos = [];
+            foreach ($areaNiveles as $areaNivel) {
+                if (!in_array($areaNivel->areaOlimpiada->olimpiada->id_olimpiada, $idsOlimpiadasActivas)) {
+                    $idsInvalidos[] = $areaNivel->id_area_nivel;
+                }
+            }
+            
+            if (count($idsInvalidos) > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Algunos parámetros no pertenecen a una olimpiada activa.',
+                    'ids_invalidos' => $idsInvalidos
+                ], 422);
+            }
+            
+            $parametrosGuardados = $this->service->guardarParametrosMasivos($validatedData);
             
             $data = collect($parametrosGuardados)->map(function($parametro) {
                 return [
@@ -109,30 +145,34 @@ class ParametroController extends Controller
     }
 
     public function getParametrosGestionActual(): JsonResponse
-{
-    try {
-        $olimpiadaActual = Olimpiada::where('estado', true)->first();
-        
-        if (!$olimpiadaActual) {
+    {
+        try {
+            $olimpiadasActivas = Olimpiada::where('estado', true)->get();
+            
+            if ($olimpiadasActivas->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No hay olimpiadas activas en este momento.',
+                    'data' => []
+                ], 404);
+            }
+            
+            $todosParametros = new Collection();
+            foreach ($olimpiadasActivas as $olimpiada) {
+                $parametros = $this->service->getParametrosPorOlimpiada($olimpiada->id_olimpiada);
+                $todosParametros = $todosParametros->merge($parametros);
+            }
+            
+            return response()->json([
+                'success' => true,
+                'data' => $todosParametros
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'No hay olimpiada activa en este momento.',
-                'data' => []
-            ], 404);
+                'message' => $e->getMessage(),
+                'data' => [] 
+            ], 500);
         }
-        
-        $result = $this->service->getParametrosPorOlimpiada($olimpiadaActual->id_olimpiada);
-        
-        return response()->json([
-            'success' => true,
-            'data' => $result
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => $e->getMessage(),
-            'data' => [] 
-        ], 500);
     }
-}
 }

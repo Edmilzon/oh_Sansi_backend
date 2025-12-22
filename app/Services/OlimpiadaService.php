@@ -16,6 +16,12 @@ class OlimpiadaService
 
     public function obtenerOlimpiadaActual(): Olimpiada
     {
+        $olimpiadaActiva = $this->olimpiadaRepository->findActive();
+        
+        if ($olimpiadaActiva) {
+            return $olimpiadaActiva;
+        }
+        
         $gestionActual = date('Y');
         $nombreOlimpiada = "Olimpiada Científica Estudiantil $gestionActual";
 
@@ -51,7 +57,7 @@ class OlimpiadaService
                 'id' => $olimpiada->id_olimpiada,
                 'nombre' => $olimpiada->nombre,
                 'gestion' => $olimpiada->gestion,
-                'esActual' => (string)$olimpiada->gestion === (string)$currentYear,
+                'estado' => $olimpiada->estado,
             ];
         });
     }
@@ -87,5 +93,19 @@ class OlimpiadaService
             });
         }
         return $this->olimpiadaRepository->createConEstado($data);
+    }
+
+    public function obtenerTodasOlimpiadas(): Collection
+    {
+        $olimpiadas = $this->olimpiadaRepository->obtenerGestiones();
+
+        return $olimpiadas->map(function ($olimpiada) {
+            return [
+                'id' => $olimpiada->id_olimpiada,
+                'nombre' => $olimpiada->nombre,
+                'gestion' => $olimpiada->gestion,
+                'estado' => $olimpiada->estado,
+            ];
+        });
     }
 }

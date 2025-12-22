@@ -76,14 +76,16 @@ class OlimpiadaController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'nombre' => 'required|string|max:255',
+                'nombre' => 'required|string|max:255|unique:olimpiada,nombre',
                 'gestion' => 'required|string|size:4',
+            ], [
+                'nombre.unique' => 'Ya existe una olimpiada con este nombre.',
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Revise si ingreso valores válidos para gestion y nombre',
+                    'message' => 'Revise si ingreso valores válidos para gestión y nombre',
                     'errors' => $validator->errors()
                 ], 422);
             }
@@ -140,12 +142,13 @@ class OlimpiadaController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $olimpiadas = $this->olimpiadaService->obtenerGestiones();
+            $olimpiadas = $this->olimpiadaService->obtenerTodasOlimpiadas();
 
             return response()->json([
                 'success' => true,
                 'data' => $olimpiadas,
-                'message' => 'Olimpiadas obtenidas correctamente'
+                'total' => $olimpiadas->count(),
+                'message' => 'Todas las olimpiadas obtenidas correctamente'
             ]);
 
         } catch (Exception $e) {
@@ -156,6 +159,7 @@ class OlimpiadaController extends Controller
         }
     }
 
+
     /**
      * POST /api/olimpiadas/admin
      * Crea una olimpiada con control total (puede activarla de una vez).
@@ -163,10 +167,13 @@ class OlimpiadaController extends Controller
     public function storeAdmin(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'nombre'  => 'required|string|max:255',
+            'nombre'  => 'required|string|max:255|unique:olimpiada,nombre',
             'gestion' => 'required|string|size:4|unique:olimpiada,gestion',
             'user_id' => 'required|integer|exists:usuario,id_usuario',
             'estado'  => 'boolean',
+        ], [
+            'nombre.unique' => 'Ya existe una olimpiada con este nombre.',
+            'gestion.unique' => 'Ya existe una olimpiada con esta gestión.',
         ]);
 
         if ($validator->fails()) {

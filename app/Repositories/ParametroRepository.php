@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Model\Parametro;
+use App\Model\AreaNivel;
+use App\Model\Olimpiada;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -28,6 +30,30 @@ class ParametroRepository
 
     public function guardarParametro(array $data): Parametro
     {
+        $areaNivel = AreaNivel::with(['areaOlimpiada.olimpiada'])->find($data['id_area_nivel']);
+        
+        if (!$areaNivel) {
+            throw new \Exception('El Área-Nivel con ID ' . $data['id_area_nivel'] . ' no existe.');
+        }
+        
+        $olimpiadasActivas = Olimpiada::where('estado', true)->get();
+        
+        if ($olimpiadasActivas->isEmpty()) {
+            throw new \Exception('No hay olimpiadas activas.');
+        }
+        
+        $perteneceAOlimpiadaActiva = false;
+        foreach ($olimpiadasActivas as $olimpiada) {
+            if ($areaNivel->areaOlimpiada->olimpiada->id_olimpiada === $olimpiada->id_olimpiada) {
+                $perteneceAOlimpiadaActiva = true;
+                break;
+            }
+        }
+        
+        if (!$perteneceAOlimpiadaActiva) {
+            throw new \Exception('No se puede guardar parámetros para una olimpiada no activa.');
+        }
+        
         $notaMinAprobacion = isset($data['nota_min_aprobacion']) && $data['nota_min_aprobacion'] !== '' 
             ? $data['nota_min_aprobacion'] 
             : null;
