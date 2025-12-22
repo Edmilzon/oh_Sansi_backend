@@ -39,4 +39,9 @@ class AreaOlimpiadaService
     {
         return $this->areaOlimpiadaRepository->findAreasByGestion($gestion);
     }
+
+    public function getAreasByOlimpiadaAndResponsable(int $idOlimpiada, int $idResponsable): Collection
+    {
+        return $this->areaOlimpiadaRepository->findAreasByOlimpiadaAndResponsable($idOlimpiada, $idResponsable);
+    }
 }

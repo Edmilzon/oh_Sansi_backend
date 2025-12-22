@@ -130,4 +130,72 @@ class AreaOlimpiadaController extends Controller
             ], 500);
         }
     }
+
+    public function getAreasByResponsableActiva(int $idResponsable): JsonResponse
+    {
+        try {
+            $olimpiadaActiva = Olimpiada::where('estado', true)->first();
+            
+            if (!$olimpiadaActiva) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No hay ninguna olimpiada activa en este momento.'
+                ], 404);
+            }
+            
+            $areas = $this->areaOlimpiadaService->getAreasByOlimpiadaAndResponsable(
+                $olimpiadaActiva->id_olimpiada, 
+                $idResponsable
+            );
+            
+            $mensajeFase = '';
+            $faseActiva = FaseGlobal::where('id_olimpiada', $olimpiadaActiva->id_olimpiada)
+                ->where(function($query) {
+                    $query->where('nombre', 'like', '%Evaluación%')
+                          ->orWhere('nombre', 'like', '%Calificación%')
+                          ->orWhere('nombre', 'like', '%evaluación%')
+                          ->orWhere('nombre', 'like', '%calificación%');
+                })
+                ->whereHas('cronogramas', function($query) {
+                    $query->where('estado', true);
+                })
+                ->first();
+            
+            if ($faseActiva) {
+                $mensajeFase = 'La funcionalidad de asignar niveles a un Área no está disponible porque el proceso de evaluación ha iniciado. Solo puede ver las asignaciones previamente realizadas.';
+            } else {
+                $faseGlobalActiva = FaseGlobal::where('id_olimpiada', $olimpiadaActiva->id_olimpiada)
+                    ->whereHas('cronogramas', function($query) {
+                        $query->where('estado', true);
+                    })
+                    ->first();
+                
+                if ($faseGlobalActiva) {
+                    $mensajeFase = 'No existe un proceso de evaluación activo.';
+                } else {
+                    $mensajeFase = 'No existe un proceso de evaluación.';
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $mensajeFase,
+                'data' => $areas,
+                'total' => $areas->count(),
+                'olimpiada' => [
+                    'id' => $olimpiadaActiva->id_olimpiada,
+                    'nombre' => $olimpiadaActiva->nombre,
+                    'gestion' => $olimpiadaActiva->gestion,
+                    'estado' => $olimpiadaActiva->estado
+                ],
+                'id_responsable' => $idResponsable
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener las áreas: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

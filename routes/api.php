@@ -179,6 +179,7 @@ Route::get('/area', [AreaController::class, 'index']);
 Route::post('/area', [AreaController::class, 'store']);
 Route::get('/area/{id_olimpiada}', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);
 Route::get('/area/gestion/{gestion}', [AreaOlimpiadaController::class, 'getAreasByGestion']);
+Route::get('/area/responsable/{idResponsable}', [AreaOlimpiadaController::class, 'getAreasByResponsableActiva']);
 
 Route::get('/niveles/{id_nivel}', [NivelController::class, 'show']);
 
