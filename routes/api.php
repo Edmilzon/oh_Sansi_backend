@@ -34,6 +34,8 @@ use App\Http\Controllers\CompetenciaController;
 use App\Http\Controllers\CompetidorController;
 use App\Http\Controllers\BroadcastController;
 use App\Http\Controllers\DescalificacionController;
+use App\Http\Controllers\ConfiguracionAccionController;
+use App\Http\Controllers\AccionSistemaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -301,3 +303,15 @@ Route::prefix('reportes')->controller(ReporteController::class)->group(function 
     Route::get('/areas', 'getAreas');
     Route::get('/areas/{idArea}/niveles', 'getNivelesPorArea');
 });
+
+Route::prefix('configuracion-acciones')->controller(ConfiguracionAccionController::class)->group(function () {
+    Route::get('/', 'index');
+    Route::post('/','update');
+});
+
+Route::prefix('roles')->controller(RolAccionController::class)->group(function () {
+    Route::get('/matriz', 'index');
+    Route::post('/matriz', 'updateGlobal');
+});
+
+Route::get('/acciones-sistema', [AccionSistemaController::class, 'index']);

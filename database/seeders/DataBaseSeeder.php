@@ -11,10 +11,13 @@ class DatabaseSeeder extends Seeder
         $this->call([
             FaseGlobalSeeder::class
         ]);
-        
+
         $this->call([
             RolesSeeder::class,
             AccionSistemaSeeder::class,
+
+            RolAccionSeeder::class,
+
             DepartamentoSeeder::class,
             AreasSeeder::class,
             NivelesSeeder::class,
