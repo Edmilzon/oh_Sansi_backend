@@ -233,6 +233,7 @@ Route::post('/medallero/configuracion', [MedalleroController::class, 'guardarMed
 
 // Descalificaciones (Reporte Unificado)
 Route::get('/descalificados', [DescalificacionController::class, 'index']);
+Route::post('/descalificados', [DescalificacionController::class, 'store']);
 
 Route::prefix('reportes')->group(function () {
     Route::get('/historial-calificaciones', [ReporteController::class, 'historialCalificaciones']);
