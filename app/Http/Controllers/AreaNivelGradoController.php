@@ -36,56 +36,6 @@ class AreaNivelGradoController extends Controller
         }
     }
 
-    public function store(Request $request): JsonResponse
-    {
-        try {
-            Log::info('[CONTROLLER] Request recibido en store:', $request->all());
-
-            $validatedData = $request->validate([
-                '*.id_area' => 'required|integer|exists:area,id_area',
-                '*.id_nivel' => 'required|integer|exists:nivel,id_nivel',
-                '*.id_grado_escolaridad' => 'required|integer|exists:grado_escolaridad,id_grado_escolaridad',
-                '*.activo' => 'required|boolean'
-            ]);
-
-            $result = $this->areaNivelGradoService->createMultipleAreaNivelWithGrades($validatedData);
-            
-            $response = [
-                'success' => true,
-                'data' => $result['area_niveles'],
-                'message' => $result['message'],
-                'olimpiada_actual' => $result['olimpiada'],
-                'success_count' => $result['success_count'],
-                'created_count' => count($result['area_niveles'])
-            ];
-
-            if (!empty($result['errors'])) {
-                $response['errors'] = $result['errors'];
-                $response['error_count'] = $result['error_count'];
-            }
-
-            if (!empty($result['distribucion'])) {
-                $response['distribucion'] = $result['distribucion'];
-            }
-
-            return response()->json($response, 201);
-            
-        } catch (ValidationException $e) {
-            Log::error('[CONTROLLER] Error de validación:', $e->errors());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error de validación en los datos',
-                'errors' => $e->errors()
-            ], 422);
-        } catch (\Exception $e) {
-            Log::error('[CONTROLLER] Error general en store:', $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al crear las relaciones área-nivel: ' . $e->getMessage()
-            ], 400);
-        }
-    }
-
     public function getAreasConNiveles(): JsonResponse
     {
         try {
@@ -136,7 +86,10 @@ class AreaNivelGradoController extends Controller
             ]);
             return response()->json([
                 'success' => false,
-                'data' => [],
+                'data' => [
+                    'niveles_con_grados_agrupados' => [],
+                    'niveles_individuales' => []
+                ],
                 'message' => 'Error al obtener los niveles y grados: ' . $e->getMessage()
             ], 500);
         }
@@ -218,6 +171,56 @@ class AreaNivelGradoController extends Controller
                 'success' => false,
                 'message' => 'Error al obtener las relaciones área-nivel a detalle: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function store(Request $request): JsonResponse
+    {
+        try {
+            Log::info('[CONTROLLER] Request recibido en store:', $request->all());
+
+            $validatedData = $request->validate([
+                '*.id_area' => 'required|integer|exists:area,id_area',
+                '*.id_nivel' => 'required|integer|exists:nivel,id_nivel',
+                '*.id_grado_escolaridad' => 'required|integer|exists:grado_escolaridad,id_grado_escolaridad',
+                '*.activo' => 'required|boolean'
+            ]);
+
+            $result = $this->areaNivelGradoService->createMultipleAreaNivelWithGrades($validatedData);
+            
+            $response = [
+                'success' => true,
+                'data' => $result['area_niveles'],
+                'message' => $result['message'],
+                'olimpiada_actual' => $result['olimpiada'],
+                'success_count' => $result['success_count'],
+                'created_count' => count($result['area_niveles'])
+            ];
+
+            if (!empty($result['errors'])) {
+                $response['errors'] = $result['errors'];
+                $response['error_count'] = $result['error_count'];
+            }
+
+            if (!empty($result['distribucion'])) {
+                $response['distribucion'] = $result['distribucion'];
+            }
+
+            return response()->json($response, 201);
+            
+        } catch (ValidationException $e) {
+            Log::error('[CONTROLLER] Error de validación:', $e->errors());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación en los datos',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('[CONTROLLER] Error general en store:', $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al crear las relaciones área-nivel: ' . $e->getMessage()
+            ], 400);
         }
     }
 }

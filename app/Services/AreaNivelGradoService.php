@@ -26,21 +26,17 @@ class AreaNivelGradoService
         $this->areaNivelRepository = $areaNivelRepository;
     }
 
-    private function obtenerOlimpiadaActual(): Olimpiada
+    private function obtenerOlimpiadaActiva(): Olimpiada
     {
-        $gestionActual = date('Y');
-        $nombreOlimpiada = "Olimpiada Científica Estudiantil $gestionActual";
+        $olimpiada = Olimpiada::where('estado', true)->first();
         
-        return Olimpiada::firstOrCreate(
-            ['gestion' => "$gestionActual"],
-            ['nombre' => $nombreOlimpiada]
-        );
+        if (!$olimpiada) {
+            throw new \Exception('No hay ninguna olimpiada activa. Active una olimpiada primero.');
+        }
+        
+        return $olimpiada;
     }
 
-    public function index(): array
-    {
-        return $this->getAreasConNivelesSimplificado();
-    }
 
     public function createMultipleAreaNivelWithGrades(array $data): array
     {
@@ -63,7 +59,7 @@ class AreaNivelGradoService
 
         DB::beginTransaction();
         try {
-            $olimpiadaActual = $this->obtenerOlimpiadaActual();
+            $olimpiadaActiva = $this->obtenerOlimpiadaActiva();
             $inserted = [];
             $errors = [];
 
@@ -88,7 +84,7 @@ class AreaNivelGradoService
                     $areaOlimpiada = AreaOlimpiada::firstOrCreate(
                         [
                             'id_area' => $grupo['id_area'],
-                            'id_olimpiada' => $olimpiadaActual->id_olimpiada
+                            'id_olimpiada' => $olimpiadaActiva->id_olimpiada
                         ]
                     );
                     
@@ -117,7 +113,7 @@ class AreaNivelGradoService
 
             $message = '';
             if (count($inserted) > 0) {
-                $message = "Se crearon/actualizaron " . count($inserted) . " relaciones área-nivel-grado correctamente";
+                $message = "Se crearon/actualizaron " . count($inserted) . " relaciones área-nivel-grado correctamente en la olimpiada activa ({$olimpiadaActiva->gestion})";
             }
             
             if (count($errors) > 0) {
@@ -126,7 +122,7 @@ class AreaNivelGradoService
 
             return [
                 'area_niveles' => $inserted,
-                'olimpiada' => $olimpiadaActual->gestion,
+                'olimpiada' => $olimpiadaActiva->gestion,
                 'message' => $message,
                 'errors' => $errors,
                 'success_count' => count($inserted),
@@ -142,7 +138,166 @@ class AreaNivelGradoService
         }
     }
 
-     public function getNivelesGradosByAreaAndGestion(int $id_area, string $gestion): array
+    public function index(): array
+    {
+        return $this->getAreasConNiveles();
+    }
+
+    public function getAreasConNiveles(): array
+    {
+        try {
+            $olimpiadaActiva = $this->obtenerOlimpiadaActiva();
+            
+            $areas = Area::with([
+                'areaOlimpiada' => function($query) use ($olimpiadaActiva) {
+                    $query->where('id_olimpiada', $olimpiadaActiva->id_olimpiada);
+                },
+                'areaOlimpiada.areaNiveles' => function($query) {
+                    $query->where('es_activo', true);
+                },
+                'areaOlimpiada.areaNiveles.nivel:id_nivel,nombre'
+            ])
+            ->orderBy('id_area', 'asc')
+            ->get(['id_area', 'nombre']);
+
+            $resultado = $areas->map(function($area) {
+                $nivelesArray = collect();
+                
+                foreach ($area->areaOlimpiada as $areaOlimpiada) {
+                    foreach ($areaOlimpiada->areaNiveles as $areaNivel) {
+                        $nivelesArray->push([
+                            'id_nivel' => $areaNivel->nivel->id_nivel,
+                            'nombre' => $areaNivel->nivel->nombre,
+                            'asignado_activo' => (bool) $areaNivel->es_activo
+                        ]);
+                    }
+                }
+
+                return [
+                    'id_area' => $area->id_area,
+                    'nombre' => $area->nombre,
+                    'niveles' => $nivelesArray->unique('id_nivel')->values()->toArray()
+                ];
+            });
+
+            return [
+                'areas' => $resultado->values()->toArray(),
+                'olimpiada_actual' => $olimpiadaActiva->gestion,
+                'message' => 'Áreas obtenidas para la olimpiada activa'
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('[SERVICE] Error en getAreasConNiveles:', [
+                'error' => $e->getMessage()
+            ]);
+            
+            return [
+                'areas' => [],
+                'olimpiada_actual' => 'N/A',
+                'message' => 'Error: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function getAreasConNivelesSimplificado(): array
+    {
+        try {
+            $olimpiadaActiva = $this->obtenerOlimpiadaActiva();
+            
+            $areas = Area::with([
+                'areaOlimpiada' => function($query) use ($olimpiadaActiva) {
+                    $query->where('id_olimpiada', $olimpiadaActiva->id_olimpiada);
+                },
+                'areaOlimpiada.areaNiveles' => function($query) {
+                    $query->where('es_activo', true);
+                },
+                'areaOlimpiada.areaNiveles.nivel:id_nivel,nombre',
+                'areaOlimpiada.areaNiveles.gradosEscolaridad:id_grado_escolaridad,nombre'
+            ])
+            ->whereHas('areaOlimpiada.areaNiveles', function($query) {
+                $query->where('es_activo', true);
+            })
+            ->orderBy('id_area', 'asc')
+            ->get(['id_area', 'nombre']);
+
+            $resultado = $areas->map(function($area) {
+                $nivelesAgrupados = collect();
+                
+                foreach ($area->areaOlimpiada as $areaOlimpiada) {
+                    foreach ($areaOlimpiada->areaNiveles as $areaNivel) {
+                        $nivelesAgrupados->push([
+                            'id_nivel' => $areaNivel->nivel->id_nivel,
+                            'nombre_nivel' => $areaNivel->nivel->nombre,
+                            'grados' => $areaNivel->gradosEscolaridad->map(function($grado) {
+                                return [
+                                    'id_grado_escolaridad' => $grado->id_grado_escolaridad,
+                                    'nombre_grado' => $grado->nombre
+                                ];
+                            })->values()->toArray()
+                        ]);
+                    }
+                }
+
+                return [
+                    'id_area' => $area->id_area,
+                    'nombre' => $area->nombre,
+                    'niveles' => $nivelesAgrupados->unique('id_nivel')->values()->toArray()
+                ];
+            });
+
+            return [
+                'areas' => $resultado->values()->toArray(),
+                'olimpiada_actual' => $olimpiadaActiva->gestion,
+                'message' => 'Áreas con niveles y grados activos obtenidas exitosamente para la olimpiada activa'
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('[SERVICE] Error en getAreasConNivelesSimplificado:', [
+                'error' => $e->getMessage()
+            ]);
+            
+            return [
+                'areas' => [],
+                'olimpiada_actual' => 'N/A',
+                'message' => 'Error: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function getAreaNivelByAreaAll(int $id_area): array
+    {
+        try {
+            $olimpiadaActiva = $this->obtenerOlimpiadaActiva();
+            
+            $areaNiveles = AreaNivel::whereHas('areaOlimpiada', function($query) use ($id_area, $olimpiadaActiva) {
+                    $query->where('id_area', $id_area)
+                          ->where('id_olimpiada', $olimpiadaActiva->id_olimpiada);
+                })
+                ->with(['nivel', 'gradosEscolaridad', 'areaOlimpiada.area'])
+                ->get();
+
+            return [
+                'success' => true,
+                'data' => $areaNiveles,
+                'olimpiada' => $olimpiadaActiva->gestion,
+                'message' => 'Relaciones área-nivel obtenidas para el área especificada en la olimpiada activa'
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('[SERVICE] Error en getAreaNivelByAreaAll:', [
+                'id_area' => $id_area,
+                'error' => $e->getMessage()
+            ]);
+            
+            return [
+                'success' => false,
+                'data' => [],
+                'message' => 'Error: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function getNivelesGradosByAreaAndGestion(int $id_area, string $gestion): array
     {
         try {
             Log::info('[SERVICE] Obteniendo niveles y grados por área y gestión', [
@@ -281,69 +436,12 @@ class AreaNivelGradoService
         }
     }
 
-    public function getAreasConNivelesSimplificado(): array
-    {
-        $olimpiadaActual = $this->obtenerOlimpiadaActual();
-        
-        $areas = Area::with([
-            'areaOlimpiada' => function($query) use ($olimpiadaActual) {
-                $query->where('id_olimpiada', $olimpiadaActual->id_olimpiada);
-            },
-            'areaOlimpiada.areaNiveles' => function($query) {
-                $query->where('es_activo', true);
-            },
-            'areaOlimpiada.areaNiveles.nivel:id_nivel,nombre',
-            'areaOlimpiada.areaNiveles.gradosEscolaridad:id_grado_escolaridad,nombre'
-        ])
-        ->whereHas('areaOlimpiada.areaNiveles', function($query) {
-            $query->where('es_activo', true);
-        })
-        ->get(['id_area', 'nombre']);
-
-        $resultado = $areas->map(function($area) {
-            $nivelesAgrupados = collect();
-            
-            foreach ($area->areaOlimpiada as $areaOlimpiada) {
-                foreach ($areaOlimpiada->areaNiveles as $areaNivel) {
-                    $nivelesAgrupados->push([
-                        'id_nivel' => $areaNivel->nivel->id_nivel,
-                        'nombre_nivel' => $areaNivel->nivel->nombre,
-                        'grados' => $areaNivel->gradosEscolaridad->map(function($grado) {
-                            return [
-                                'id_grado_escolaridad' => $grado->id_grado_escolaridad,
-                                'nombre_grado' => $grado->nombre
-                            ];
-                        })->values()
-                    ]);
-                }
-            }
-
-            return [
-                'id_area' => $area->id_area,
-                'nombre' => $area->nombre,
-                'niveles' => $nivelesAgrupados->unique('id_nivel')->values()
-            ];
-        });
-
-        return [
-            'areas' => $resultado->values(),
-            'olimpiada_actual' => $olimpiadaActual->gestion,
-            'message' => 'Áreas con niveles y grados activos obtenidas exitosamente'
-        ];
-    }
-
-     public function getNivelesGradosByAreasAndGestion(int $id_area, string $gestion): array
+    public function getNivelesGradosByAreasAndGestion(array $idAreas, string $gestion): array
     {
         try {
-            Log::info('[SERVICE] Obteniendo niveles y grados por área y gestión', [
-                'id_area' => $id_area,
-                'gestion' => $gestion
-            ]);
-
             $olimpiada = Olimpiada::where('gestion', $gestion)->first();
 
             if (!$olimpiada) {
-                Log::warning('[SERVICE] Olimpiada no encontrada', ['gestion' => $gestion]);
                 return [
                     'success' => false,
                     'data' => [],
@@ -351,266 +449,63 @@ class AreaNivelGradoService
                 ];
             }
 
-            $area = Area::find($id_area);
-            if (!$area) {
-                Log::warning('[SERVICE] Área no encontrada', ['id_area' => $id_area]);
-                return [
-                    'success' => false,
-                    'data' => [],
-                    'message' => "No se encontró el área con ID: {$id_area}"
-                ];
-            }
+            $areaNiveles = AreaNivel::whereHas('areaOlimpiada', function($query) use ($idAreas, $olimpiada) {
+                    $query->whereIn('id_area', $idAreas)
+                          ->where('id_olimpiada', $olimpiada->id_olimpiada);
+                })
+                ->with(['areaOlimpiada.area', 'nivel', 'gradosEscolaridad'])
+                ->get();
 
-            $areaOlimpiada = AreaOlimpiada::where('id_area', $id_area)
-                ->where('id_olimpiada', $olimpiada->id_olimpiada)
-                ->first();
-
-            if (!$areaOlimpiada) {
-                Log::warning('[SERVICE] Relación área-olimpiada no encontrada', [
-                    'id_area' => $id_area,
-                    'id_olimpiada' => $olimpiada->id_olimpiada
-                ]);
-                return [
-                    'success' => false,
-                    'data' => [],
-                    'message' => "El área no está asignada a la olimpiada de gestión {$gestion}"
-                ];
-            }
-
-            $areaNiveles = AreaNivel::with([
-                'nivel:id_nivel,nombre',
-                'gradosEscolaridad:id_grado_escolaridad,nombre'
-            ])
-            ->where('id_area_olimpiada', $areaOlimpiada->id_area_olimpiada)
-            ->where('es_activo', true)
-            ->get();
-
-            Log::info('[SERVICE] AreaNiveles encontrados', [
-                'count' => $areaNiveles->count(),
-                'ids' => $areaNiveles->pluck('id_area_nivel')->toArray()
-            ]);
-
-            $nivelesMap = [];
-            
-            foreach ($areaNiveles as $areaNivel) {
-                $idNivel = $areaNivel->nivel->id_nivel;
-                
-                if (!isset($nivelesMap[$idNivel])) {
-                    $nivelesMap[$idNivel] = [
-                        'id_nivel' => $idNivel,
-                        'nombre_nivel' => $areaNivel->nivel->nombre,
-                        'grados' => []
-                    ];
-                }
-                
-                foreach ($areaNivel->gradosEscolaridad as $grado) {
-                    $nivelesMap[$idNivel]['grados'][] = [
-                        'id_grado_escolaridad' => $grado->id_grado_escolaridad,
-                        'nombre' => $grado->nombre
-                    ];
-                }
-            }
-
-            foreach ($nivelesMap as &$nivelData) {
-                $nivelData['grados'] = collect($nivelData['grados'])
-                    ->unique('id_grado_escolaridad')
-                    ->values()
-                    ->toArray();
-            }
-
-            $nivelesIndividuales = $areaNiveles->map(function($areaNivel) {
-                return [
-                    'id_area_nivel' => $areaNivel->id_area_nivel,
-                    'nivel' => [
-                        'id_nivel' => $areaNivel->nivel->id_nivel,
-                        'nombre' => $areaNivel->nivel->nombre
-                    ]
-                ];
-            })->values();
-
-            $response = [
+            return [
                 'success' => true,
-                'data' => [
-                    'niveles_con_grados_agrupados' => array_values($nivelesMap),
-                    'niveles_individuales' => $nivelesIndividuales->toArray()
-                ]
+                'data' => $areaNiveles,
+                'olimpiada' => $olimpiada->gestion,
+                'message' => "Relaciones área-nivel obtenidas para la gestión {$gestion}"
             ];
 
-            Log::info('[SERVICE] Respuesta formateada', [
-                'niveles_agrupados_count' => count($nivelesMap),
-                'niveles_individuales_count' => $nivelesIndividuales->count()
-            ]);
-
-            return $response;
-
         } catch (\Exception $e) {
-            Log::error('[SERVICE] Error al obtener niveles y grados por área y gestión:', [
-                'id_area' => $id_area,
+            Log::error('[SERVICE] Error en getNivelesGradosByAreasAndGestion:', [
+                'id_areas' => $idAreas,
                 'gestion' => $gestion,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'error' => $e->getMessage()
             ]);
-
+            
             return [
                 'success' => false,
                 'data' => [],
-                'message' => 'Error al obtener los niveles y grados: ' . $e->getMessage()
+                'message' => 'Error: ' . $e->getMessage()
             ];
         }
     }
 
     public function getByGestionAndAreas(string $gestion, array $idAreas): array
     {
-        $olimpiada = Olimpiada::where('gestion', $gestion)->firstOrFail();
-        
-        $areaNiveles = AreaNivel::whereHas('areaOlimpiada', function($query) use ($idAreas, $olimpiada) {
-                $query->whereIn('id_area', $idAreas)
-                      ->where('id_olimpiada', $olimpiada->id_olimpiada);
-            })
-            ->with(['areaOlimpiada.area', 'nivel', 'gradosEscolaridad'])
-            ->get();
-
-        return [
-            'area_niveles' => $areaNiveles,
-            'olimpiada' => $olimpiada->gestion,
-            'message' => "Relaciones área-nivel obtenidas para la gestión {$gestion}"
-        ];
-    }
-
-    public function getAreaNivelByAreaAll(int $id_area): array
-    {
-        $olimpiadaActual = $this->obtenerOlimpiadaActual();
-        
-        $areaNiveles = AreaNivel::whereHas('areaOlimpiada', function($query) use ($id_area, $olimpiadaActual) {
-                $query->where('id_area', $id_area)
-                      ->where('id_olimpiada', $olimpiadaActual->id_olimpiada);
-            })
-            ->with(['nivel', 'gradosEscolaridad', 'areaOlimpiada.area'])
-            ->get();
-
-        return [
-            'success' => true,
-            'data' => $areaNiveles,
-            'message' => 'Relaciones área-nivel obtenidas para el área especificada'
-        ];
-    }
-
-    public function getAreasConNiveles(): array
-    {
-        $olimpiadaActual = $this->obtenerOlimpiadaActual();
-        
-        $areas = Area::with([
-            'areaOlimpiada' => function($query) use ($olimpiadaActual) {
-                $query->where('id_olimpiada', $olimpiadaActual->id_olimpiada);
-            },
-            'areaOlimpiada.areaNiveles' => function($query) {
-                $query->where('es_activo', true);
-            },
-            'areaOlimpiada.areaNiveles.nivel:id_nivel,nombre'
-        ])
-        ->get(['id_area', 'nombre']);
-
-        $resultado = $areas->filter(function($area) {
-            if ($area->areaOlimpiada->isEmpty()) {
-                return true;
+        try {
+            $olimpiada = Olimpiada::where('gestion', $gestion)->first();
+            
+            if (!$olimpiada) {
+                throw new \Exception("No se encontró la olimpiada con gestión: {$gestion}");
             }
             
-            $tieneActivos = false;
-            foreach ($area->areaOlimpiada as $areaOlimpiada) {
-                if ($areaOlimpiada->areaNiveles->isNotEmpty()) {
-                    $tieneActivos = true;
-                    break;
-                }
-            }
-            
-            return $tieneActivos;
-        })->map(function($area) {
-            $nivelesArray = collect();
-            foreach ($area->areaOlimpiada as $areaOlimpiada) {
-                foreach ($areaOlimpiada->areaNiveles as $areaNivel) {
-                    $nivelesArray->push([
-                        'id_nivel' => $areaNivel->nivel->id_nivel,
-                        'nombre' => $areaNivel->nivel->nombre,
-                        'asignado_activo' => $areaNivel->es_activo
-                    ]);
-                }
-            }
-
-            if ($nivelesArray->isEmpty()) {
-                return [
-                    'id_area' => $area->id_area,
-                    'nombre' => $area->nombre,
-                    'niveles' => []
-                ];
-            }
+            $areaNiveles = AreaNivel::whereHas('areaOlimpiada', function($query) use ($idAreas, $olimpiada) {
+                    $query->whereIn('id_area', $idAreas)
+                          ->where('id_olimpiada', $olimpiada->id_olimpiada);
+                })
+                ->with(['areaOlimpiada.area', 'nivel', 'gradosEscolaridad'])
+                ->get();
 
             return [
-                'id_area' => $area->id_area,
-                'nombre' => $area->nombre,
-                'niveles' => $nivelesArray->unique('id_nivel')->values()
+                'area_niveles' => $areaNiveles,
+                'olimpiada' => $olimpiada->gestion,
+                'message' => "Relaciones área-nivel obtenidas para la gestión {$gestion}"
             ];
-        });
-
-        return [
-            'areas' => $resultado->values(),
-            'olimpiada_actual' => $olimpiadaActual->gestion,
-            'message' => 'Se muestran las áreas que tienen al menos una relación activa o no tienen relaciones'
-        ];
-    }
-
-    public function getAreasConNivelesPorGestion(string $gestion): array
-    {
-        $olimpiada = Olimpiada::where('gestion', $gestion)->firstOrFail();
-        
-        $areas = Area::with([
-            'areaOlimpiada' => function($query) use ($olimpiada) {
-                $query->where('id_olimpiada', $olimpiada->id_olimpiada);
-            },
-            'areaOlimpiada.areaNiveles' => function($query) {
-                $query->where('es_activo', true);
-            },
-            'areaOlimpiada.areaNiveles.nivel:id_nivel,nombre',
-            'areaOlimpiada.areaNiveles.gradosEscolaridad:id_grado_escolaridad,nombre'
-        ])
-        ->whereHas('areaOlimpiada.areaNiveles', function($query) {
-            $query->where('es_activo', true);
-        })
-        ->get(['id_area', 'nombre']);
-
-        $resultado = $areas->map(function($area) {
-            $nivelesAgrupados = collect();
-            foreach ($area->areaOlimpiada as $areaOlimpiada) {
-                foreach ($areaOlimpiada->areaNiveles as $areaNivel) {
-                    $nivelesAgrupados->push([
-                        'id_nivel' => $areaNivel->nivel->id_nivel,
-                        'nombre_nivel' => $areaNivel->nivel->nombre,
-                        'grados' => $areaNivel->gradosEscolaridad->map(function($grado) {
-                            return [
-                                'id_grado_escolaridad' => $grado->id_grado_escolaridad,
-                                'nombre_grado' => $grado->nombre
-                            ];
-                        })->values()
-                    ]);
-                }
-            }
-
-            return [
-                'id_area' => $area->id_area,
-                'nombre' => $area->nombre,
-                'niveles' => $nivelesAgrupados->unique('id_nivel')->values()
-            ];
-        });
-
-        return [
-            'areas' => $resultado->values(),
-            'olimpiada' => $olimpiada->gestion,
-            'message' => "Áreas con niveles y grados activos obtenidas para la gestión {$gestion}"
-        ];
-    }
-
-    public function getAreasConNivelesPorOlimpiada(int $idOlimpiada): array
-    {
-        $olimpiada = Olimpiada::findOrFail($idOlimpiada);
-        return $this->getAreasConNivelesPorGestion($olimpiada->gestion);
+        } catch (\Exception $e) {
+            Log::error('[SERVICE] Error en getByGestionAndAreas:', [
+                'gestion' => $gestion,
+                'id_areas' => $idAreas,
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
     }
 }
