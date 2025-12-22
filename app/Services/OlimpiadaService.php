@@ -94,4 +94,18 @@ class OlimpiadaService
         }
         return $this->olimpiadaRepository->createConEstado($data);
     }
+
+    public function obtenerTodasOlimpiadas(): Collection
+    {
+        $olimpiadas = $this->olimpiadaRepository->obtenerGestiones();
+
+        return $olimpiadas->map(function ($olimpiada) {
+            return [
+                'id' => $olimpiada->id_olimpiada,
+                'nombre' => $olimpiada->nombre,
+                'gestion' => $olimpiada->gestion,
+                'estado' => $olimpiada->estado,
+            ];
+        });
+    }
 }

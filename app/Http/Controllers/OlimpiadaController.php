@@ -142,12 +142,13 @@ class OlimpiadaController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $olimpiadas = $this->olimpiadaService->obtenerGestiones();
+            $olimpiadas = $this->olimpiadaService->obtenerTodasOlimpiadas();
 
             return response()->json([
                 'success' => true,
                 'data' => $olimpiadas,
-                'message' => 'Olimpiadas obtenidas correctamente'
+                'total' => $olimpiadas->count(),
+                'message' => 'Todas las olimpiadas obtenidas correctamente'
             ]);
 
         } catch (Exception $e) {
@@ -157,6 +158,7 @@ class OlimpiadaController extends Controller
             ], 500);
         }
     }
+
 
     /**
      * POST /api/olimpiadas/admin
