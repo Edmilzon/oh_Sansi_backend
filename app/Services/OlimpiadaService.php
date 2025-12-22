@@ -57,7 +57,7 @@ class OlimpiadaService
                 'id' => $olimpiada->id_olimpiada,
                 'nombre' => $olimpiada->nombre,
                 'gestion' => $olimpiada->gestion,
-                'esActual' => (string)$olimpiada->gestion === (string)$currentYear,
+                'estado' => $olimpiada->estado,
             ];
         });
     }
