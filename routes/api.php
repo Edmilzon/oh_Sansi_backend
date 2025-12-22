@@ -291,3 +291,12 @@ Route::controller(FaseGlobalController::class)->prefix('fase-global')->group(fun
     Route::get('/{id}', 'show');
     Route::patch('/{id}/cronograma', 'updateCronograma');
 });
+
+// MODULO DE REPORTES (AUDITORIA Y RESULTADOS)
+Route::prefix('reportes')->controller(ReporteController::class)->group(function () {
+    Route::get('/historial-calificaciones', 'historialCalificaciones');
+    Route::get('/competencia/{id}/ranking', 'ranking');
+    Route::get('/evaluacion/{id}/historial', 'historialCambios');
+    Route::get('/areas', 'getAreas');
+    Route::get('/areas/{idArea}/niveles', 'getNivelesPorArea');
+});
