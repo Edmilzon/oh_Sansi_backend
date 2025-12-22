@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use App\Model\DescalificacionAdministrativa;
 use App\Model\Evaluacion;
 use Illuminate\Http\Request;
@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 
 class DescalificacionController extends Controller
 {
+
     /**
      * Obtener la lista consolidada de todos los descalificados.
      * Incluye:
