@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use App\Model\DescalificacionAdministrativa;
 use App\Model\Evaluacion;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Validator;
 
 class DescalificacionController extends Controller
 {
+
     /**
      * Obtener la lista consolidada de todos los descalificados.
      * Incluye:
@@ -60,5 +63,33 @@ class DescalificacionController extends Controller
             'cantidad' => $todos->count(),
             'data' => $todos
         ]);
+    }
+
+    /**
+     * Registrar una nueva descalificación administrativa.
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'id_competidor' => 'required|integer|exists:competidor,id_competidor',
+            'observaciones' => 'required|string|max:1000',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Error de validación.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $descalificacion = DescalificacionAdministrativa::create([
+            'id_competidor' => $request->id_competidor,
+            'observaciones' => $request->observaciones,
+        ]);
+
+        return response()->json([
+            'message' => 'Competidor descalificado administrativamente con éxito.',
+            'data' => $descalificacion
+        ], 201);
     }
 }
