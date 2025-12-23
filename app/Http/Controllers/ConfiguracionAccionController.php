@@ -47,7 +47,8 @@ class ConfiguracionAccionController extends Controller
         }
 
         try {
-            $this->service->actualizarConfiguracion($request->validated());
+            // CORRECCIÓN AQUÍ: Se llama a 'update' en lugar de 'actualizarConfiguracion'
+            $this->service->update($request->validated());
 
             return response()->json([
                 'success' => true,
