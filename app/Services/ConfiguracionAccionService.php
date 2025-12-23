@@ -7,6 +7,7 @@ use App\Model\AccionSistema;
 use App\Model\FaseGlobal;
 use App\Model\Olimpiada;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Exception;
 
 class ConfiguracionAccionService
@@ -26,21 +27,16 @@ class ConfiguracionAccionService
             ->orderBy('orden', 'asc')
             ->get();
 
-        if ($fases->isEmpty()) {
-            return [];
-        }
-
-        $faseIds = $fases->pluck('id_fase_global')->toArray();
+        if ($fases->isEmpty()) return [];
 
         $this->sincronizarFaltantes($fases);
 
+        $faseIds = $fases->pluck('id_fase_global')->toArray();
         $registros = $this->repoConfig->getByFases($faseIds);
 
         return $registros->groupBy('id_fase_global')
             ->map(function ($items) {
-
                 $faseInfo = $items->first()->faseGlobal;
-
                 return [
                     'fase' => [
                         'id'     => $faseInfo->id_fase_global,
@@ -59,22 +55,32 @@ class ConfiguracionAccionService
                     })->values()->toArray()
                 ];
             })
+            ->values()
             ->toArray();
     }
 
-    public function actualizarMatriz(int $userId, array $accionesPorFase): void
+    public function actualizarConfiguracion(array $datos): void
     {
-        DB::transaction(function () use ($accionesPorFase) {
-            foreach ($accionesPorFase as $config) {
-                $this->repoConfig->updateOrCreate(
-                    [
-                        'id_accion_sistema' => $config['id_accion_sistema'],
-                        'id_fase_global'    => $config['id_fase_global'],
-                    ],
-                    [
-                        'habilitada' => $config['habilitada']
-                    ]
-                );
+        $listaCambios = $datos['configuraciones'] ?? [];
+        if (empty($listaCambios) && isset($datos[0])) {
+            $listaCambios = $datos;
+        }
+
+        if (empty($listaCambios)) {
+            Log::warning('ConfiguracionAccionService: Lista vacía, no se actualizó nada.');
+            return;
+        }
+
+        DB::transaction(function () use ($listaCambios) {
+            foreach ($listaCambios as $config) {
+                if (isset($config['id_configuracion_accion'])) {
+                    $estado = filter_var($config['habilitada'], FILTER_VALIDATE_BOOLEAN);
+
+                    $this->repoConfig->updateStatus(
+                        $config['id_configuracion_accion'],
+                        $estado
+                    );
+                }
             }
         });
     }
@@ -83,9 +89,7 @@ class ConfiguracionAccionService
     {
         $acciones = AccionSistema::all();
 
-        if ($acciones->isEmpty() || $fases->isEmpty()) {
-            return;
-        }
+        if ($acciones->isEmpty() || $fases->isEmpty()) return;
 
         DB::transaction(function () use ($acciones, $fases) {
             foreach ($fases as $fase) {

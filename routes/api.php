@@ -181,7 +181,6 @@ Route::get('/area', [AreaController::class, 'index']);
 Route::post('/area', [AreaController::class, 'store']);
 Route::get('/area/{id_olimpiada}', [AreaOlimpiadaController::class, 'getAreasByOlimpiada']);
 Route::get('/area/gestion/{gestion}', [AreaOlimpiadaController::class, 'getAreasByGestion']);
-Route::get('/area/responsable/{idResponsable}', [AreaOlimpiadaController::class, 'getAreasByResponsableActiva']);
 
 Route::get('/niveles/{id_nivel}', [NivelController::class, 'show']);
 
@@ -266,11 +265,6 @@ Route::get(
 
 Route::get('/sistema/estado', [SistemaEstadoController::class, 'index']);
 
-Route::get(
-    'usuario/{id_usuario}/fase-global/{id_fase_global}/gestion/{id_gestion}/acciones',
-    [UsuarioAccionesController::class, 'index']
-);
-
 // Cronogramas
 Route::controller(CronogramaFaseController::class)->prefix('cronograma-fases')->group(function () {
     Route::get('/actuales', 'listarActuales');
@@ -315,3 +309,5 @@ Route::prefix('roles')->controller(RolAccionController::class)->group(function (
 });
 
 Route::get('/acciones-sistema', [AccionSistemaController::class, 'index']);
+
+Route::get('/usuario/mis-acciones/usuario/{id_user}', [UsuarioAccionesController::class, 'misAcciones']);

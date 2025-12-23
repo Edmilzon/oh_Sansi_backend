@@ -2,37 +2,31 @@
 
 namespace App\Services;
 
-use App\Model\Usuario;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class UserActionService
 {
-    protected const CACHE_TTL = 3600;
-
-    public function can(int $userId, string $codigoAccion): bool
+    public function esSuperAdmin(int $userId): bool
     {
-        $permisos = $this->getPermisosUsuario($userId);
-        return in_array($codigoAccion, $permisos);
+        return DB::table('usuario_rol as ur')
+            ->join('rol as r', 'ur.id_rol', '=', 'r.id_rol')
+            ->where('ur.id_usuario', $userId)
+            ->where(function ($query) {
+                $query->where('r.id_rol', 1)
+                      ->orWhere('r.nombre', 'Administrador');
+            })
+            ->exists();
     }
 
-    public function getPermisosUsuario(int $userId): array
+    public function can(int $userId, string $accionCodigo): bool
     {
-        return Cache::remember("user_perms_{$userId}", self::CACHE_TTL, function () use ($userId) {
-            return DB::table('accion_sistema as a')
-                ->join('rol_accion as ra', 'a.id_accion_sistema', '=', 'ra.id_accion_sistema')
-                ->join('usuario_rol as ur', 'ra.id_rol', '=', 'ur.id_rol')
-                ->where('ur.id_usuario', $userId)
-                ->where('ra.activo', true)
-                ->pluck('a.codigo')
-                ->unique()
-                ->values()
-                ->toArray();
-        });
-    }
+        return DB::table('usuario_rol as ur')
+            ->join('rol_accion as ra', 'ur.id_rol', '=', 'ra.id_rol')
+            ->join('accion_sistema as a', 'ra.id_accion_sistema', '=', 'a.id_accion_sistema')
+            ->where('ur.id_usuario', $userId)
+            ->where('a.codigo', $accionCodigo)
+            ->where('ra.activo', true)
 
-    public function clearCache(int $userId): void
-    {
-        Cache::forget("user_perms_{$userId}");
+            ->exists();
     }
 }

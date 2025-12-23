@@ -10,101 +10,109 @@ class AccionSistemaSeeder extends Seeder
     public function run(): void
     {
         $catalogoOficial = [
+            // --- SECCIÓN: DASHBOARD ---
             [
                 'codigo'      => 'DASHBOARD',
-                'nombre'      => 'Panel de Control',
-                'descripcion' => 'Vista principal con métricas, accesos directos y estado general. Ruta: /dashboard',
+                'nombre'      => 'Dashboard',
+                'descripcion' => 'Vista principal de métricas y accesos. Ruta: /dashboard',
             ],
+
+            // --- SECCIÓN: GESTIÓN DE LA OLIMPIADA ---
             [
                 'codigo'      => 'OLIMPIADAS',
-                'nombre'      => 'Gestión de Olimpiadas',
-                'descripcion' => 'Creación y selección de nuevas gestiones y eventos. Ruta: /olimpiadas',
-            ],
-            [
-                'codigo'      => 'CRONOGRAMA',
-                'nombre'      => 'Cronograma de Actividades',
-                'descripcion' => 'Línea de tiempo para configurar fechas de inicio/fin. Ruta: /cronograma',
-            ],
-            [
-                'codigo'      => 'FASES',
-                'nombre'      => 'Configuración de Fases',
-                'descripcion' => 'Administración de etapas (Distrital, Nacional) y reglas. Ruta: /fases',
+                'nombre'      => 'Olimpiadas',
+                'descripcion' => 'Gestión de eventos olímpicos. Ruta: /olimpiada',
             ],
             [
                 'codigo'      => 'AREAS',
-                'nombre'      => 'Áreas de Conocimiento',
-                'descripcion' => 'Gestión de materias o áreas temáticas. Ruta: /areas',
+                'nombre'      => 'Áreas',
+                'descripcion' => 'Administración de áreas de conocimiento. Ruta: /areas',
             ],
             [
                 'codigo'      => 'NIVELES',
-                'nombre'      => 'Niveles y Grados',
-                'descripcion' => 'Configuración de niveles de dificultad y grados escolares. Ruta: /niveles',
+                'nombre'      => 'Niveles',
+                'descripcion' => 'Configuración de grados y niveles. Ruta: /niveles',
             ],
             [
                 'codigo'      => 'ASIGNACIONES',
-                'nombre'      => 'Asignación de Niveles',
-                'descripcion' => 'Vinculación lógica entre Áreas y Niveles. Ruta: /asignaciones',
+                'nombre'      => 'Asignar Niveles a Áreas',
+                'descripcion' => 'Vinculación matricial Área-Nivel. Ruta: /asignarNiveles',
             ],
-            [
-                'codigo'      => 'INSCRIPCION',
-                'nombre'      => 'Inscripción Masiva',
-                'descripcion' => 'Importación masiva (CSV) de estudiantes y validación. Ruta: /inscritos',
-            ],
-            [
-                'codigo'      => 'COMPETIDORES',
-                'nombre'      => 'Lista de Competidores',
-                'descripcion' => 'Base de datos consultable de estudiantes inscritos. Ruta: /competidores',
-            ],
+
+            // --- SECCIÓN: GESTIÓN DE USUARIOS ---
             [
                 'codigo'      => 'RESPONSABLES',
                 'nombre'      => 'Responsables de Área',
-                'descripcion' => 'Registro y asignación de usuarios encargados de área. Ruta: /responsables',
+                'descripcion' => 'Gestión de usuarios encargados de área. Ruta: /responsables',
             ],
             [
                 'codigo'      => 'EVALUADORES',
                 'nombre'      => 'Evaluadores',
-                'descripcion' => 'Gestión de usuarios con rol de corrección. Ruta: /evaluadores',
+                'descripcion' => 'Gestión de usuarios correctores. Ruta: /evaluadores',
+            ],
+
+            // --- SECCIÓN: GESTIÓN DE COMPETIDORES ---
+            [
+                'codigo'      => 'INSCRIPCION',
+                'nombre'      => 'Registrar Competidores',
+                'descripcion' => 'Carga masiva e importación de estudiantes. Ruta: /competidores',
             ],
             [
+                'codigo'      => 'COMPETIDORES',
+                'nombre'      => 'Lista de Competidores',
+                'descripcion' => 'Listado general y búsqueda de inscritos. Ruta: /competidoresPage',
+            ],
+
+            // --- SECCIÓN: EVALUACIÓN Y CLASIFICACIÓN ---
+            [
                 'codigo'      => 'COMPETENCIAS',
-                'nombre'      => 'Gestión de Competencias',
-                'descripcion' => 'Monitor de instancias activas de competencia. Ruta: /competencias',
+                'nombre'      => 'Registrar Competencia',
+                'descripcion' => 'Gestión operativa de competencias activas. Ruta: /competencias',
             ],
             [
                 'codigo'      => 'EXAMENES',
-                'nombre'      => 'Banco de Exámenes',
-                'descripcion' => 'Subida, generación y configuración de pruebas. Ruta: /examenes',
+                'nombre'      => 'Exámenes',
+                'descripcion' => 'Banco de pruebas y archivos. Ruta: /examenes',
             ],
             [
                 'codigo'      => 'SALA_EVALUACION',
-                'nombre'      => 'Sala de Evaluación',
-                'descripcion' => 'Interfaz de calificación en tiempo real. Ruta: /evaluacion-sala',
-            ],
-            [
-                'codigo'      => 'MEDALLERO',
-                'nombre'      => 'Configuración de Medallas',
-                'descripcion' => 'Parametrización de reglas para Oro, Plata y Bronce. Ruta: /medallero',
-            ],
-            [
-                'codigo'      => 'REPORTES',
-                'nombre'      => 'Reportes y Auditoría',
-                'descripcion' => 'Historial de cambios, notas y resultados finales. Ruta: /reportes',
+                'nombre'      => 'Registrar Evaluación',
+                'descripcion' => 'Sala de corrección para evaluadores. Ruta: /evaluaciones',
             ],
             [
                 'codigo'      => 'PARAMETROS',
-                'nombre'      => 'Configuración del Sistema',
-                'descripcion' => 'Ajustes globales técnicos y administrativos. Ruta: /parametros',
+                'nombre'      => 'Parámetros de Clasificación',
+                'descripcion' => 'Reglas de puntaje y clasificación. Ruta: /parametrosCalificaciones',
+            ],
+            [
+                'codigo'      => 'MEDALLERO',
+                'nombre'      => 'Parametrizar Medallero',
+                'descripcion' => 'Configuración de rangos para medallas. Ruta: /medallero',
+            ],
+
+            // --- SECCIÓN: CONFIGURACIONES ---
+            [
+                'codigo'      => 'ACTIVIDADES_FASES',
+                'nombre'      => 'Configuración de Actividades',
+                'descripcion' => 'Reglas globales de las fases. Ruta: /configuracionFasesGlobales',
             ],
             [
                 'codigo'      => 'GESTIONAR_ROLES',
-                'nombre'      => 'Gestión de Roles y Permisos',
-                'descripcion' => 'Permiso crítico para asignar accesos.',
+                'nombre'      => 'Configuración de Permisos por Rol',
+                'descripcion' => 'Gestión de roles y accesos del sistema. Ruta: /permisosRoles',
             ],
             [
-                'codigo'      => 'CONFIGURAR_SISTEMA',
-                'nombre'      => 'Configuración Global (Backend)',
-                'descripcion' => 'Permiso de backend para endpoints de configuración.',
+                'codigo'      => 'CRONOGRAMA',
+                'nombre'      => 'Configuración de Cronograma',
+                'descripcion' => 'Línea de tiempo de actividades. Ruta: /cronograma',
             ],
+
+            // --- SECCIÓN: REPORTES ---
+            [
+                'codigo'      => 'REPORTES_CAMBIOS',
+                'nombre'      => 'Reporte de cambio de calificaciones',
+                'descripcion' => 'Auditoría de modificaciones de notas. Ruta: /reportesCambiosCalificaciones',
+            ]
         ];
 
         $this->command->info('🏛️  Cargando Catálogo Oficial de Secciones...');

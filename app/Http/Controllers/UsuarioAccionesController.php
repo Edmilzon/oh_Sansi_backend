@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Routing\Controller;
 use App\Services\UsuarioAccionesService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use Exception;
 
 class UsuarioAccionesController extends Controller
 {
@@ -13,16 +14,25 @@ class UsuarioAccionesController extends Controller
         protected UsuarioAccionesService $service
     ) {}
 
-    public function index(Request $request, int $idFaseGlobal, int $idGestion): JsonResponse
+    /**
+     * GET /api/usuario/mis-acciones/usuario/{id_user}
+     */
+    public function misAcciones(Request $request, int $id_user): JsonResponse
     {
-        $idUsuario = $request->route('id_usuario');
+        try {
+            $data = $this->service->obtenerDetalleCapacidades($id_user);
 
-        $acciones = $this->service->obtenerAccionesCombinadas($idUsuario, $idFaseGlobal, $idGestion);
+            return response()->json([
+                'success' => true,
+                'data'    => $data,
+                'message' => 'Permisos calculados estrictamente (Intersección Rol y Fase).'
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'data' => $acciones,
-            'roles_detected' => 'Multi-Rol automático'
-        ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

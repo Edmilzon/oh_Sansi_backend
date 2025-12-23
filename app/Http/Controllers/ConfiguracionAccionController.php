@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use App\Http\Requests\ConfiguracionAccion\UpdateConfiguracionAccionRequest;
 use App\Services\ConfiguracionAccionService;
 use App\Services\UserActionService;
+use App\Http\Requests\ConfiguracionAccion\UpdateConfiguracionAccionRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Exception;
@@ -17,41 +17,37 @@ class ConfiguracionAccionController extends Controller
         protected UserActionService $gate
     ) {}
 
-    /**
-     * GET /api/configuracion-acciones
-     * Devuelve la matriz completa (autogenerando lo que falte).
-     */
     public function index(Request $request): JsonResponse
     {
         try {
+            if ($request->has('user_id') && !$this->gate->esSuperAdmin($request->user_id)) {
+                return response()->json(['message' => 'Acceso denegado.'], 403);
+            }
+
             $matriz = $this->service->obtenerMatrizCompleta();
 
             return response()->json([
-                'status' => 'success',
-                'data' => $matriz
+                'success' => true,
+                'data' => $matriz,
+                'message' => 'Matriz de configuración obtenida.'
             ]);
+
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
-    /**
-     * POST /api/configuracion-acciones
-     * Guarda los cambios de los checkboxes.
-     */
     public function update(UpdateConfiguracionAccionRequest $request): JsonResponse
     {
-        // 1. Verificar Permiso de Admin (Gate Manual)
-        if (!$this->gate->can($request->user_id, 'CONFIGURAR_SISTEMA')) {
-            return response()->json(['message' => 'No tienes permiso para configurar el sistema.'], 403);
+        if (!$this->gate->esSuperAdmin($request->input('user_id'))) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Acceso denegado. Solo el Administrador puede cambiar la configuración.'
+            ], 403);
         }
 
         try {
-            // 2. Delegar al servicio
-            $this->service->actualizarMatriz(
-                $request->user_id,
-                $request->input('accionesPorFase')
-            );
+            $this->service->actualizarConfiguracion($request->validated());
 
             return response()->json([
                 'success' => true,
@@ -61,7 +57,7 @@ class ConfiguracionAccionController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error al guardar: ' . $e->getMessage()
+                'message' => 'Error al guardar configuración: ' . $e->getMessage()
             ], 500);
         }
     }
