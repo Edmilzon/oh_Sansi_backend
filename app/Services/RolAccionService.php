@@ -3,16 +3,20 @@
 namespace App\Services;
 
 use App\Repositories\RolAccionRepository;
+use App\Services\UsuarioAccionesService;
+use App\Services\UserActionService;
 use App\Model\AccionSistema;
 use App\Model\Rol;
+use App\Events\MisAccionesActualizadas;
 use Illuminate\Support\Facades\DB;
-use App\Services\UserActionService;
+use Exception;
 
 class RolAccionService
 {
     public function __construct(
         protected RolAccionRepository $repo,
-        protected UserActionService $permisoCacheService
+        protected UserActionService $permisoCacheService,
+        protected UsuarioAccionesService $usuarioAccionesService
     ) {}
 
     public function obtenerMatrizGlobal(): array
@@ -22,11 +26,12 @@ class RolAccionService
         if ($roles->isEmpty()) {
             return [];
         }
+
         $this->sincronizarGlobal($roles);
+
         $permisos = $this->repo->getAllWithRelations();
 
         return $roles->map(function ($rol) use ($permisos) {
-
             $susPermisos = $permisos->where('id_rol', $rol->id_rol);
 
             return [
@@ -45,18 +50,20 @@ class RolAccionService
                     ];
                 })->toArray()
             ];
-        })->toArray();
+        })->values()->toArray();
     }
 
-    public function actualizarMatrizGlobal(int $userIdAdmin, array $listaRoles): void
+    public function updateGlobal(array $datos)
     {
-        DB::transaction(function () use ($listaRoles) {
+        return DB::transaction(function () use ($datos) {
+            $rolesAfectados = [];
 
-            foreach ($listaRoles as $rolData) {
-                $idRol = $rolData['id_rol'];
+            foreach ($datos as $itemRol) {
+                $idRol = $itemRol['id_rol'];
+                $rolesAfectados[] = $idRol;
 
-                if (isset($rolData['acciones']) && is_array($rolData['acciones'])) {
-                    foreach ($rolData['acciones'] as $accion) {
+                if (isset($itemRol['acciones']) && is_array($itemRol['acciones'])) {
+                    foreach ($itemRol['acciones'] as $accion) {
                         $this->repo->updateOrCreate(
                             [
                                 'id_rol' => $idRol,
@@ -69,13 +76,36 @@ class RolAccionService
                     }
                 }
 
-                // Opcional: Aquí podrías invalidar caché específica si fuera necesario
-                // $this->permisoCacheService->clearCachePorRol($idRol);
             }
-        });
 
-        // Opcional: Limpieza general de caché de permisos si la política es estricta
-        // Cache::tags(['permisos'])->flush();
+            $this->notificarCambiosEnTiempoReal(array_unique($rolesAfectados));
+
+            return true;
+        });
+    }
+
+    protected function notificarCambiosEnTiempoReal(array $rolesIds)
+    {
+        if (empty($rolesIds)) return;
+
+        $userIds = DB::table('usuario_rol')
+            ->join('usuario', 'usuario.id_usuario', '=', 'usuario_rol.id_usuario')
+            ->whereIn('usuario_rol.id_rol', $rolesIds)
+            ->where('usuario_rol.estado', 'AC')
+            ->where('usuario.estado', 'AC')
+            ->pluck('usuario.id_usuario')
+            ->unique();
+
+        foreach ($userIds as $userId) {
+            try {
+                $nuevasAcciones = $this->usuarioAccionesService->misAcciones($userId);
+                broadcast(new MisAccionesActualizadas($userId, $nuevasAcciones));
+
+            } catch (Exception $e) {
+                // Loguear error silenciosamente para no interrumpir el flujo principal
+                // Log::error("Error enviando socket a usuario $userId: " . $e->getMessage());
+            }
+        }
     }
 
     private function sincronizarGlobal($roles): void
