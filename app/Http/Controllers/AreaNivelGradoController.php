@@ -95,6 +95,65 @@ class AreaNivelGradoController extends Controller
         }
     }
 
+    public function getNivelesGradosByAreaAndResponsable(int $id_responsable, int $id_area): JsonResponse
+    {
+        try {
+            $olimpiadaActiva = Olimpiada::where('estado', true)->first();
+            
+            if (!$olimpiadaActiva) {
+                
+                return response()->json([
+                    'success' => false,
+                    'data' => [
+                        'niveles_con_grados_agrupados' => [],
+                        'niveles_individuales' => []
+                    ],
+                    'message' => 'No se encontró la olimpiada activa.'
+                ], 404);
+            }
+            
+            $tieneAcceso = $this->areaNivelGradoService->verificarAccesoResponsable(
+                $olimpiadaActiva->id_olimpiada,
+                $id_area,
+                $id_responsable
+            );
+            
+            if (!$tieneAcceso) {
+                return response()->json([
+                    'success' => false,
+                    'data' => [
+                        'niveles_con_grados_agrupados' => [],
+                        'niveles_individuales' => []
+                    ],
+                    'message' => 'El responsable no tiene acceso a esta área.'
+                ], 404);
+            }
+            
+            $result = $this->areaNivelGradoService->getNivelesGradosByAreaAndGestion(
+                $id_area, 
+                $olimpiadaActiva->gestion
+            );
+            
+            $status = $result['success'] ? 200 : 404;
+            return response()->json($result, $status);
+            
+        } catch (\Exception $e) {
+            Log::error('[CONTROLLER] Error en getNivelesGradosByAreaAndResponsable:', [
+                'id_responsable' => $id_responsable,
+                'id_area' => $id_area,
+                'error' => $e->getMessage()
+            ]);
+            return response()->json([
+                'success' => false,
+                'data' => [
+                    'niveles_con_grados_agrupados' => [],
+                    'niveles_individuales' => []
+                ],
+                'message' => 'Error al obtener los niveles y grados: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function getNivelesGradosByAreasAndGestion(Request $request, string $gestion): JsonResponse
     {
         try {
