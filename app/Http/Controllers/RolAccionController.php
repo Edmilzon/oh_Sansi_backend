@@ -59,8 +59,8 @@ class RolAccionController extends Controller
 
         try {
             // 2. Delegar la actualización masiva al servicio
-            $this->service->actualizarMatrizGlobal(
-                $request->user_id,
+            // CORRECCIÓN: Nombre del método 'updateGlobal' y solo un argumento (array de roles)
+            $this->service->updateGlobal(
                 $request->input('roles') // Array validado por el Request
             );
 

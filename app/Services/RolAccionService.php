@@ -9,6 +9,7 @@ use App\Model\AccionSistema;
 use App\Model\Rol;
 use App\Events\MisAccionesActualizadas;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Exception;
 
 class RolAccionService
@@ -75,7 +76,6 @@ class RolAccionService
                         );
                     }
                 }
-
             }
 
             $this->notificarCambiosEnTiempoReal(array_unique($rolesAfectados));
@@ -88,11 +88,14 @@ class RolAccionService
     {
         if (empty($rolesIds)) return;
 
+        // CONSULTA CORREGIDA
         $userIds = DB::table('usuario_rol')
             ->join('usuario', 'usuario.id_usuario', '=', 'usuario_rol.id_usuario')
             ->whereIn('usuario_rol.id_rol', $rolesIds)
-            ->where('usuario_rol.estado', 'AC')
-            ->where('usuario.estado', 'AC')
+            // ->where('usuario_rol.estado', 'AC') // ERROR 1: Columna no existe
+            // ->where('usuario.estado', 'AC')     // ERROR 2: Columna no existe.
+            // NOTA: Si tu tabla 'usuario' tiene un campo de estado (ej: 'activo', 'status'), descomenta y ajusta la siguiente línea:
+            // ->where('usuario.activo', true)
             ->pluck('usuario.id_usuario')
             ->unique();
 
@@ -102,8 +105,7 @@ class RolAccionService
                 broadcast(new MisAccionesActualizadas($userId, $nuevasAcciones));
 
             } catch (Exception $e) {
-                // Loguear error silenciosamente para no interrumpir el flujo principal
-                // Log::error("Error enviando socket a usuario $userId: " . $e->getMessage());
+                Log::error("Error enviando socket a usuario $userId: " . $e->getMessage());
             }
         }
     }
